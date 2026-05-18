@@ -34,90 +34,59 @@ public partial class Form1 : Form
 
     private void BuildUi()
     {
-        Text = "TestDataCreater - HashMap Exporter";
-        Width = 1200;
-        Height = 780;
-        MinimumSize = new Size(960, 640);
+        Text = "TestDataCreater";
+        Width = 1280;
+        Height = 820;
+        MinimumSize = new Size(1024, 640);
+        Font = new Font("Segoe UI", 9F);
 
         TableLayoutPanel root = new()
         {
             Dock = DockStyle.Fill,
             ColumnCount = 1,
-            RowCount = 4
+            RowCount = 3,
+            BackColor = SystemColors.Control
         };
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 52));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 180));
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
-
-        FlowLayoutPanel toolbar = CreateToolbar();
-        SplitContainer mainSplit = CreateMainSplit();
-
-        _previewBox.Dock = DockStyle.Fill;
-        _previewBox.Multiline = true;
-        _previewBox.ScrollBars = ScrollBars.Both;
-        _previewBox.WordWrap = false;
-        _previewBox.Font = new Font(FontFamily.GenericMonospace, 10);
 
         _statusLabel.Dock = DockStyle.Fill;
         _statusLabel.TextAlign = ContentAlignment.MiddleLeft;
+        _statusLabel.Padding = new Padding(8, 0, 0, 0);
 
-        root.Controls.Add(toolbar, 0, 0);
-        root.Controls.Add(mainSplit, 0, 1);
-        root.Controls.Add(_previewBox, 0, 2);
-        root.Controls.Add(_statusLabel, 0, 3);
+        root.Controls.Add(CreateHeaderPanel(), 0, 0);
+        root.Controls.Add(CreateBodyPanel(), 0, 1);
+        root.Controls.Add(_statusLabel, 0, 2);
         Controls.Add(root);
 
         FormClosing += (_, _) => SaveWorkspaceDocument();
     }
 
-    private FlowLayoutPanel CreateToolbar()
+    private Control CreateHeaderPanel()
     {
-        FlowLayoutPanel toolbar = new()
+        TableLayoutPanel header = new()
         {
             Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.LeftToRight,
-            Padding = new Padding(6),
-            WrapContents = false
+            ColumnCount = 6,
+            Padding = new Padding(10, 8, 10, 8)
         };
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 96));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8));
 
-        toolbar.Controls.Add(CreateButton("Add row", AddRow));
-        toolbar.Controls.Add(CreateButton("Delete row", DeleteSelectedRows));
-        toolbar.Controls.Add(CreateButton("Row up", () => MoveCurrentRow(-1)));
-        toolbar.Controls.Add(CreateButton("Row down", () => MoveCurrentRow(1)));
-        toolbar.Controls.Add(CreateButton("Add column", AddColumn));
-        toolbar.Controls.Add(CreateButton("Delete column", DeleteCurrentColumn));
-        toolbar.Controls.Add(CreateButton("Column left", () => MoveCurrentColumn(-1)));
-        toolbar.Controls.Add(CreateButton("Column right", () => MoveCurrentColumn(1)));
-        toolbar.Controls.Add(CreateButton("Preview", PreviewExport));
-        toolbar.Controls.Add(CreateButton("Export copy", ExportToClipboard));
-        toolbar.Controls.Add(CreateButton("Save", SaveWorkspaceDocument));
-
-        return toolbar;
-    }
-
-    private SplitContainer CreateMainSplit()
-    {
-        SplitContainer outer = new()
+        Label nameLabel = new()
         {
+            Text = "結果セット名",
             Dock = DockStyle.Fill,
-            SplitterDistance = 230
+            TextAlign = ContentAlignment.MiddleLeft
         };
-
-        TableLayoutPanel workspacePanel = new()
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 1,
-            RowCount = 5,
-            Padding = new Padding(6)
-        };
-        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
-        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
-        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
-        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
 
         _workspaceNameBox.Dock = DockStyle.Fill;
+        _workspaceNameBox.Margin = new Padding(0, 2, 12, 2);
         _workspaceNameBox.TextChanged += (_, _) =>
         {
             if (_loading || _currentResultSet is null)
@@ -132,71 +101,172 @@ public partial class Form1 : Form
             SaveWorkspaceDocument();
         };
 
+        header.Controls.Add(nameLabel, 0, 0);
+        header.Controls.Add(_workspaceNameBox, 1, 0);
+        header.Controls.Add(CreateButton("プレビュー", PreviewExport), 2, 0);
+        header.Controls.Add(CreateButton("コピー", ExportToClipboard), 3, 0);
+        header.Controls.Add(CreateButton("保存", SaveWorkspaceDocument), 4, 0);
+
+        return header;
+    }
+
+    private Control CreateBodyPanel()
+    {
+        SplitContainer outer = new()
+        {
+            Dock = DockStyle.Fill,
+            FixedPanel = FixedPanel.Panel1,
+            SplitterDistance = 210
+        };
+
+        outer.Panel1.Controls.Add(CreateWorkspacePanel());
+        outer.Panel2.Controls.Add(CreateEditorPanel());
+        return outer;
+    }
+
+    private Control CreateWorkspacePanel()
+    {
+        TableLayoutPanel workspacePanel = new()
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 3,
+            Padding = new Padding(8, 4, 6, 6)
+        };
+        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
+        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 36));
+
+        Label workspaceLabel = new()
+        {
+            Text = "ワークスペース",
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleLeft
+        };
+
         _workspaceList.Dock = DockStyle.Fill;
         _workspaceList.DisplayMember = nameof(ResultSet.Name);
         _workspaceList.SelectedIndexChanged += (_, _) => SelectWorkspaceFromList();
 
-        workspacePanel.Controls.Add(new Label { Text = "Workspace", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0);
-        workspacePanel.Controls.Add(_workspaceNameBox, 0, 1);
-        workspacePanel.Controls.Add(_workspaceList, 0, 2);
-        workspacePanel.Controls.Add(CreateButton("Add workspace", AddWorkspace), 0, 3);
-        workspacePanel.Controls.Add(CreateButton("Delete workspace", DeleteWorkspace), 0, 4);
-
-        SplitContainer editorSplit = new()
+        FlowLayoutPanel workspaceCommands = new()
         {
             Dock = DockStyle.Fill,
-            SplitterDistance = 720
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
         };
+        workspaceCommands.Controls.Add(CreateButton("追加", AddWorkspace));
+        workspaceCommands.Controls.Add(CreateButton("削除", DeleteWorkspace));
 
-        ConfigureGrid();
-        editorSplit.Panel1.Controls.Add(_grid);
-        editorSplit.Panel2.Controls.Add(CreateInspectorPanel());
-
-        outer.Panel1.Controls.Add(workspacePanel);
-        outer.Panel2.Controls.Add(editorSplit);
-        return outer;
+        workspacePanel.Controls.Add(workspaceLabel, 0, 0);
+        workspacePanel.Controls.Add(_workspaceList, 0, 1);
+        workspacePanel.Controls.Add(workspaceCommands, 0, 2);
+        return workspacePanel;
     }
 
-    private Panel CreateInspectorPanel()
+    private Control CreateEditorPanel()
     {
-        TableLayoutPanel panel = new()
+        TableLayoutPanel editor = new()
         {
             Dock = DockStyle.Fill,
             ColumnCount = 1,
-            RowCount = 8,
-            Padding = new Padding(8)
+            RowCount = 3,
+            Padding = new Padding(4, 4, 8, 6)
         };
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 12));
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 12));
-        panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
-        panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
+        editor.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 170));
+
+        ConfigureGrid();
+        ConfigurePreviewBox();
+
+        editor.Controls.Add(CreateGridCommandPanel(), 0, 0);
+        editor.Controls.Add(_grid, 0, 1);
+        editor.Controls.Add(CreatePreviewPanel(), 0, 2);
+        return editor;
+    }
+
+    private Control CreateGridCommandPanel()
+    {
+        TableLayoutPanel commandPanel = new()
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 1
+        };
+        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 380));
+
+        FlowLayoutPanel editCommands = new()
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = true
+        };
+        editCommands.Controls.Add(CreateButton("+ 行", AddRow));
+        editCommands.Controls.Add(CreateButton("- 行", DeleteSelectedRows));
+        editCommands.Controls.Add(CreateButton("↑ 行", () => MoveCurrentRow(-1)));
+        editCommands.Controls.Add(CreateButton("↓ 行", () => MoveCurrentRow(1)));
+        editCommands.Controls.Add(CreateButton("+ 列", AddColumn));
+        editCommands.Controls.Add(CreateButton("- 列", DeleteCurrentColumn));
+        editCommands.Controls.Add(CreateButton("← 列", () => MoveCurrentColumn(-1)));
+        editCommands.Controls.Add(CreateButton("→ 列", () => MoveCurrentColumn(1)));
 
         _columnNameBox.Dock = DockStyle.Fill;
+        _columnNameBox.Margin = new Padding(0, 20, 8, 20);
         _columnNameBox.TextChanged += (_, _) => RenameCurrentColumn();
 
         _cellKindBox.Dock = DockStyle.Fill;
+        _cellKindBox.Margin = new Padding(0, 20, 0, 20);
         _cellKindBox.DropDownStyle = ComboBoxStyle.DropDownList;
         _cellKindBox.DataSource = Enum.GetValues<CellValueKind>();
         _cellKindBox.SelectedIndexChanged += (_, _) => ApplySelectedCellKind();
 
-        panel.Controls.Add(new Label { Text = "Column name", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0);
-        panel.Controls.Add(_columnNameBox, 0, 1);
-        panel.Controls.Add(new Label(), 0, 2);
-        panel.Controls.Add(new Label { Text = "Selected cell type", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 3);
-        panel.Controls.Add(_cellKindBox, 0, 4);
-        panel.Controls.Add(new Label(), 0, 5);
-        panel.Controls.Add(new Label
+        TableLayoutPanel inspector = new()
         {
             Dock = DockStyle.Fill,
-            Text = "Use CustomExpression for arbitrary C# values such as OrderStatus.Completed or new Money(...).",
-            AutoSize = false
-        }, 0, 6);
+            ColumnCount = 4,
+            RowCount = 1
+        };
+        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48));
+        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58));
+        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32));
+        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42));
 
-        return panel;
+        inspector.Controls.Add(new Label { Text = "列名", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0);
+        inspector.Controls.Add(_columnNameBox, 1, 0);
+        inspector.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0);
+        inspector.Controls.Add(_cellKindBox, 3, 0);
+
+        commandPanel.Controls.Add(editCommands, 0, 0);
+        commandPanel.Controls.Add(inspector, 1, 0);
+        return commandPanel;
+    }
+
+    private void ConfigurePreviewBox()
+    {
+        _previewBox.Dock = DockStyle.Fill;
+        _previewBox.Multiline = true;
+        _previewBox.ScrollBars = ScrollBars.Both;
+        _previewBox.WordWrap = false;
+        _previewBox.Font = new Font(FontFamily.GenericMonospace, 10);
+        _previewBox.ReadOnly = true;
+        _previewBox.BackColor = SystemColors.Window;
+    }
+
+    private Control CreatePreviewPanel()
+    {
+        TabControl tabs = new()
+        {
+            Dock = DockStyle.Fill
+        };
+
+        TabPage previewPage = new("C# プレビュー")
+        {
+            Padding = new Padding(4)
+        };
+        previewPage.Controls.Add(_previewBox);
+        tabs.TabPages.Add(previewPage);
+        return tabs;
     }
 
     private static Button CreateButton(string text, Action action)
@@ -205,7 +275,9 @@ public partial class Form1 : Form
         {
             Text = text,
             AutoSize = true,
-            Margin = new Padding(3)
+            Height = 28,
+            Margin = new Padding(3, 5, 3, 5),
+            Padding = new Padding(8, 0, 8, 0)
         };
         button.Click += (_, _) => action();
         return button;
@@ -218,7 +290,7 @@ public partial class Form1 : Form
         _grid.AllowUserToAddRows = false;
         _grid.AllowUserToDeleteRows = false;
         _grid.AllowUserToOrderColumns = true;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
         _grid.MultiSelect = true;
         _grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
         _grid.RowHeadersWidth = 54;
@@ -305,7 +377,8 @@ public partial class Form1 : Form
             {
                 Name = column.Id,
                 HeaderText = column.Name,
-                SortMode = DataGridViewColumnSortMode.NotSortable
+                SortMode = DataGridViewColumnSortMode.NotSortable,
+                Width = Math.Max(140, column.Name.Length * 12)
             });
         }
 
@@ -419,6 +492,7 @@ public partial class Form1 : Form
         SyncGridToModel();
         _currentResultSet.AddRow();
         LoadGrid();
+        SelectGridRow(_currentResultSet.Rows.Count - 1);
         SaveWorkspaceDocument();
     }
 
@@ -478,6 +552,7 @@ public partial class Form1 : Form
         SyncGridToModel();
         _currentResultSet.AddColumn($"COLUMN{_currentResultSet.Columns.Count + 1}");
         LoadGrid();
+        SelectGridCell(0, _currentResultSet.Columns.Count - 1);
         SaveWorkspaceDocument();
     }
 
@@ -681,11 +756,11 @@ public partial class Form1 : Form
         try
         {
             Clipboard.SetText(_previewBox.Text);
-            _statusLabel.Text = "Exported C# initializer to clipboard.";
+            _statusLabel.Text = "C# 初期化コードをクリップボードへコピーしました。";
         }
         catch (Exception ex)
         {
-            _statusLabel.Text = $"Clipboard export failed: {ex.Message}";
+            _statusLabel.Text = $"クリップボードへのコピーに失敗しました: {ex.Message}";
         }
 
         SaveWorkspaceDocument();
@@ -761,5 +836,16 @@ public partial class Form1 : Form
         _grid.ClearSelection();
         _grid.CurrentCell = _grid.Rows[rowIndex].Cells[0];
         _grid.Rows[rowIndex].Selected = true;
+    }
+
+    private void SelectGridCell(int rowIndex, int columnIndex)
+    {
+        if (rowIndex < 0 || rowIndex >= _grid.Rows.Count || columnIndex < 0 || columnIndex >= _grid.Columns.Count)
+        {
+            return;
+        }
+
+        _grid.ClearSelection();
+        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[columnIndex];
     }
 }
