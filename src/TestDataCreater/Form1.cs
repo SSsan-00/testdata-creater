@@ -7,7 +7,7 @@ public partial class Form1 : Form
     private const string RowCommandColumnName = "__row_command";
     private const string AddColumnCommandColumnName = "__add_column";
     private const string ColumnCommandRowTag = "__column_commands";
-    private const string AddRowRowTag = "__add_row";
+    private const int GridCommandColumnWidth = 64;
 
     private readonly WorkspaceStore _store = new();
     private readonly HashMapCSharpExporter _exporter = new();
@@ -281,13 +281,18 @@ public partial class Form1 : Form
         _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
         _grid.MultiSelect = true;
         _grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
-        _grid.RowHeadersWidth = 54;
+        _grid.RowHeadersWidth = 48;
+        _grid.ColumnHeadersHeight = 32;
+        _grid.RowTemplate.Height = 30;
+        _grid.EnableHeadersVisualStyles = false;
+        _grid.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
+        _grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        _grid.RowHeadersDefaultCellStyle.BackColor = SystemColors.Control;
 
         _grid.CellBeginEdit += GridCellBeginEdit;
         _grid.CellClick += GridCellClick;
         _grid.CellEndEdit += GridCellEndEdit;
         _grid.CellValueChanged += GridCellValueChanged;
-        _grid.ColumnHeaderMouseClick += GridColumnHeaderMouseClick;
         _grid.EditingControlShowing += GridEditingControlShowing;
         _grid.SelectionChanged += (_, _) => RefreshInspector();
         _grid.ColumnDisplayIndexChanged += (_, _) =>
@@ -373,9 +378,32 @@ public partial class Form1 : Form
         _grid.Columns.Add(new DataGridViewButtonColumn
         {
             Name = RowCommandColumnName,
-            HeaderText = "",
-            Width = 38,
+            HeaderText = "行",
+            Width = GridCommandColumnWidth,
+            Frozen = true,
             ReadOnly = true,
+            FlatStyle = FlatStyle.Flat,
+            DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Alignment = DataGridViewContentAlignment.MiddleCenter,
+                BackColor = SystemColors.Control
+            },
+            SortMode = DataGridViewColumnSortMode.NotSortable
+        });
+
+        _grid.Columns.Add(new DataGridViewButtonColumn
+        {
+            Name = AddColumnCommandColumnName,
+            HeaderText = "列",
+            Width = GridCommandColumnWidth,
+            Frozen = true,
+            ReadOnly = true,
+            FlatStyle = FlatStyle.Flat,
+            DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Alignment = DataGridViewContentAlignment.MiddleCenter,
+                BackColor = SystemColors.Control
+            },
             SortMode = DataGridViewColumnSortMode.NotSortable
         });
 
@@ -390,15 +418,6 @@ public partial class Form1 : Form
             });
         }
 
-        _grid.Columns.Add(new DataGridViewButtonColumn
-        {
-            Name = AddColumnCommandColumnName,
-            HeaderText = "+",
-            Width = 38,
-            ReadOnly = true,
-            SortMode = DataGridViewColumnSortMode.NotSortable
-        });
-
         AddColumnCommandRow();
 
         foreach (ResultRow resultRow in _currentResultSet.Rows)
@@ -406,17 +425,24 @@ public partial class Form1 : Form
             int rowIndex = _grid.Rows.Add();
             DataGridViewRow gridRow = _grid.Rows[rowIndex];
             gridRow.Tag = resultRow.Id;
-            gridRow.HeaderCell.Value = rowIndex.ToString();
-            gridRow.Cells[RowCommandColumnName].Value = "-";
-            gridRow.Cells[AddColumnCommandColumnName].ReadOnly = true;
+            gridRow.HeaderCell.Value = GridRowIndexToModelIndex(rowIndex).ToString();
+            gridRow.Cells[RowCommandColumnName].Value = "- 行";
+            if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn)
+            {
+                int addColumnCommandIndex = addColumnCommandColumn.Index;
+                gridRow.Cells[addColumnCommandIndex] = new DataGridViewTextBoxCell
+                {
+                    Value = ""
+                };
+                gridRow.Cells[addColumnCommandIndex].ReadOnly = true;
+                gridRow.Cells[addColumnCommandIndex].Style.BackColor = SystemColors.Control;
+            }
 
             foreach (ResultColumn column in _currentResultSet.Columns)
             {
                 gridRow.Cells[column.Id].Value = resultRow.GetCell(column.Id, column.DefaultKind).Text;
             }
         }
-
-        AddRowCommandRow();
 
         _loading = false;
         _grid.ClearSelection();
@@ -431,31 +457,27 @@ public partial class Form1 : Form
         DataGridViewRow row = _grid.Rows[rowIndex];
         row.Tag = ColumnCommandRowTag;
         row.ReadOnly = true;
+        row.Frozen = true;
+        row.Height = 32;
         row.DefaultCellStyle.BackColor = SystemColors.Control;
         row.DefaultCellStyle.ForeColor = SystemColors.ControlText;
         row.HeaderCell.Value = "";
-        row.Cells[RowCommandColumnName].Value = "";
-        row.Cells[AddColumnCommandColumnName].Value = "+";
+        row.Cells[RowCommandColumnName].Value = "+ 行";
+        row.Cells[AddColumnCommandColumnName].Value = "+ 列";
 
         foreach (DataGridViewColumn column in _grid.Columns)
         {
             if (IsDataColumn(column))
             {
-                row.Cells[column.Name].Value = "-";
+                row.Cells[column.Index] = new DataGridViewButtonCell
+                {
+                    Value = "- 列",
+                    FlatStyle = FlatStyle.Flat
+                };
+                row.Cells[column.Name].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                row.Cells[column.Name].Style.BackColor = SystemColors.Control;
             }
         }
-    }
-
-    private void AddRowCommandRow()
-    {
-        int rowIndex = _grid.Rows.Add();
-        DataGridViewRow row = _grid.Rows[rowIndex];
-        row.Tag = AddRowRowTag;
-        row.ReadOnly = true;
-        row.DefaultCellStyle.BackColor = SystemColors.Control;
-        row.DefaultCellStyle.ForeColor = SystemColors.ControlText;
-        row.HeaderCell.Value = "";
-        row.Cells[RowCommandColumnName].Value = "+";
     }
 
     private void SyncGridToModel()
@@ -525,9 +547,9 @@ public partial class Form1 : Form
         }
 
         if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn &&
-            addColumnCommandColumn.DisplayIndex != _grid.Columns.Count - 1)
+            addColumnCommandColumn.DisplayIndex != 1)
         {
-            addColumnCommandColumn.DisplayIndex = _grid.Columns.Count - 1;
+            addColumnCommandColumn.DisplayIndex = 1;
         }
     }
 
@@ -544,14 +566,6 @@ public partial class Form1 : Form
         }
 
         HandleGridCommandCell(e.RowIndex, e.ColumnIndex);
-    }
-
-    private void GridColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
-    {
-        if (e.ColumnIndex >= 0 && _grid.Columns[e.ColumnIndex].Name == AddColumnCommandColumnName)
-        {
-            AddColumn();
-        }
     }
 
     private void GridCellEndEdit(object? sender, DataGridViewCellEventArgs e)
@@ -617,15 +631,13 @@ public partial class Form1 : Form
         DataGridViewColumn column = _grid.Columns[columnIndex];
         object? rowTag = _grid.Rows[rowIndex].Tag;
 
-        if (rowTag as string == AddRowRowTag && column.Name == RowCommandColumnName)
-        {
-            AddRow();
-            return;
-        }
-
         if (rowTag as string == ColumnCommandRowTag)
         {
-            if (column.Name == AddColumnCommandColumnName)
+            if (column.Name == RowCommandColumnName)
+            {
+                AddRow();
+            }
+            else if (column.Name == AddColumnCommandColumnName)
             {
                 AddColumn();
             }
@@ -711,7 +723,7 @@ public partial class Form1 : Form
         }
 
         string? tag = _grid.Rows[rowIndex].Tag as string;
-        return tag is not null && tag != ColumnCommandRowTag && tag != AddRowRowTag;
+        return tag is not null && tag != ColumnCommandRowTag;
     }
 
     private static bool IsDataColumn(DataGridViewColumn column)
@@ -1174,7 +1186,19 @@ public partial class Form1 : Form
     private void SelectGridCell(int rowIndex, int columnIndex)
     {
         int gridRowIndex = rowIndex + 1;
-        int gridColumnIndex = columnIndex + 1;
+        if (_currentResultSet is null || columnIndex < 0 || columnIndex >= _currentResultSet.Columns.Count)
+        {
+            return;
+        }
+
+        string columnId = _currentResultSet.Columns[columnIndex].Id;
+        DataGridViewColumn? gridColumn = _grid.Columns[columnId];
+        if (gridColumn is null)
+        {
+            return;
+        }
+
+        int gridColumnIndex = gridColumn.Index;
 
         if (gridRowIndex < 0 || gridRowIndex >= _grid.Rows.Count || gridColumnIndex < 0 || gridColumnIndex >= _grid.Columns.Count)
         {
@@ -1182,6 +1206,6 @@ public partial class Form1 : Form
         }
 
         _grid.ClearSelection();
-        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[columnIndex];
+        _grid.CurrentCell = _grid.Rows[gridRowIndex].Cells[gridColumnIndex];
     }
 }

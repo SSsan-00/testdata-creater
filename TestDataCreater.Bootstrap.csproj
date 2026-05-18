@@ -70,10 +70,10 @@
     <_BootstrapFile1 Include="1. 左側の `ワークスペース` で結果セットを選択します。" />
     <_BootstrapFile1 Include="2. `追加` で結果セットを追加します。" />
     <_BootstrapFile1 Include="3. 画面上部の `結果セット名` で名前を変更します。" />
-    <_BootstrapFile1 Include="4. グリッド左端の `+` で行を追加します。" />
-    <_BootstrapFile1 Include="5. 各行の左端にある `-` で行を削除します。" />
-    <_BootstrapFile1 Include="6. グリッド右端の `+` で列を追加します。" />
-    <_BootstrapFile1 Include="7. グリッド最上段の各列にある `-` で列を削除します。" />
+    <_BootstrapFile1 Include="4. グリッド左上の固定操作エリアにある `+ 行` で行を追加します。" />
+    <_BootstrapFile1 Include="5. 各行の左端にある `- 行` で行を削除します。" />
+    <_BootstrapFile1 Include="6. グリッド左上の固定操作エリアにある `+ 列` で列を追加します。" />
+    <_BootstrapFile1 Include="7. グリッド最上段の各列にある `- 列` で列を削除します。" />
     <_BootstrapFile1 Include="8. グリッドのセルに値を入力します。" />
     <_BootstrapFile1 Include="9. グリッド上部の `列名` で選択列の名前を変更します。" />
     <_BootstrapFile1 Include="10. グリッド上部の `型` で選択セルの値型を指定します。" />
@@ -683,7 +683,7 @@
     <_BootstrapFile15 Include="    private const string RowCommandColumnName = &quot;__row_command&quot;%3B" />
     <_BootstrapFile15 Include="    private const string AddColumnCommandColumnName = &quot;__add_column&quot;%3B" />
     <_BootstrapFile15 Include="    private const string ColumnCommandRowTag = &quot;__column_commands&quot;%3B" />
-    <_BootstrapFile15 Include="    private const string AddRowRowTag = &quot;__add_row&quot;%3B" />
+    <_BootstrapFile15 Include="    private const int GridCommandColumnWidth = 64%3B" />
     <_BootstrapFile15 Include="    private readonly WorkspaceStore _store = new()%3B" />
     <_BootstrapFile15 Include="    private readonly HashMapCSharpExporter _exporter = new()%3B" />
     <_BootstrapFile15 Include="    private readonly string _workspacePath = Path.Combine(" />
@@ -921,12 +921,17 @@
     <_BootstrapFile15 Include="        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None%3B" />
     <_BootstrapFile15 Include="        _grid.MultiSelect = true%3B" />
     <_BootstrapFile15 Include="        _grid.SelectionMode = DataGridViewSelectionMode.CellSelect%3B" />
-    <_BootstrapFile15 Include="        _grid.RowHeadersWidth = 54%3B" />
+    <_BootstrapFile15 Include="        _grid.RowHeadersWidth = 48%3B" />
+    <_BootstrapFile15 Include="        _grid.ColumnHeadersHeight = 32%3B" />
+    <_BootstrapFile15 Include="        _grid.RowTemplate.Height = 30%3B" />
+    <_BootstrapFile15 Include="        _grid.EnableHeadersVisualStyles = false%3B" />
+    <_BootstrapFile15 Include="        _grid.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control%3B" />
+    <_BootstrapFile15 Include="        _grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter%3B" />
+    <_BootstrapFile15 Include="        _grid.RowHeadersDefaultCellStyle.BackColor = SystemColors.Control%3B" />
     <_BootstrapFile15 Include="        _grid.CellBeginEdit += GridCellBeginEdit%3B" />
     <_BootstrapFile15 Include="        _grid.CellClick += GridCellClick%3B" />
     <_BootstrapFile15 Include="        _grid.CellEndEdit += GridCellEndEdit%3B" />
     <_BootstrapFile15 Include="        _grid.CellValueChanged += GridCellValueChanged%3B" />
-    <_BootstrapFile15 Include="        _grid.ColumnHeaderMouseClick += GridColumnHeaderMouseClick%3B" />
     <_BootstrapFile15 Include="        _grid.EditingControlShowing += GridEditingControlShowing%3B" />
     <_BootstrapFile15 Include="        _grid.SelectionChanged += (_, _) =&gt; RefreshInspector()%3B" />
     <_BootstrapFile15 Include="        _grid.ColumnDisplayIndexChanged += (_, _) =&gt;" />
@@ -998,9 +1003,31 @@
     <_BootstrapFile15 Include="        _grid.Columns.Add(new DataGridViewButtonColumn" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Name = RowCommandColumnName," />
-    <_BootstrapFile15 Include="            HeaderText = &quot;&quot;," />
-    <_BootstrapFile15 Include="            Width = 38," />
+    <_BootstrapFile15 Include="            HeaderText = &quot;行&quot;," />
+    <_BootstrapFile15 Include="            Width = GridCommandColumnWidth," />
+    <_BootstrapFile15 Include="            Frozen = true," />
     <_BootstrapFile15 Include="            ReadOnly = true," />
+    <_BootstrapFile15 Include="            FlatStyle = FlatStyle.Flat," />
+    <_BootstrapFile15 Include="            DefaultCellStyle = new DataGridViewCellStyle" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                Alignment = DataGridViewContentAlignment.MiddleCenter," />
+    <_BootstrapFile15 Include="                BackColor = SystemColors.Control" />
+    <_BootstrapFile15 Include="            }," />
+    <_BootstrapFile15 Include="            SortMode = DataGridViewColumnSortMode.NotSortable" />
+    <_BootstrapFile15 Include="        })%3B" />
+    <_BootstrapFile15 Include="        _grid.Columns.Add(new DataGridViewButtonColumn" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Name = AddColumnCommandColumnName," />
+    <_BootstrapFile15 Include="            HeaderText = &quot;列&quot;," />
+    <_BootstrapFile15 Include="            Width = GridCommandColumnWidth," />
+    <_BootstrapFile15 Include="            Frozen = true," />
+    <_BootstrapFile15 Include="            ReadOnly = true," />
+    <_BootstrapFile15 Include="            FlatStyle = FlatStyle.Flat," />
+    <_BootstrapFile15 Include="            DefaultCellStyle = new DataGridViewCellStyle" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                Alignment = DataGridViewContentAlignment.MiddleCenter," />
+    <_BootstrapFile15 Include="                BackColor = SystemColors.Control" />
+    <_BootstrapFile15 Include="            }," />
     <_BootstrapFile15 Include="            SortMode = DataGridViewColumnSortMode.NotSortable" />
     <_BootstrapFile15 Include="        })%3B" />
     <_BootstrapFile15 Include="        foreach (ResultColumn column in _currentResultSet.Columns)" />
@@ -1013,29 +1040,29 @@
     <_BootstrapFile15 Include="                Width = Math.Max(140, column.Name.Length %2A 12)" />
     <_BootstrapFile15 Include="            })%3B" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        _grid.Columns.Add(new DataGridViewButtonColumn" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Name = AddColumnCommandColumnName," />
-    <_BootstrapFile15 Include="            HeaderText = &quot;+&quot;," />
-    <_BootstrapFile15 Include="            Width = 38," />
-    <_BootstrapFile15 Include="            ReadOnly = true," />
-    <_BootstrapFile15 Include="            SortMode = DataGridViewColumnSortMode.NotSortable" />
-    <_BootstrapFile15 Include="        })%3B" />
     <_BootstrapFile15 Include="        AddColumnCommandRow()%3B" />
     <_BootstrapFile15 Include="        foreach (ResultRow resultRow in _currentResultSet.Rows)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            int rowIndex = _grid.Rows.Add()%3B" />
     <_BootstrapFile15 Include="            DataGridViewRow gridRow = _grid.Rows[rowIndex]%3B" />
     <_BootstrapFile15 Include="            gridRow.Tag = resultRow.Id%3B" />
-    <_BootstrapFile15 Include="            gridRow.HeaderCell.Value = rowIndex.ToString()%3B" />
-    <_BootstrapFile15 Include="            gridRow.Cells[RowCommandColumnName].Value = &quot;-&quot;%3B" />
-    <_BootstrapFile15 Include="            gridRow.Cells[AddColumnCommandColumnName].ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="            gridRow.HeaderCell.Value = GridRowIndexToModelIndex(rowIndex).ToString()%3B" />
+    <_BootstrapFile15 Include="            gridRow.Cells[RowCommandColumnName].Value = &quot;- 行&quot;%3B" />
+    <_BootstrapFile15 Include="            if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                int addColumnCommandIndex = addColumnCommandColumn.Index%3B" />
+    <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex] = new DataGridViewTextBoxCell" />
+    <_BootstrapFile15 Include="                {" />
+    <_BootstrapFile15 Include="                    Value = &quot;&quot;" />
+    <_BootstrapFile15 Include="                }%3B" />
+    <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex].ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex].Style.BackColor = SystemColors.Control%3B" />
+    <_BootstrapFile15 Include="            }" />
     <_BootstrapFile15 Include="            foreach (ResultColumn column in _currentResultSet.Columns)" />
     <_BootstrapFile15 Include="            {" />
     <_BootstrapFile15 Include="                gridRow.Cells[column.Id].Value = resultRow.GetCell(column.Id, column.DefaultKind).Text%3B" />
     <_BootstrapFile15 Include="            }" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        AddRowCommandRow()%3B" />
     <_BootstrapFile15 Include="        _loading = false%3B" />
     <_BootstrapFile15 Include="        _grid.ClearSelection()%3B" />
     <_BootstrapFile15 Include="        _grid.CurrentCell = null%3B" />
@@ -1048,29 +1075,26 @@
     <_BootstrapFile15 Include="        DataGridViewRow row = _grid.Rows[rowIndex]%3B" />
     <_BootstrapFile15 Include="        row.Tag = ColumnCommandRowTag%3B" />
     <_BootstrapFile15 Include="        row.ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="        row.Frozen = true%3B" />
+    <_BootstrapFile15 Include="        row.Height = 32%3B" />
     <_BootstrapFile15 Include="        row.DefaultCellStyle.BackColor = SystemColors.Control%3B" />
     <_BootstrapFile15 Include="        row.DefaultCellStyle.ForeColor = SystemColors.ControlText%3B" />
     <_BootstrapFile15 Include="        row.HeaderCell.Value = &quot;&quot;%3B" />
-    <_BootstrapFile15 Include="        row.Cells[RowCommandColumnName].Value = &quot;&quot;%3B" />
-    <_BootstrapFile15 Include="        row.Cells[AddColumnCommandColumnName].Value = &quot;+&quot;%3B" />
+    <_BootstrapFile15 Include="        row.Cells[RowCommandColumnName].Value = &quot;+ 行&quot;%3B" />
+    <_BootstrapFile15 Include="        row.Cells[AddColumnCommandColumnName].Value = &quot;+ 列&quot;%3B" />
     <_BootstrapFile15 Include="        foreach (DataGridViewColumn column in _grid.Columns)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            if (IsDataColumn(column))" />
     <_BootstrapFile15 Include="            {" />
-    <_BootstrapFile15 Include="                row.Cells[column.Name].Value = &quot;-&quot;%3B" />
+    <_BootstrapFile15 Include="                row.Cells[column.Index] = new DataGridViewButtonCell" />
+    <_BootstrapFile15 Include="                {" />
+    <_BootstrapFile15 Include="                    Value = &quot;- 列&quot;," />
+    <_BootstrapFile15 Include="                    FlatStyle = FlatStyle.Flat" />
+    <_BootstrapFile15 Include="                }%3B" />
+    <_BootstrapFile15 Include="                row.Cells[column.Name].Style.Alignment = DataGridViewContentAlignment.MiddleCenter%3B" />
+    <_BootstrapFile15 Include="                row.Cells[column.Name].Style.BackColor = SystemColors.Control%3B" />
     <_BootstrapFile15 Include="            }" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="    }" />
-    <_BootstrapFile15 Include="    private void AddRowCommandRow()" />
-    <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        int rowIndex = _grid.Rows.Add()%3B" />
-    <_BootstrapFile15 Include="        DataGridViewRow row = _grid.Rows[rowIndex]%3B" />
-    <_BootstrapFile15 Include="        row.Tag = AddRowRowTag%3B" />
-    <_BootstrapFile15 Include="        row.ReadOnly = true%3B" />
-    <_BootstrapFile15 Include="        row.DefaultCellStyle.BackColor = SystemColors.Control%3B" />
-    <_BootstrapFile15 Include="        row.DefaultCellStyle.ForeColor = SystemColors.ControlText%3B" />
-    <_BootstrapFile15 Include="        row.HeaderCell.Value = &quot;&quot;%3B" />
-    <_BootstrapFile15 Include="        row.Cells[RowCommandColumnName].Value = &quot;+&quot;%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void SyncGridToModel()" />
     <_BootstrapFile15 Include="    {" />
@@ -1128,9 +1152,9 @@
     <_BootstrapFile15 Include="            rowCommandColumn.DisplayIndex = 0%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn &amp;&amp;" />
-    <_BootstrapFile15 Include="            addColumnCommandColumn.DisplayIndex != _grid.Columns.Count - 1)" />
+    <_BootstrapFile15 Include="            addColumnCommandColumn.DisplayIndex != 1)" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            addColumnCommandColumn.DisplayIndex = _grid.Columns.Count - 1%3B" />
+    <_BootstrapFile15 Include="            addColumnCommandColumn.DisplayIndex = 1%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void GridCellBeginEdit(object%3F sender, DataGridViewCellCancelEventArgs e)" />
@@ -1144,13 +1168,6 @@
     <_BootstrapFile15 Include="            return%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        HandleGridCommandCell(e.RowIndex, e.ColumnIndex)%3B" />
-    <_BootstrapFile15 Include="    }" />
-    <_BootstrapFile15 Include="    private void GridColumnHeaderMouseClick(object%3F sender, DataGridViewCellMouseEventArgs e)" />
-    <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        if (e.ColumnIndex &gt;= 0 &amp;&amp; _grid.Columns[e.ColumnIndex].Name == AddColumnCommandColumnName)" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            AddColumn()%3B" />
-    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void GridCellEndEdit(object%3F sender, DataGridViewCellEventArgs e)" />
     <_BootstrapFile15 Include="    {" />
@@ -1204,14 +1221,13 @@
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        DataGridViewColumn column = _grid.Columns[columnIndex]%3B" />
     <_BootstrapFile15 Include="        object%3F rowTag = _grid.Rows[rowIndex].Tag%3B" />
-    <_BootstrapFile15 Include="        if (rowTag as string == AddRowRowTag &amp;&amp; column.Name == RowCommandColumnName)" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            AddRow()%3B" />
-    <_BootstrapFile15 Include="            return%3B" />
-    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        if (rowTag as string == ColumnCommandRowTag)" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            if (column.Name == AddColumnCommandColumnName)" />
+    <_BootstrapFile15 Include="            if (column.Name == RowCommandColumnName)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                AddRow()%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            else if (column.Name == AddColumnCommandColumnName)" />
     <_BootstrapFile15 Include="            {" />
     <_BootstrapFile15 Include="                AddColumn()%3B" />
     <_BootstrapFile15 Include="            }" />
@@ -1283,7 +1299,7 @@
     <_BootstrapFile15 Include="            return false%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        string%3F tag = _grid.Rows[rowIndex].Tag as string%3B" />
-    <_BootstrapFile15 Include="        return tag is not null &amp;&amp; tag != ColumnCommandRowTag &amp;&amp; tag != AddRowRowTag%3B" />
+    <_BootstrapFile15 Include="        return tag is not null &amp;&amp; tag != ColumnCommandRowTag%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private static bool IsDataColumn(DataGridViewColumn column)" />
     <_BootstrapFile15 Include="    {" />
@@ -1667,13 +1683,23 @@
     <_BootstrapFile15 Include="    private void SelectGridCell(int rowIndex, int columnIndex)" />
     <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        int gridRowIndex = rowIndex + 1%3B" />
-    <_BootstrapFile15 Include="        int gridColumnIndex = columnIndex + 1%3B" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || columnIndex &lt; 0 || columnIndex &gt;= _currentResultSet.Columns.Count)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string columnId = _currentResultSet.Columns[columnIndex].Id%3B" />
+    <_BootstrapFile15 Include="        DataGridViewColumn%3F gridColumn = _grid.Columns[columnId]%3B" />
+    <_BootstrapFile15 Include="        if (gridColumn is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int gridColumnIndex = gridColumn.Index%3B" />
     <_BootstrapFile15 Include="        if (gridRowIndex &lt; 0 || gridRowIndex &gt;= _grid.Rows.Count || gridColumnIndex &lt; 0 || gridColumnIndex &gt;= _grid.Columns.Count)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            return%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        _grid.ClearSelection()%3B" />
-    <_BootstrapFile15 Include="        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[columnIndex]%3B" />
+    <_BootstrapFile15 Include="        _grid.CurrentCell = _grid.Rows[gridRowIndex].Cells[gridColumnIndex]%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="}" />
   </ItemGroup>
