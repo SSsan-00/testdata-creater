@@ -4,6 +4,11 @@ namespace TestDataCreater;
 
 public partial class Form1 : Form
 {
+    private const string RowCommandColumnName = "__row_command";
+    private const string AddColumnCommandColumnName = "__add_column";
+    private const string ColumnCommandRowTag = "__column_commands";
+    private const string AddRowRowTag = "__add_row";
+
     private readonly WorkspaceStore _store = new();
     private readonly HashMapCSharpExporter _exporter = new();
     private readonly string _workspacePath = Path.Combine(
@@ -16,6 +21,7 @@ public partial class Form1 : Form
     private bool _loading;
     private int _dragRowIndex = -1;
     private Point _dragStartPoint;
+    private TextBox? _activeEditingTextBox;
 
     private readonly ListBox _workspaceList = new();
     private readonly TextBox _workspaceNameBox = new();
@@ -68,14 +74,13 @@ public partial class Form1 : Form
         TableLayoutPanel header = new()
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 6,
+            ColumnCount = 5,
             Padding = new Padding(10, 8, 10, 8)
         };
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 96));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8));
 
         Label nameLabel = new()
@@ -105,7 +110,6 @@ public partial class Form1 : Form
         header.Controls.Add(_workspaceNameBox, 1, 0);
         header.Controls.Add(CreateButton("プレビュー", PreviewExport), 2, 0);
         header.Controls.Add(CreateButton("コピー", ExportToClipboard), 3, 0);
-        header.Controls.Add(CreateButton("保存", SaveWorkspaceDocument), 4, 0);
 
         return header;
     }
@@ -196,21 +200,6 @@ public partial class Form1 : Form
         commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 380));
 
-        FlowLayoutPanel editCommands = new()
-        {
-            Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.LeftToRight,
-            WrapContents = true
-        };
-        editCommands.Controls.Add(CreateButton("+ 行", AddRow));
-        editCommands.Controls.Add(CreateButton("- 行", DeleteSelectedRows));
-        editCommands.Controls.Add(CreateButton("↑ 行", () => MoveCurrentRow(-1)));
-        editCommands.Controls.Add(CreateButton("↓ 行", () => MoveCurrentRow(1)));
-        editCommands.Controls.Add(CreateButton("+ 列", AddColumn));
-        editCommands.Controls.Add(CreateButton("- 列", DeleteCurrentColumn));
-        editCommands.Controls.Add(CreateButton("← 列", () => MoveCurrentColumn(-1)));
-        editCommands.Controls.Add(CreateButton("→ 列", () => MoveCurrentColumn(1)));
-
         _columnNameBox.Dock = DockStyle.Fill;
         _columnNameBox.Margin = new Padding(0, 20, 8, 20);
         _columnNameBox.TextChanged += (_, _) => RenameCurrentColumn();
@@ -237,7 +226,6 @@ public partial class Form1 : Form
         inspector.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0);
         inspector.Controls.Add(_cellKindBox, 3, 0);
 
-        commandPanel.Controls.Add(editCommands, 0, 0);
         commandPanel.Controls.Add(inspector, 1, 0);
         return commandPanel;
     }
@@ -295,13 +283,24 @@ public partial class Form1 : Form
         _grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
         _grid.RowHeadersWidth = 54;
 
-        _grid.CellEndEdit += (_, _) => SyncGridToModel();
+        _grid.CellBeginEdit += GridCellBeginEdit;
+        _grid.CellClick += GridCellClick;
+        _grid.CellEndEdit += GridCellEndEdit;
+        _grid.CellValueChanged += GridCellValueChanged;
+        _grid.ColumnHeaderMouseClick += GridColumnHeaderMouseClick;
+        _grid.EditingControlShowing += GridEditingControlShowing;
         _grid.SelectionChanged += (_, _) => RefreshInspector();
         _grid.ColumnDisplayIndexChanged += (_, _) =>
         {
             if (!_loading)
             {
-                BeginInvoke(SyncColumnOrderFromGrid);
+                BeginInvoke(() =>
+                {
+                    EnsureSpecialColumnDisplayOrder();
+                    SyncColumnOrderFromGrid();
+                    PreviewExport();
+                    SaveWorkspaceDocument();
+                });
             }
         };
         _grid.MouseDown += GridMouseDown;
@@ -371,6 +370,15 @@ public partial class Form1 : Form
             return;
         }
 
+        _grid.Columns.Add(new DataGridViewButtonColumn
+        {
+            Name = RowCommandColumnName,
+            HeaderText = "",
+            Width = 38,
+            ReadOnly = true,
+            SortMode = DataGridViewColumnSortMode.NotSortable
+        });
+
         foreach (ResultColumn column in _currentResultSet.Columns)
         {
             _grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -382,12 +390,25 @@ public partial class Form1 : Form
             });
         }
 
+        _grid.Columns.Add(new DataGridViewButtonColumn
+        {
+            Name = AddColumnCommandColumnName,
+            HeaderText = "+",
+            Width = 38,
+            ReadOnly = true,
+            SortMode = DataGridViewColumnSortMode.NotSortable
+        });
+
+        AddColumnCommandRow();
+
         foreach (ResultRow resultRow in _currentResultSet.Rows)
         {
             int rowIndex = _grid.Rows.Add();
             DataGridViewRow gridRow = _grid.Rows[rowIndex];
             gridRow.Tag = resultRow.Id;
-            gridRow.HeaderCell.Value = (rowIndex + 1).ToString();
+            gridRow.HeaderCell.Value = rowIndex.ToString();
+            gridRow.Cells[RowCommandColumnName].Value = "-";
+            gridRow.Cells[AddColumnCommandColumnName].ReadOnly = true;
 
             foreach (ResultColumn column in _currentResultSet.Columns)
             {
@@ -395,11 +416,46 @@ public partial class Form1 : Form
             }
         }
 
+        AddRowCommandRow();
+
         _loading = false;
         _grid.ClearSelection();
         _grid.CurrentCell = null;
         RefreshInspector();
         PreviewExport();
+    }
+
+    private void AddColumnCommandRow()
+    {
+        int rowIndex = _grid.Rows.Add();
+        DataGridViewRow row = _grid.Rows[rowIndex];
+        row.Tag = ColumnCommandRowTag;
+        row.ReadOnly = true;
+        row.DefaultCellStyle.BackColor = SystemColors.Control;
+        row.DefaultCellStyle.ForeColor = SystemColors.ControlText;
+        row.HeaderCell.Value = "";
+        row.Cells[RowCommandColumnName].Value = "";
+        row.Cells[AddColumnCommandColumnName].Value = "+";
+
+        foreach (DataGridViewColumn column in _grid.Columns)
+        {
+            if (IsDataColumn(column))
+            {
+                row.Cells[column.Name].Value = "-";
+            }
+        }
+    }
+
+    private void AddRowCommandRow()
+    {
+        int rowIndex = _grid.Rows.Add();
+        DataGridViewRow row = _grid.Rows[rowIndex];
+        row.Tag = AddRowRowTag;
+        row.ReadOnly = true;
+        row.DefaultCellStyle.BackColor = SystemColors.Control;
+        row.DefaultCellStyle.ForeColor = SystemColors.ControlText;
+        row.HeaderCell.Value = "";
+        row.Cells[RowCommandColumnName].Value = "+";
     }
 
     private void SyncGridToModel()
@@ -426,6 +482,11 @@ public partial class Form1 : Form
 
             foreach (DataGridViewColumn gridColumn in _grid.Columns)
             {
+                if (!IsDataColumn(gridColumn))
+                {
+                    continue;
+                }
+
                 CellValue cellValue = resultRow.GetCell(gridColumn.Name);
                 cellValue.Text = Convert.ToString(gridRow.Cells[gridColumn.Index].Value) ?? "";
             }
@@ -434,20 +495,233 @@ public partial class Form1 : Form
 
     private void SyncColumnOrderFromGrid()
     {
-        if (_loading || _currentResultSet is null || _grid.Columns.Count != _currentResultSet.Columns.Count)
+        if (_loading || _currentResultSet is null)
         {
             return;
         }
 
         List<string> orderedIds = _grid.Columns
             .Cast<DataGridViewColumn>()
+            .Where(IsDataColumn)
             .OrderBy(column => column.DisplayIndex)
             .Select(column => column.Name)
             .ToList();
 
+        if (orderedIds.Count != _currentResultSet.Columns.Count)
+        {
+            return;
+        }
+
         _currentResultSet.Columns = orderedIds
             .Select(id => _currentResultSet.Columns.First(column => column.Id == id))
             .ToList();
+    }
+
+    private void EnsureSpecialColumnDisplayOrder()
+    {
+        if (_grid.Columns[RowCommandColumnName] is { } rowCommandColumn && rowCommandColumn.DisplayIndex != 0)
+        {
+            rowCommandColumn.DisplayIndex = 0;
+        }
+
+        if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn &&
+            addColumnCommandColumn.DisplayIndex != _grid.Columns.Count - 1)
+        {
+            addColumnCommandColumn.DisplayIndex = _grid.Columns.Count - 1;
+        }
+    }
+
+    private void GridCellBeginEdit(object? sender, DataGridViewCellCancelEventArgs e)
+    {
+        e.Cancel = !IsEditableDataCell(e.RowIndex, e.ColumnIndex);
+    }
+
+    private void GridCellClick(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (e.RowIndex < 0 || e.ColumnIndex < 0)
+        {
+            return;
+        }
+
+        HandleGridCommandCell(e.RowIndex, e.ColumnIndex);
+    }
+
+    private void GridColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
+    {
+        if (e.ColumnIndex >= 0 && _grid.Columns[e.ColumnIndex].Name == AddColumnCommandColumnName)
+        {
+            AddColumn();
+        }
+    }
+
+    private void GridCellEndEdit(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (!IsEditableDataCell(e.RowIndex, e.ColumnIndex))
+        {
+            return;
+        }
+
+        SyncSingleCell(e.RowIndex, e.ColumnIndex);
+        RefreshInspector();
+        PreviewExport();
+        SaveWorkspaceDocument();
+    }
+
+    private void GridCellValueChanged(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (_loading || !IsEditableDataCell(e.RowIndex, e.ColumnIndex))
+        {
+            return;
+        }
+
+        SyncSingleCell(e.RowIndex, e.ColumnIndex);
+        RefreshInspector();
+        PreviewExport();
+    }
+
+    private void GridEditingControlShowing(object? sender, DataGridViewEditingControlShowingEventArgs e)
+    {
+        if (_activeEditingTextBox is not null)
+        {
+            _activeEditingTextBox.TextChanged -= ActiveEditingTextBoxTextChanged;
+        }
+
+        _activeEditingTextBox = e.Control as TextBox;
+
+        if (_activeEditingTextBox is not null)
+        {
+            _activeEditingTextBox.TextChanged += ActiveEditingTextBoxTextChanged;
+        }
+    }
+
+    private void ActiveEditingTextBoxTextChanged(object? sender, EventArgs e)
+    {
+        if (_loading || sender is not TextBox textBox || _grid.CurrentCell is null ||
+            !IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))
+        {
+            return;
+        }
+
+        SyncSingleCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex, textBox.Text);
+        RefreshInspector();
+        PreviewExport();
+    }
+
+    private void HandleGridCommandCell(int rowIndex, int columnIndex)
+    {
+        if (_currentResultSet is null)
+        {
+            return;
+        }
+
+        DataGridViewColumn column = _grid.Columns[columnIndex];
+        object? rowTag = _grid.Rows[rowIndex].Tag;
+
+        if (rowTag as string == AddRowRowTag && column.Name == RowCommandColumnName)
+        {
+            AddRow();
+            return;
+        }
+
+        if (rowTag as string == ColumnCommandRowTag)
+        {
+            if (column.Name == AddColumnCommandColumnName)
+            {
+                AddColumn();
+            }
+            else if (IsDataColumn(column))
+            {
+                DeleteColumn(column.Name);
+            }
+
+            return;
+        }
+
+        if (IsDataGridRowIndex(rowIndex) && column.Name == RowCommandColumnName)
+        {
+            DeleteRowAtGridIndex(rowIndex);
+        }
+    }
+
+    private void SyncSingleCell(int rowIndex, int columnIndex, string? editedText = null)
+    {
+        if (_currentResultSet is null || !IsEditableDataCell(rowIndex, columnIndex))
+        {
+            return;
+        }
+
+        DataGridViewRow gridRow = _grid.Rows[rowIndex];
+        DataGridViewColumn gridColumn = _grid.Columns[columnIndex];
+
+        if (gridRow.Tag is not string rowId)
+        {
+            return;
+        }
+
+        ResultRow? resultRow = _currentResultSet.Rows.FirstOrDefault(row => row.Id == rowId);
+        if (resultRow is null)
+        {
+            return;
+        }
+
+        CellValue cellValue = resultRow.GetCell(gridColumn.Name);
+        cellValue.Text = editedText ?? Convert.ToString(gridRow.Cells[columnIndex].Value) ?? "";
+        cellValue.Kind = CellValueKindRules.CoerceToAllowedKind(cellValue.Kind, cellValue.Text);
+    }
+
+    private void DeleteRowAtGridIndex(int rowIndex)
+    {
+        if (_currentResultSet is null || !IsDataGridRowIndex(rowIndex) || _grid.Rows[rowIndex].Tag is not string rowId)
+        {
+            return;
+        }
+
+        SyncGridToModel();
+        _currentResultSet.RemoveRow(rowId);
+        LoadGrid();
+        SaveWorkspaceDocument();
+    }
+
+    private void DeleteColumn(string columnId)
+    {
+        if (_currentResultSet is null)
+        {
+            return;
+        }
+
+        SyncGridToModel();
+        _currentResultSet.RemoveColumn(columnId);
+        LoadGrid();
+        SaveWorkspaceDocument();
+    }
+
+    private bool IsEditableDataCell(int rowIndex, int columnIndex)
+    {
+        return IsDataGridRowIndex(rowIndex) &&
+            columnIndex >= 0 &&
+            columnIndex < _grid.Columns.Count &&
+            IsDataColumn(_grid.Columns[columnIndex]);
+    }
+
+    private bool IsDataGridRowIndex(int rowIndex)
+    {
+        if (rowIndex < 0 || rowIndex >= _grid.Rows.Count)
+        {
+            return false;
+        }
+
+        string? tag = _grid.Rows[rowIndex].Tag as string;
+        return tag is not null && tag != ColumnCommandRowTag && tag != AddRowRowTag;
+    }
+
+    private static bool IsDataColumn(DataGridViewColumn column)
+    {
+        return column.Name != RowCommandColumnName && column.Name != AddColumnCommandColumnName;
+    }
+
+    private static int GridRowIndexToModelIndex(int gridRowIndex)
+    {
+        return gridRowIndex - 1;
     }
 
     private void AddWorkspace()
@@ -522,12 +796,12 @@ public partial class Form1 : Form
 
     private void MoveCurrentRow(int direction)
     {
-        if (_currentResultSet is null || _grid.CurrentCell is null)
+        if (_currentResultSet is null || _grid.CurrentCell is null || !IsDataGridRowIndex(_grid.CurrentCell.RowIndex))
         {
             return;
         }
 
-        int fromIndex = _grid.CurrentCell.RowIndex;
+        int fromIndex = GridRowIndexToModelIndex(_grid.CurrentCell.RowIndex);
         int toIndex = Math.Clamp(fromIndex + direction, 0, _currentResultSet.Rows.Count - 1);
 
         if (fromIndex == toIndex)
@@ -564,7 +838,13 @@ public partial class Form1 : Form
         }
 
         SyncGridToModel();
-        string columnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name;
+        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex];
+        if (!IsDataColumn(gridColumn))
+        {
+            return;
+        }
+
+        string columnId = gridColumn.Name;
         _currentResultSet.RemoveColumn(columnId);
         LoadGrid();
         SaveWorkspaceDocument();
@@ -578,7 +858,13 @@ public partial class Form1 : Form
         }
 
         SyncGridToModel();
-        int fromIndex = _currentResultSet.Columns.FindIndex(column => column.Id == _grid.Columns[_grid.CurrentCell.ColumnIndex].Name);
+        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex];
+        if (!IsDataColumn(gridColumn))
+        {
+            return;
+        }
+
+        int fromIndex = _currentResultSet.Columns.FindIndex(column => column.Id == gridColumn.Name);
         int toIndex = Math.Clamp(fromIndex + direction, 0, _currentResultSet.Columns.Count - 1);
 
         if (fromIndex < 0 || fromIndex == toIndex)
@@ -588,7 +874,7 @@ public partial class Form1 : Form
 
         _currentResultSet.MoveColumn(fromIndex, toIndex);
         LoadGrid();
-        _grid.CurrentCell = _grid.Rows.Count > 0 && _grid.Columns.Count > 0 ? _grid.Rows[0].Cells[toIndex] : null;
+        SelectGridCell(0, toIndex);
         SaveWorkspaceDocument();
     }
 
@@ -599,7 +885,13 @@ public partial class Form1 : Form
             return;
         }
 
-        string columnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name;
+        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex];
+        if (!IsDataColumn(gridColumn))
+        {
+            return;
+        }
+
+        string columnId = gridColumn.Name;
         ResultColumn? column = _currentResultSet.Columns.FirstOrDefault(item => item.Id == columnId);
 
         if (column is null)
@@ -620,7 +912,7 @@ public partial class Form1 : Form
             return;
         }
 
-        if (_grid.CurrentCell is not null)
+        if (_grid.CurrentCell is not null && IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))
         {
             string currentColumnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name;
             ResultColumn? currentColumn = _currentResultSet.Columns.FirstOrDefault(column => column.Id == currentColumnId);
@@ -632,7 +924,7 @@ public partial class Form1 : Form
 
         foreach (DataGridViewCell gridCell in _grid.SelectedCells)
         {
-            if (gridCell.RowIndex < 0 || gridCell.ColumnIndex < 0)
+            if (!IsEditableDataCell(gridCell.RowIndex, gridCell.ColumnIndex))
             {
                 continue;
             }
@@ -673,19 +965,28 @@ public partial class Form1 : Form
             return;
         }
 
+        if (!IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))
+        {
+            _columnNameBox.Text = "";
+            _cellKindBox.DataSource = Array.Empty<CellValueKind>();
+            _loading = false;
+            return;
+        }
+
         DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex];
         ResultColumn? resultColumn = _currentResultSet.Columns.FirstOrDefault(column => column.Id == gridColumn.Name);
         _columnNameBox.Text = resultColumn?.Name ?? gridColumn.HeaderText;
 
         CellValue? cellValue = CurrentCellValue();
-        _cellKindBox.SelectedItem = cellValue?.Kind ?? CellValueKind.String;
+        UpdateCellKindChoices(cellValue);
 
         _loading = false;
     }
 
     private CellValue? CurrentCellValue()
     {
-        if (_currentResultSet is null || _grid.CurrentCell is null)
+        if (_currentResultSet is null || _grid.CurrentCell is null ||
+            !IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))
         {
             return null;
         }
@@ -698,17 +999,38 @@ public partial class Form1 : Form
             : null;
     }
 
+    private void UpdateCellKindChoices(CellValue? cellValue)
+    {
+        if (cellValue is null)
+        {
+            _cellKindBox.DataSource = Array.Empty<CellValueKind>();
+            return;
+        }
+
+        CellValueKind allowedKind = CellValueKindRules.CoerceToAllowedKind(cellValue.Kind, cellValue.Text);
+        if (allowedKind != cellValue.Kind)
+        {
+            cellValue.Kind = allowedKind;
+        }
+
+        _cellKindBox.DataSource = CellValueKindRules.GetAllowedKinds(cellValue.Text).ToList();
+        _cellKindBox.SelectedItem = cellValue.Kind;
+    }
+
     private List<string> GetSelectedRowIds()
     {
         HashSet<int> selectedIndexes = _grid.SelectedCells
             .Cast<DataGridViewCell>()
-            .Where(cell => cell.RowIndex >= 0)
+            .Where(cell => IsDataGridRowIndex(cell.RowIndex))
             .Select(cell => cell.RowIndex)
             .ToHashSet();
 
         foreach (DataGridViewRow selectedRow in _grid.SelectedRows)
         {
-            selectedIndexes.Add(selectedRow.Index);
+            if (IsDataGridRowIndex(selectedRow.Index))
+            {
+                selectedIndexes.Add(selectedRow.Index);
+            }
         }
 
         return selectedIndexes
@@ -727,15 +1049,7 @@ public partial class Form1 : Form
         }
 
         SyncGridToModel();
-        List<string> selectedRowIds = GetSelectedRowIds();
-
-        if (selectedRowIds.Count == 0)
-        {
-            return _currentResultSet.Rows;
-        }
-
-        HashSet<string> selected = selectedRowIds.ToHashSet();
-        return _currentResultSet.Rows.Where(row => selected.Contains(row.Id)).ToList();
+        return _currentResultSet.Rows;
     }
 
     private void PreviewExport()
@@ -781,7 +1095,7 @@ public partial class Form1 : Form
     private void GridMouseDown(object? sender, MouseEventArgs e)
     {
         DataGridView.HitTestInfo hit = _grid.HitTest(e.X, e.Y);
-        _dragRowIndex = hit.RowIndex;
+        _dragRowIndex = IsDataGridRowIndex(hit.RowIndex) ? hit.RowIndex : -1;
         _dragStartPoint = e.Location;
     }
 
@@ -806,15 +1120,26 @@ public partial class Form1 : Form
 
     private void GridDragDrop(object? sender, DragEventArgs e)
     {
-        if (_currentResultSet is null || e.Data?.GetData(typeof(int)) is not int fromIndex)
+        if (_currentResultSet is null || e.Data?.GetData(typeof(int)) is not int fromGridIndex ||
+            !IsDataGridRowIndex(fromGridIndex))
         {
             return;
         }
 
         Point clientPoint = _grid.PointToClient(new Point(e.X, e.Y));
-        int toIndex = _grid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+        int toGridIndex = _grid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
 
-        if (toIndex < 0 || fromIndex == toIndex)
+        if (toGridIndex < 0 || toGridIndex == fromGridIndex)
+        {
+            return;
+        }
+
+        int fromIndex = GridRowIndexToModelIndex(fromGridIndex);
+        int toIndex = toGridIndex >= _grid.Rows.Count - 1
+            ? _currentResultSet.Rows.Count - 1
+            : Math.Clamp(GridRowIndexToModelIndex(toGridIndex), 0, _currentResultSet.Rows.Count - 1);
+
+        if (fromIndex == toIndex)
         {
             return;
         }
@@ -828,19 +1153,30 @@ public partial class Form1 : Form
 
     private void SelectGridRow(int rowIndex)
     {
-        if (rowIndex < 0 || rowIndex >= _grid.Rows.Count || _grid.Columns.Count == 0)
+        int gridRowIndex = rowIndex + 1;
+        int firstDataColumnIndex = _grid.Columns
+            .Cast<DataGridViewColumn>()
+            .Where(IsDataColumn)
+            .OrderBy(column => column.DisplayIndex)
+            .Select(column => column.Index)
+            .FirstOrDefault(-1);
+
+        if (gridRowIndex < 0 || gridRowIndex >= _grid.Rows.Count || firstDataColumnIndex < 0)
         {
             return;
         }
 
         _grid.ClearSelection();
-        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[0];
-        _grid.Rows[rowIndex].Selected = true;
+        _grid.CurrentCell = _grid.Rows[gridRowIndex].Cells[firstDataColumnIndex];
+        _grid.Rows[gridRowIndex].Selected = true;
     }
 
     private void SelectGridCell(int rowIndex, int columnIndex)
     {
-        if (rowIndex < 0 || rowIndex >= _grid.Rows.Count || columnIndex < 0 || columnIndex >= _grid.Columns.Count)
+        int gridRowIndex = rowIndex + 1;
+        int gridColumnIndex = columnIndex + 1;
+
+        if (gridRowIndex < 0 || gridRowIndex >= _grid.Rows.Count || gridColumnIndex < 0 || gridColumnIndex >= _grid.Columns.Count)
         {
             return;
         }

@@ -70,15 +70,18 @@
     <_BootstrapFile1 Include="1. 左側の `ワークスペース` で結果セットを選択します。" />
     <_BootstrapFile1 Include="2. `追加` で結果セットを追加します。" />
     <_BootstrapFile1 Include="3. 画面上部の `結果セット名` で名前を変更します。" />
-    <_BootstrapFile1 Include="4. `+ 行` / `- 行` で行を増減します。" />
-    <_BootstrapFile1 Include="5. `+ 列` / `- 列` で列を増減します。" />
-    <_BootstrapFile1 Include="6. グリッドのセルに値を入力します。" />
-    <_BootstrapFile1 Include="7. グリッド上部の `列名` で選択列の名前を変更します。" />
-    <_BootstrapFile1 Include="8. グリッド上部の `型` で選択セルの値型を指定します。" />
-    <_BootstrapFile1 Include="9. `プレビュー` で C# 出力内容を確認します。" />
-    <_BootstrapFile1 Include="10. `コピー` でプレビュー内容をクリップボードへコピーします。" />
-    <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。`↑ 行` / `↓ 行`、`← 列` / `→ 列` でも順序を変更できます。" />
-    <_BootstrapFile1 Include="行を選択して export すると、選択行だけが出力対象になります。未選択の場合は全行を出力します。" />
+    <_BootstrapFile1 Include="4. グリッド左端の `+` で行を追加します。" />
+    <_BootstrapFile1 Include="5. 各行の左端にある `-` で行を削除します。" />
+    <_BootstrapFile1 Include="6. グリッド右端の `+` で列を追加します。" />
+    <_BootstrapFile1 Include="7. グリッド最上段の各列にある `-` で列を削除します。" />
+    <_BootstrapFile1 Include="8. グリッドのセルに値を入力します。" />
+    <_BootstrapFile1 Include="9. グリッド上部の `列名` で選択列の名前を変更します。" />
+    <_BootstrapFile1 Include="10. グリッド上部の `型` で選択セルの値型を指定します。" />
+    <_BootstrapFile1 Include="11. `プレビュー` で C# 出力内容を確認します。" />
+    <_BootstrapFile1 Include="12. `コピー` でプレビュー内容をクリップボードへコピーします。" />
+    <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。" />
+    <_BootstrapFile1 Include="プレビューとコピーは常に現在の全レコードを出力します。セル入力中もプレビューは入力内容に追従します。" />
+    <_BootstrapFile1 Include="`型` の候補は入力値に応じて絞り込まれます。たとえば `01` のような文字列は数値型として選択できません。" />
     <_BootstrapFile1 Include="## 出力形式" />
     <_BootstrapFile1 Include="1 行のみの場合:" />
     <_BootstrapFile1 Include="```csharp" />
@@ -214,1105 +217,1500 @@
   </ItemGroup>
   <ItemGroup>
     <_BootstrapFile6 Include="using System.Globalization%3B" />
-    <_BootstrapFile6 Include="using System.Text%3B" />
     <_BootstrapFile6 Include="namespace TestDataCreater.Core%3B" />
-    <_BootstrapFile6 Include="public sealed class HashMapCSharpExporter" />
+    <_BootstrapFile6 Include="public static class CellValueKindRules" />
     <_BootstrapFile6 Include="{" />
-    <_BootstrapFile6 Include="    public string Export(ResultSet resultSet, IReadOnlyList&lt;ResultRow&gt;%3F rows = null, string variableName = &quot;data&quot;)" />
+    <_BootstrapFile6 Include="    public static IReadOnlyList&lt;CellValueKind&gt; GetAllowedKinds(string%3F text)" />
     <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        ArgumentNullException.ThrowIfNull(resultSet)%3B" />
-    <_BootstrapFile6 Include="        IReadOnlyList&lt;ResultRow&gt; exportRows = rows %3F%3F resultSet.Rows%3B" />
-    <_BootstrapFile6 Include="        return exportRows.Count switch" />
+    <_BootstrapFile6 Include="        string value = text%3F.Trim() %3F%3F &quot;&quot;%3B" />
+    <_BootstrapFile6 Include="        List&lt;CellValueKind&gt; kinds = [CellValueKind.String]%3B" />
+    <_BootstrapFile6 Include="        if (value.Length == 0)" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            0 =&gt; $&quot;var {variableName} = new HashMap&lt;HashMap&gt;()%3B&quot;," />
-    <_BootstrapFile6 Include="            1 =&gt; ExportSingleRow(resultSet, exportRows[0], variableName)," />
-    <_BootstrapFile6 Include="            _ =&gt; ExportMultipleRows(resultSet, exportRows, variableName)" />
-    <_BootstrapFile6 Include="        }%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ExportSingleRow(ResultSet resultSet, ResultRow row, string variableName)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        StringBuilder builder = new()%3B" />
-    <_BootstrapFile6 Include="        builder.AppendLine($&quot;var {variableName} = new HashMap&quot;)%3B" />
-    <_BootstrapFile6 Include="        builder.AppendLine(&quot;{&quot;)%3B" />
-    <_BootstrapFile6 Include="        AppendRowEntries(builder, resultSet, row, &quot;    &quot;)%3B" />
-    <_BootstrapFile6 Include="        builder.AppendLine(&quot;}%3B&quot;)%3B" />
-    <_BootstrapFile6 Include="        return builder.ToString()%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ExportMultipleRows(ResultSet resultSet, IReadOnlyList&lt;ResultRow&gt; rows, string variableName)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        StringBuilder builder = new()%3B" />
-    <_BootstrapFile6 Include="        builder.AppendLine($&quot;var {variableName} = new HashMap&lt;HashMap&gt;&quot;)%3B" />
-    <_BootstrapFile6 Include="        builder.AppendLine(&quot;{&quot;)%3B" />
-    <_BootstrapFile6 Include="        for (int index = 0%3B index &lt; rows.Count%3B index++)" />
-    <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            builder.AppendLine($&quot;    {{ {index}, new HashMap&quot;)%3B" />
-    <_BootstrapFile6 Include="            builder.AppendLine(&quot;        {&quot;)%3B" />
-    <_BootstrapFile6 Include="            AppendRowEntries(builder, resultSet, rows[index], &quot;            &quot;)%3B" />
-    <_BootstrapFile6 Include="            builder.AppendLine(&quot;        }&quot;)%3B" />
-    <_BootstrapFile6 Include="            builder.AppendLine(&quot;    },&quot;)%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Null)%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.DbNull)%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.CustomExpression)%3B" />
+    <_BootstrapFile6 Include="            return kinds%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        builder.AppendLine(&quot;}%3B&quot;)%3B" />
-    <_BootstrapFile6 Include="        return builder.ToString()%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static void AppendRowEntries(StringBuilder builder, ResultSet resultSet, ResultRow row, string indent)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        foreach (ResultColumn column in resultSet.Columns)" />
+    <_BootstrapFile6 Include="        if (IsCanonicalInteger(value, int.MinValue, int.MaxValue))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            CellValue value = row.GetCell(column.Id, column.DefaultKind)%3B" />
-    <_BootstrapFile6 Include="            builder.Append(indent)%3B" />
-    <_BootstrapFile6 Include="            builder.Append(&quot;{ &quot;)%3B" />
-    <_BootstrapFile6 Include="            builder.Append(ToStringLiteral(column.Name))%3B" />
-    <_BootstrapFile6 Include="            builder.Append(&quot;, &quot;)%3B" />
-    <_BootstrapFile6 Include="            builder.Append(ToCSharpLiteral(value))%3B" />
-    <_BootstrapFile6 Include="            builder.AppendLine(&quot; },&quot;)%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Int32)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToCSharpLiteral(CellValue value)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        string text = value.Text %3F%3F &quot;&quot;%3B" />
-    <_BootstrapFile6 Include="        return value.Kind switch" />
+    <_BootstrapFile6 Include="        if (IsCanonicalInteger(value, long.MinValue, long.MaxValue))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            CellValueKind.String =&gt; ToStringLiteral(text)," />
-    <_BootstrapFile6 Include="            CellValueKind.Int32 =&gt; string.IsNullOrWhiteSpace(text) %3F &quot;0&quot; : text.Trim()," />
-    <_BootstrapFile6 Include="            CellValueKind.Int64 =&gt; ToLongLiteral(text)," />
-    <_BootstrapFile6 Include="            CellValueKind.Decimal =&gt; ToDecimalLiteral(text)," />
-    <_BootstrapFile6 Include="            CellValueKind.Double =&gt; ToDoubleLiteral(text)," />
-    <_BootstrapFile6 Include="            CellValueKind.Boolean =&gt; ToBooleanLiteral(text)," />
-    <_BootstrapFile6 Include="            CellValueKind.DateTime =&gt; ToDateTimeLiteral(text)," />
-    <_BootstrapFile6 Include="            CellValueKind.Guid =&gt; string.IsNullOrWhiteSpace(text) %3F &quot;Guid.Empty&quot; : $&quot;Guid.Parse({ToStringLiteral(text.Trim())})&quot;," />
-    <_BootstrapFile6 Include="            CellValueKind.Null =&gt; &quot;null&quot;," />
-    <_BootstrapFile6 Include="            CellValueKind.DbNull =&gt; &quot;DBNull.Value&quot;," />
-    <_BootstrapFile6 Include="            CellValueKind.CustomExpression =&gt; string.IsNullOrWhiteSpace(text) %3F &quot;null&quot; : text.Trim()," />
-    <_BootstrapFile6 Include="            _ =&gt; ToStringLiteral(text)" />
-    <_BootstrapFile6 Include="        }%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToStringLiteral(string value)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        StringBuilder builder = new(value.Length + 2)%3B" />
-    <_BootstrapFile6 Include="        builder.Append('&quot;')%3B" />
-    <_BootstrapFile6 Include="        foreach (char c in value)" />
-    <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            builder.Append(c switch" />
-    <_BootstrapFile6 Include="            {" />
-    <_BootstrapFile6 Include="                '%5C%5C' =&gt; &quot;%5C%5C%5C%5C&quot;," />
-    <_BootstrapFile6 Include="                '&quot;' =&gt; &quot;%5C%5C%5C&quot;&quot;," />
-    <_BootstrapFile6 Include="                '%5Cr' =&gt; &quot;%5C%5Cr&quot;," />
-    <_BootstrapFile6 Include="                '%5Cn' =&gt; &quot;%5C%5Cn&quot;," />
-    <_BootstrapFile6 Include="                '%5Ct' =&gt; &quot;%5C%5Ct&quot;," />
-    <_BootstrapFile6 Include="                _ =&gt; c.ToString()" />
-    <_BootstrapFile6 Include="            })%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Int64)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        builder.Append('&quot;')%3B" />
-    <_BootstrapFile6 Include="        return builder.ToString()%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToLongLiteral(string text)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        string trimmed = text.Trim()%3B" />
-    <_BootstrapFile6 Include="        if (string.IsNullOrWhiteSpace(trimmed))" />
+    <_BootstrapFile6 Include="        if (IsCanonicalDecimal(value))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            return &quot;0L&quot;%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Decimal)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        return trimmed.EndsWith('L') || trimmed.EndsWith('l') %3F trimmed : $&quot;{trimmed}L&quot;%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToDecimalLiteral(string text)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        string trimmed = text.Trim()%3B" />
-    <_BootstrapFile6 Include="        if (string.IsNullOrWhiteSpace(trimmed))" />
+    <_BootstrapFile6 Include="        if (IsCanonicalDouble(value))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            return &quot;0m&quot;%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Double)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        return trimmed.EndsWith('M') || trimmed.EndsWith('m') %3F trimmed : $&quot;{trimmed}m&quot;%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToDoubleLiteral(string text)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        string trimmed = text.Trim()%3B" />
-    <_BootstrapFile6 Include="        if (string.IsNullOrWhiteSpace(trimmed))" />
+    <_BootstrapFile6 Include="        if (bool.TryParse(value, out _))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            return &quot;0d&quot;%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Boolean)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        char last = trimmed[^1]%3B" />
-    <_BootstrapFile6 Include="        return last is 'D' or 'd' or 'F' or 'f' %3F trimmed : $&quot;{trimmed}d&quot;%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToBooleanLiteral(string text)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        return bool.TryParse(text, out bool value)" />
-    <_BootstrapFile6 Include="            %3F value.ToString().ToLowerInvariant()" />
-    <_BootstrapFile6 Include="            : text.Trim()%3B" />
-    <_BootstrapFile6 Include="    }" />
-    <_BootstrapFile6 Include="    private static string ToDateTimeLiteral(string text)" />
-    <_BootstrapFile6 Include="    {" />
-    <_BootstrapFile6 Include="        if (string.IsNullOrWhiteSpace(text))" />
+    <_BootstrapFile6 Include="        if (!LooksLikePlainNumber(value) &amp;&amp;" />
+    <_BootstrapFile6 Include="            DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            return &quot;default(DateTime)&quot;%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.DateTime)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        if (DateTime.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime) ||" />
-    <_BootstrapFile6 Include="            DateTime.TryParse(text, CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTime))" />
+    <_BootstrapFile6 Include="        if (Guid.TryParse(value, out _))" />
     <_BootstrapFile6 Include="        {" />
-    <_BootstrapFile6 Include="            return dateTime.Millisecond == 0" />
-    <_BootstrapFile6 Include="                %3F $&quot;new DateTime({dateTime.Year}, {dateTime.Month}, {dateTime.Day}, {dateTime.Hour}, {dateTime.Minute}, {dateTime.Second})&quot;" />
-    <_BootstrapFile6 Include="                : $&quot;new DateTime({dateTime.Year}, {dateTime.Month}, {dateTime.Day}, {dateTime.Hour}, {dateTime.Minute}, {dateTime.Second}, {dateTime.Millisecond})&quot;%3B" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Guid)%3B" />
     <_BootstrapFile6 Include="        }" />
-    <_BootstrapFile6 Include="        return $&quot;DateTime.Parse({ToStringLiteral(text.Trim())})&quot;%3B" />
+    <_BootstrapFile6 Include="        if (value.Equals(&quot;null&quot;, StringComparison.OrdinalIgnoreCase))" />
+    <_BootstrapFile6 Include="        {" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.Null)%3B" />
+    <_BootstrapFile6 Include="        }" />
+    <_BootstrapFile6 Include="        if (value.Equals(&quot;DBNull.Value&quot;, StringComparison.Ordinal))" />
+    <_BootstrapFile6 Include="        {" />
+    <_BootstrapFile6 Include="            kinds.Add(CellValueKind.DbNull)%3B" />
+    <_BootstrapFile6 Include="        }" />
+    <_BootstrapFile6 Include="        kinds.Add(CellValueKind.CustomExpression)%3B" />
+    <_BootstrapFile6 Include="        return kinds%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    public static CellValueKind CoerceToAllowedKind(CellValueKind requestedKind, string%3F text)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        IReadOnlyList&lt;CellValueKind&gt; allowedKinds = GetAllowedKinds(text)%3B" />
+    <_BootstrapFile6 Include="        return allowedKinds.Contains(requestedKind) %3F requestedKind : CellValueKind.String%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    private static bool IsCanonicalInteger(string value, long min, long max)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        if (!long.TryParse(value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out long parsed))" />
+    <_BootstrapFile6 Include="        {" />
+    <_BootstrapFile6 Include="            return false%3B" />
+    <_BootstrapFile6 Include="        }" />
+    <_BootstrapFile6 Include="        return parsed &gt;= min &amp;&amp; parsed &lt;= max &amp;&amp; IsCanonicalIntegerText(value)%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    private static bool IsCanonicalIntegerText(string value)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        string unsigned = value.StartsWith(&quot;-&quot;, StringComparison.Ordinal) || value.StartsWith(&quot;+&quot;, StringComparison.Ordinal)" />
+    <_BootstrapFile6 Include="            %3F value[1..]" />
+    <_BootstrapFile6 Include="            : value%3B" />
+    <_BootstrapFile6 Include="        if (unsigned.Length == 0)" />
+    <_BootstrapFile6 Include="        {" />
+    <_BootstrapFile6 Include="            return false%3B" />
+    <_BootstrapFile6 Include="        }" />
+    <_BootstrapFile6 Include="        return unsigned.Length == 1 || !unsigned.StartsWith('0')%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    private static bool IsCanonicalDecimal(string value)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        return decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out _) &amp;&amp;" />
+    <_BootstrapFile6 Include="            HasCanonicalIntegerPart(value)%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    private static bool IsCanonicalDouble(string value)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double parsed) &amp;&amp;" />
+    <_BootstrapFile6 Include="            !double.IsNaN(parsed) &amp;&amp;" />
+    <_BootstrapFile6 Include="            !double.IsInfinity(parsed) &amp;&amp;" />
+    <_BootstrapFile6 Include="            HasCanonicalIntegerPart(value)%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    private static bool HasCanonicalIntegerPart(string value)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        string unsigned = value.StartsWith(&quot;-&quot;, StringComparison.Ordinal) || value.StartsWith(&quot;+&quot;, StringComparison.Ordinal)" />
+    <_BootstrapFile6 Include="            %3F value[1..]" />
+    <_BootstrapFile6 Include="            : value%3B" />
+    <_BootstrapFile6 Include="        int decimalIndex = unsigned.IndexOf('.')%3B" />
+    <_BootstrapFile6 Include="        int exponentIndex = unsigned.IndexOfAny(['e', 'E'])%3B" />
+    <_BootstrapFile6 Include="        int endIndex = new[] { decimalIndex, exponentIndex }" />
+    <_BootstrapFile6 Include="            .Where(index =&gt; index &gt;= 0)" />
+    <_BootstrapFile6 Include="            .DefaultIfEmpty(unsigned.Length)" />
+    <_BootstrapFile6 Include="            .Min()%3B" />
+    <_BootstrapFile6 Include="        string integerPart = unsigned[..endIndex]%3B" />
+    <_BootstrapFile6 Include="        return integerPart.Length == 1 || !integerPart.StartsWith('0')%3B" />
+    <_BootstrapFile6 Include="    }" />
+    <_BootstrapFile6 Include="    private static bool LooksLikePlainNumber(string value)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _)%3B" />
     <_BootstrapFile6 Include="    }" />
     <_BootstrapFile6 Include="}" />
   </ItemGroup>
   <ItemGroup>
+    <_BootstrapFile7 Include="using System.Globalization%3B" />
+    <_BootstrapFile7 Include="using System.Text%3B" />
     <_BootstrapFile7 Include="namespace TestDataCreater.Core%3B" />
-    <_BootstrapFile7 Include="public sealed class ResultColumn" />
+    <_BootstrapFile7 Include="public sealed class HashMapCSharpExporter" />
     <_BootstrapFile7 Include="{" />
-    <_BootstrapFile7 Include="    public string Id { get%3B set%3B } = CreateId()%3B" />
-    <_BootstrapFile7 Include="    public string Name { get%3B set%3B } = &quot;Column&quot;%3B" />
-    <_BootstrapFile7 Include="    public CellValueKind DefaultKind { get%3B set%3B } = CellValueKind.String%3B" />
-    <_BootstrapFile7 Include="    internal static string CreateId()" />
+    <_BootstrapFile7 Include="    public string Export(ResultSet resultSet, IReadOnlyList&lt;ResultRow&gt;%3F rows = null, string variableName = &quot;data&quot;)" />
     <_BootstrapFile7 Include="    {" />
-    <_BootstrapFile7 Include="        return Guid.NewGuid().ToString(&quot;N&quot;)%3B" />
+    <_BootstrapFile7 Include="        ArgumentNullException.ThrowIfNull(resultSet)%3B" />
+    <_BootstrapFile7 Include="        IReadOnlyList&lt;ResultRow&gt; exportRows = rows %3F%3F resultSet.Rows%3B" />
+    <_BootstrapFile7 Include="        return exportRows.Count switch" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            0 =&gt; $&quot;var {variableName} = new HashMap&lt;HashMap&gt;()%3B&quot;," />
+    <_BootstrapFile7 Include="            1 =&gt; ExportSingleRow(resultSet, exportRows[0], variableName)," />
+    <_BootstrapFile7 Include="            _ =&gt; ExportMultipleRows(resultSet, exportRows, variableName)" />
+    <_BootstrapFile7 Include="        }%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ExportSingleRow(ResultSet resultSet, ResultRow row, string variableName)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        StringBuilder builder = new()%3B" />
+    <_BootstrapFile7 Include="        builder.AppendLine($&quot;var {variableName} = new HashMap&quot;)%3B" />
+    <_BootstrapFile7 Include="        builder.AppendLine(&quot;{&quot;)%3B" />
+    <_BootstrapFile7 Include="        AppendRowEntries(builder, resultSet, row, &quot;    &quot;)%3B" />
+    <_BootstrapFile7 Include="        builder.AppendLine(&quot;}%3B&quot;)%3B" />
+    <_BootstrapFile7 Include="        return builder.ToString()%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ExportMultipleRows(ResultSet resultSet, IReadOnlyList&lt;ResultRow&gt; rows, string variableName)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        StringBuilder builder = new()%3B" />
+    <_BootstrapFile7 Include="        builder.AppendLine($&quot;var {variableName} = new HashMap&lt;HashMap&gt;&quot;)%3B" />
+    <_BootstrapFile7 Include="        builder.AppendLine(&quot;{&quot;)%3B" />
+    <_BootstrapFile7 Include="        for (int index = 0%3B index &lt; rows.Count%3B index++)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            builder.AppendLine($&quot;    {{ {index}, new HashMap&quot;)%3B" />
+    <_BootstrapFile7 Include="            builder.AppendLine(&quot;        {&quot;)%3B" />
+    <_BootstrapFile7 Include="            AppendRowEntries(builder, resultSet, rows[index], &quot;            &quot;)%3B" />
+    <_BootstrapFile7 Include="            builder.AppendLine(&quot;        }&quot;)%3B" />
+    <_BootstrapFile7 Include="            builder.AppendLine(&quot;    },&quot;)%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        builder.AppendLine(&quot;}%3B&quot;)%3B" />
+    <_BootstrapFile7 Include="        return builder.ToString()%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static void AppendRowEntries(StringBuilder builder, ResultSet resultSet, ResultRow row, string indent)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        foreach (ResultColumn column in resultSet.Columns)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            CellValue value = row.GetCell(column.Id, column.DefaultKind)%3B" />
+    <_BootstrapFile7 Include="            builder.Append(indent)%3B" />
+    <_BootstrapFile7 Include="            builder.Append(&quot;{ &quot;)%3B" />
+    <_BootstrapFile7 Include="            builder.Append(ToStringLiteral(column.Name))%3B" />
+    <_BootstrapFile7 Include="            builder.Append(&quot;, &quot;)%3B" />
+    <_BootstrapFile7 Include="            builder.Append(ToCSharpLiteral(value))%3B" />
+    <_BootstrapFile7 Include="            builder.AppendLine(&quot; },&quot;)%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToCSharpLiteral(CellValue value)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        string text = value.Text %3F%3F &quot;&quot;%3B" />
+    <_BootstrapFile7 Include="        return value.Kind switch" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            CellValueKind.String =&gt; ToStringLiteral(text)," />
+    <_BootstrapFile7 Include="            CellValueKind.Int32 =&gt; string.IsNullOrWhiteSpace(text) %3F &quot;0&quot; : text.Trim()," />
+    <_BootstrapFile7 Include="            CellValueKind.Int64 =&gt; ToLongLiteral(text)," />
+    <_BootstrapFile7 Include="            CellValueKind.Decimal =&gt; ToDecimalLiteral(text)," />
+    <_BootstrapFile7 Include="            CellValueKind.Double =&gt; ToDoubleLiteral(text)," />
+    <_BootstrapFile7 Include="            CellValueKind.Boolean =&gt; ToBooleanLiteral(text)," />
+    <_BootstrapFile7 Include="            CellValueKind.DateTime =&gt; ToDateTimeLiteral(text)," />
+    <_BootstrapFile7 Include="            CellValueKind.Guid =&gt; string.IsNullOrWhiteSpace(text) %3F &quot;Guid.Empty&quot; : $&quot;Guid.Parse({ToStringLiteral(text.Trim())})&quot;," />
+    <_BootstrapFile7 Include="            CellValueKind.Null =&gt; &quot;null&quot;," />
+    <_BootstrapFile7 Include="            CellValueKind.DbNull =&gt; &quot;DBNull.Value&quot;," />
+    <_BootstrapFile7 Include="            CellValueKind.CustomExpression =&gt; string.IsNullOrWhiteSpace(text) %3F &quot;null&quot; : text.Trim()," />
+    <_BootstrapFile7 Include="            _ =&gt; ToStringLiteral(text)" />
+    <_BootstrapFile7 Include="        }%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToStringLiteral(string value)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        StringBuilder builder = new(value.Length + 2)%3B" />
+    <_BootstrapFile7 Include="        builder.Append('&quot;')%3B" />
+    <_BootstrapFile7 Include="        foreach (char c in value)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            builder.Append(c switch" />
+    <_BootstrapFile7 Include="            {" />
+    <_BootstrapFile7 Include="                '%5C%5C' =&gt; &quot;%5C%5C%5C%5C&quot;," />
+    <_BootstrapFile7 Include="                '&quot;' =&gt; &quot;%5C%5C%5C&quot;&quot;," />
+    <_BootstrapFile7 Include="                '%5Cr' =&gt; &quot;%5C%5Cr&quot;," />
+    <_BootstrapFile7 Include="                '%5Cn' =&gt; &quot;%5C%5Cn&quot;," />
+    <_BootstrapFile7 Include="                '%5Ct' =&gt; &quot;%5C%5Ct&quot;," />
+    <_BootstrapFile7 Include="                _ =&gt; c.ToString()" />
+    <_BootstrapFile7 Include="            })%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        builder.Append('&quot;')%3B" />
+    <_BootstrapFile7 Include="        return builder.ToString()%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToLongLiteral(string text)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        string trimmed = text.Trim()%3B" />
+    <_BootstrapFile7 Include="        if (string.IsNullOrWhiteSpace(trimmed))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;0L&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        return trimmed.EndsWith('L') || trimmed.EndsWith('l') %3F trimmed : $&quot;{trimmed}L&quot;%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToDecimalLiteral(string text)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        string trimmed = text.Trim()%3B" />
+    <_BootstrapFile7 Include="        if (string.IsNullOrWhiteSpace(trimmed))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;0m&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        return trimmed.EndsWith('M') || trimmed.EndsWith('m') %3F trimmed : $&quot;{trimmed}m&quot;%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToDoubleLiteral(string text)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        string trimmed = text.Trim()%3B" />
+    <_BootstrapFile7 Include="        if (string.IsNullOrWhiteSpace(trimmed))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;0d&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        char last = trimmed[^1]%3B" />
+    <_BootstrapFile7 Include="        return last is 'D' or 'd' or 'F' or 'f' %3F trimmed : $&quot;{trimmed}d&quot;%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToBooleanLiteral(string text)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        return bool.TryParse(text, out bool value)" />
+    <_BootstrapFile7 Include="            %3F value.ToString().ToLowerInvariant()" />
+    <_BootstrapFile7 Include="            : text.Trim()%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToDateTimeLiteral(string text)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        if (string.IsNullOrWhiteSpace(text))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;default(DateTime)&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        if (DateTime.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime) ||" />
+    <_BootstrapFile7 Include="            DateTime.TryParse(text, CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTime))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return dateTime.Millisecond == 0" />
+    <_BootstrapFile7 Include="                %3F $&quot;new DateTime({dateTime.Year}, {dateTime.Month}, {dateTime.Day}, {dateTime.Hour}, {dateTime.Minute}, {dateTime.Second})&quot;" />
+    <_BootstrapFile7 Include="                : $&quot;new DateTime({dateTime.Year}, {dateTime.Month}, {dateTime.Day}, {dateTime.Hour}, {dateTime.Minute}, {dateTime.Second}, {dateTime.Millisecond})&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        return $&quot;DateTime.Parse({ToStringLiteral(text.Trim())})&quot;%3B" />
     <_BootstrapFile7 Include="    }" />
     <_BootstrapFile7 Include="}" />
   </ItemGroup>
   <ItemGroup>
     <_BootstrapFile8 Include="namespace TestDataCreater.Core%3B" />
-    <_BootstrapFile8 Include="public sealed class ResultRow" />
+    <_BootstrapFile8 Include="public sealed class ResultColumn" />
     <_BootstrapFile8 Include="{" />
-    <_BootstrapFile8 Include="    public string Id { get%3B set%3B } = ResultColumn.CreateId()%3B" />
-    <_BootstrapFile8 Include="    public Dictionary&lt;string, CellValue&gt; Cells { get%3B set%3B } = []%3B" />
-    <_BootstrapFile8 Include="    public void SetCell(string columnId, CellValue value)" />
+    <_BootstrapFile8 Include="    public string Id { get%3B set%3B } = CreateId()%3B" />
+    <_BootstrapFile8 Include="    public string Name { get%3B set%3B } = &quot;Column&quot;%3B" />
+    <_BootstrapFile8 Include="    public CellValueKind DefaultKind { get%3B set%3B } = CellValueKind.String%3B" />
+    <_BootstrapFile8 Include="    internal static string CreateId()" />
     <_BootstrapFile8 Include="    {" />
-    <_BootstrapFile8 Include="        Cells[columnId] = value%3B" />
-    <_BootstrapFile8 Include="    }" />
-    <_BootstrapFile8 Include="    public CellValue GetCell(string columnId, CellValueKind defaultKind = CellValueKind.String)" />
-    <_BootstrapFile8 Include="    {" />
-    <_BootstrapFile8 Include="        if (!Cells.TryGetValue(columnId, out CellValue%3F value))" />
-    <_BootstrapFile8 Include="        {" />
-    <_BootstrapFile8 Include="            value = new CellValue(defaultKind)%3B" />
-    <_BootstrapFile8 Include="            Cells[columnId] = value%3B" />
-    <_BootstrapFile8 Include="        }" />
-    <_BootstrapFile8 Include="        return value%3B" />
+    <_BootstrapFile8 Include="        return Guid.NewGuid().ToString(&quot;N&quot;)%3B" />
     <_BootstrapFile8 Include="    }" />
     <_BootstrapFile8 Include="}" />
   </ItemGroup>
   <ItemGroup>
     <_BootstrapFile9 Include="namespace TestDataCreater.Core%3B" />
-    <_BootstrapFile9 Include="public sealed class ResultSet" />
+    <_BootstrapFile9 Include="public sealed class ResultRow" />
     <_BootstrapFile9 Include="{" />
-    <_BootstrapFile9 Include="    public ResultSet()" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public ResultSet(string name)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        Name = name%3B" />
-    <_BootstrapFile9 Include="    }" />
     <_BootstrapFile9 Include="    public string Id { get%3B set%3B } = ResultColumn.CreateId()%3B" />
-    <_BootstrapFile9 Include="    public string Name { get%3B set%3B } = &quot;Result Set&quot;%3B" />
-    <_BootstrapFile9 Include="    public List&lt;ResultColumn&gt; Columns { get%3B set%3B } = []%3B" />
-    <_BootstrapFile9 Include="    public List&lt;ResultRow&gt; Rows { get%3B set%3B } = []%3B" />
-    <_BootstrapFile9 Include="    public ResultColumn AddColumn(string name, CellValueKind defaultKind = CellValueKind.String, string%3F id = null)" />
+    <_BootstrapFile9 Include="    public Dictionary&lt;string, CellValue&gt; Cells { get%3B set%3B } = []%3B" />
+    <_BootstrapFile9 Include="    public void SetCell(string columnId, CellValue value)" />
     <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        ResultColumn column = new()" />
+    <_BootstrapFile9 Include="        Cells[columnId] = value%3B" />
+    <_BootstrapFile9 Include="    }" />
+    <_BootstrapFile9 Include="    public CellValue GetCell(string columnId, CellValueKind defaultKind = CellValueKind.String)" />
+    <_BootstrapFile9 Include="    {" />
+    <_BootstrapFile9 Include="        if (!Cells.TryGetValue(columnId, out CellValue%3F value))" />
     <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            Id = string.IsNullOrWhiteSpace(id) %3F ResultColumn.CreateId() : id," />
-    <_BootstrapFile9 Include="            Name = name," />
-    <_BootstrapFile9 Include="            DefaultKind = defaultKind" />
-    <_BootstrapFile9 Include="        }%3B" />
-    <_BootstrapFile9 Include="        Columns.Add(column)%3B" />
-    <_BootstrapFile9 Include="        foreach (ResultRow row in Rows)" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            row.SetCell(column.Id, new CellValue(defaultKind))%3B" />
+    <_BootstrapFile9 Include="            value = new CellValue(defaultKind)%3B" />
+    <_BootstrapFile9 Include="            Cells[columnId] = value%3B" />
     <_BootstrapFile9 Include="        }" />
-    <_BootstrapFile9 Include="        return column%3B" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public void RemoveColumn(string columnId)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        Columns.RemoveAll(column =&gt; column.Id == columnId)%3B" />
-    <_BootstrapFile9 Include="        foreach (ResultRow row in Rows)" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            row.Cells.Remove(columnId)%3B" />
-    <_BootstrapFile9 Include="        }" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public void MoveColumn(int fromIndex, int toIndex)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        Move(Columns, fromIndex, toIndex)%3B" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public ResultRow AddRow(string%3F id = null)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        ResultRow row = new()" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            Id = string.IsNullOrWhiteSpace(id) %3F ResultColumn.CreateId() : id" />
-    <_BootstrapFile9 Include="        }%3B" />
-    <_BootstrapFile9 Include="        foreach (ResultColumn column in Columns)" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            row.SetCell(column.Id, new CellValue(column.DefaultKind))%3B" />
-    <_BootstrapFile9 Include="        }" />
-    <_BootstrapFile9 Include="        Rows.Add(row)%3B" />
-    <_BootstrapFile9 Include="        return row%3B" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public void RemoveRow(string rowId)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        Rows.RemoveAll(row =&gt; row.Id == rowId)%3B" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public void MoveRow(int fromIndex, int toIndex)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        Move(Rows, fromIndex, toIndex)%3B" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    public override string ToString()" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        return Name%3B" />
-    <_BootstrapFile9 Include="    }" />
-    <_BootstrapFile9 Include="    private static void Move&lt;T&gt;(IList&lt;T&gt; items, int fromIndex, int toIndex)" />
-    <_BootstrapFile9 Include="    {" />
-    <_BootstrapFile9 Include="        if (fromIndex &lt; 0 || fromIndex &gt;= items.Count)" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            throw new ArgumentOutOfRangeException(nameof(fromIndex))%3B" />
-    <_BootstrapFile9 Include="        }" />
-    <_BootstrapFile9 Include="        if (toIndex &lt; 0 || toIndex &gt;= items.Count)" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            throw new ArgumentOutOfRangeException(nameof(toIndex))%3B" />
-    <_BootstrapFile9 Include="        }" />
-    <_BootstrapFile9 Include="        if (fromIndex == toIndex)" />
-    <_BootstrapFile9 Include="        {" />
-    <_BootstrapFile9 Include="            return%3B" />
-    <_BootstrapFile9 Include="        }" />
-    <_BootstrapFile9 Include="        T item = items[fromIndex]%3B" />
-    <_BootstrapFile9 Include="        items.RemoveAt(fromIndex)%3B" />
-    <_BootstrapFile9 Include="        items.Insert(toIndex, item)%3B" />
+    <_BootstrapFile9 Include="        return value%3B" />
     <_BootstrapFile9 Include="    }" />
     <_BootstrapFile9 Include="}" />
   </ItemGroup>
   <ItemGroup>
     <_BootstrapFile10 Include="namespace TestDataCreater.Core%3B" />
-    <_BootstrapFile10 Include="public sealed class WorkspaceDocument" />
+    <_BootstrapFile10 Include="public sealed class ResultSet" />
     <_BootstrapFile10 Include="{" />
-    <_BootstrapFile10 Include="    public string%3F ActiveResultSetId { get%3B set%3B }" />
-    <_BootstrapFile10 Include="    public List&lt;ResultSet&gt; ResultSets { get%3B set%3B } = []%3B" />
-    <_BootstrapFile10 Include="    public static WorkspaceDocument CreateDefault()" />
+    <_BootstrapFile10 Include="    public ResultSet()" />
     <_BootstrapFile10 Include="    {" />
-    <_BootstrapFile10 Include="        ResultSet resultSet = new(&quot;Default&quot;)%3B" />
-    <_BootstrapFile10 Include="        resultSet.AddColumn(&quot;COLUMN1&quot;)%3B" />
-    <_BootstrapFile10 Include="        resultSet.AddRow()%3B" />
-    <_BootstrapFile10 Include="        return new WorkspaceDocument" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public ResultSet(string name)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        Name = name%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public string Id { get%3B set%3B } = ResultColumn.CreateId()%3B" />
+    <_BootstrapFile10 Include="    public string Name { get%3B set%3B } = &quot;Result Set&quot;%3B" />
+    <_BootstrapFile10 Include="    public List&lt;ResultColumn&gt; Columns { get%3B set%3B } = []%3B" />
+    <_BootstrapFile10 Include="    public List&lt;ResultRow&gt; Rows { get%3B set%3B } = []%3B" />
+    <_BootstrapFile10 Include="    public ResultColumn AddColumn(string name, CellValueKind defaultKind = CellValueKind.String, string%3F id = null)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        ResultColumn column = new()" />
     <_BootstrapFile10 Include="        {" />
-    <_BootstrapFile10 Include="            ActiveResultSetId = resultSet.Id," />
-    <_BootstrapFile10 Include="            ResultSets = [resultSet]" />
+    <_BootstrapFile10 Include="            Id = string.IsNullOrWhiteSpace(id) %3F ResultColumn.CreateId() : id," />
+    <_BootstrapFile10 Include="            Name = name," />
+    <_BootstrapFile10 Include="            DefaultKind = defaultKind" />
     <_BootstrapFile10 Include="        }%3B" />
+    <_BootstrapFile10 Include="        Columns.Add(column)%3B" />
+    <_BootstrapFile10 Include="        foreach (ResultRow row in Rows)" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            row.SetCell(column.Id, new CellValue(defaultKind))%3B" />
+    <_BootstrapFile10 Include="        }" />
+    <_BootstrapFile10 Include="        return column%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public void RemoveColumn(string columnId)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        Columns.RemoveAll(column =&gt; column.Id == columnId)%3B" />
+    <_BootstrapFile10 Include="        foreach (ResultRow row in Rows)" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            row.Cells.Remove(columnId)%3B" />
+    <_BootstrapFile10 Include="        }" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public void MoveColumn(int fromIndex, int toIndex)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        Move(Columns, fromIndex, toIndex)%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public ResultRow AddRow(string%3F id = null)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        ResultRow row = new()" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            Id = string.IsNullOrWhiteSpace(id) %3F ResultColumn.CreateId() : id" />
+    <_BootstrapFile10 Include="        }%3B" />
+    <_BootstrapFile10 Include="        foreach (ResultColumn column in Columns)" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            row.SetCell(column.Id, new CellValue(column.DefaultKind))%3B" />
+    <_BootstrapFile10 Include="        }" />
+    <_BootstrapFile10 Include="        Rows.Add(row)%3B" />
+    <_BootstrapFile10 Include="        return row%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public void RemoveRow(string rowId)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        Rows.RemoveAll(row =&gt; row.Id == rowId)%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public void MoveRow(int fromIndex, int toIndex)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        Move(Rows, fromIndex, toIndex)%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public override string ToString()" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        return Name%3B" />
+    <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    private static void Move&lt;T&gt;(IList&lt;T&gt; items, int fromIndex, int toIndex)" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        if (fromIndex &lt; 0 || fromIndex &gt;= items.Count)" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            throw new ArgumentOutOfRangeException(nameof(fromIndex))%3B" />
+    <_BootstrapFile10 Include="        }" />
+    <_BootstrapFile10 Include="        if (toIndex &lt; 0 || toIndex &gt;= items.Count)" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            throw new ArgumentOutOfRangeException(nameof(toIndex))%3B" />
+    <_BootstrapFile10 Include="        }" />
+    <_BootstrapFile10 Include="        if (fromIndex == toIndex)" />
+    <_BootstrapFile10 Include="        {" />
+    <_BootstrapFile10 Include="            return%3B" />
+    <_BootstrapFile10 Include="        }" />
+    <_BootstrapFile10 Include="        T item = items[fromIndex]%3B" />
+    <_BootstrapFile10 Include="        items.RemoveAt(fromIndex)%3B" />
+    <_BootstrapFile10 Include="        items.Insert(toIndex, item)%3B" />
     <_BootstrapFile10 Include="    }" />
     <_BootstrapFile10 Include="}" />
   </ItemGroup>
   <ItemGroup>
-    <_BootstrapFile11 Include="using System.Text.Json%3B" />
     <_BootstrapFile11 Include="namespace TestDataCreater.Core%3B" />
-    <_BootstrapFile11 Include="public sealed class WorkspaceStore" />
+    <_BootstrapFile11 Include="public sealed class WorkspaceDocument" />
     <_BootstrapFile11 Include="{" />
-    <_BootstrapFile11 Include="    private static readonly JsonSerializerOptions Options = new()" />
+    <_BootstrapFile11 Include="    public string%3F ActiveResultSetId { get%3B set%3B }" />
+    <_BootstrapFile11 Include="    public List&lt;ResultSet&gt; ResultSets { get%3B set%3B } = []%3B" />
+    <_BootstrapFile11 Include="    public static WorkspaceDocument CreateDefault()" />
     <_BootstrapFile11 Include="    {" />
-    <_BootstrapFile11 Include="        WriteIndented = true" />
-    <_BootstrapFile11 Include="    }%3B" />
-    <_BootstrapFile11 Include="    public WorkspaceDocument Load(string path)" />
-    <_BootstrapFile11 Include="    {" />
-    <_BootstrapFile11 Include="        if (!File.Exists(path))" />
+    <_BootstrapFile11 Include="        ResultSet resultSet = new(&quot;Default&quot;)%3B" />
+    <_BootstrapFile11 Include="        resultSet.AddColumn(&quot;COLUMN1&quot;)%3B" />
+    <_BootstrapFile11 Include="        resultSet.AddRow()%3B" />
+    <_BootstrapFile11 Include="        return new WorkspaceDocument" />
     <_BootstrapFile11 Include="        {" />
-    <_BootstrapFile11 Include="            return WorkspaceDocument.CreateDefault()%3B" />
-    <_BootstrapFile11 Include="        }" />
-    <_BootstrapFile11 Include="        string json = File.ReadAllText(path)%3B" />
-    <_BootstrapFile11 Include="        WorkspaceDocument%3F document = JsonSerializer.Deserialize&lt;WorkspaceDocument&gt;(json, Options)%3B" />
-    <_BootstrapFile11 Include="        return document is null || document.ResultSets.Count == 0 %3F WorkspaceDocument.CreateDefault() : document%3B" />
-    <_BootstrapFile11 Include="    }" />
-    <_BootstrapFile11 Include="    public void Save(string path, WorkspaceDocument document)" />
-    <_BootstrapFile11 Include="    {" />
-    <_BootstrapFile11 Include="        ArgumentNullException.ThrowIfNull(document)%3B" />
-    <_BootstrapFile11 Include="        string%3F directory = Path.GetDirectoryName(path)%3B" />
-    <_BootstrapFile11 Include="        if (!string.IsNullOrWhiteSpace(directory))" />
-    <_BootstrapFile11 Include="        {" />
-    <_BootstrapFile11 Include="            Directory.CreateDirectory(directory)%3B" />
-    <_BootstrapFile11 Include="        }" />
-    <_BootstrapFile11 Include="        string json = JsonSerializer.Serialize(document, Options)%3B" />
-    <_BootstrapFile11 Include="        File.WriteAllText(path, json)%3B" />
+    <_BootstrapFile11 Include="            ActiveResultSetId = resultSet.Id," />
+    <_BootstrapFile11 Include="            ResultSets = [resultSet]" />
+    <_BootstrapFile11 Include="        }%3B" />
     <_BootstrapFile11 Include="    }" />
     <_BootstrapFile11 Include="}" />
   </ItemGroup>
   <ItemGroup>
-    <_BootstrapFile12 Include="&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;" />
-    <_BootstrapFile12 Include="  &lt;ItemGroup&gt;" />
-    <_BootstrapFile12 Include="    &lt;ProjectReference Include=&quot;..%5CTestDataCreater.Core%5CTestDataCreater.Core.csproj&quot; /&gt;" />
-    <_BootstrapFile12 Include="  &lt;/ItemGroup&gt;" />
-    <_BootstrapFile12 Include="  &lt;PropertyGroup&gt;" />
-    <_BootstrapFile12 Include="    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;" />
-    <_BootstrapFile12 Include="    &lt;TargetFramework&gt;net9.0-windows&lt;/TargetFramework&gt;" />
-    <_BootstrapFile12 Include="    &lt;Nullable&gt;enable&lt;/Nullable&gt;" />
-    <_BootstrapFile12 Include="    &lt;UseWindowsForms&gt;true&lt;/UseWindowsForms&gt;" />
-    <_BootstrapFile12 Include="    &lt;EnableWindowsTargeting&gt;true&lt;/EnableWindowsTargeting&gt;" />
-    <_BootstrapFile12 Include="    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;" />
-    <_BootstrapFile12 Include="  &lt;/PropertyGroup&gt;" />
-    <_BootstrapFile12 Include="&lt;/Project&gt;" />
+    <_BootstrapFile12 Include="using System.Text.Json%3B" />
+    <_BootstrapFile12 Include="namespace TestDataCreater.Core%3B" />
+    <_BootstrapFile12 Include="public sealed class WorkspaceStore" />
+    <_BootstrapFile12 Include="{" />
+    <_BootstrapFile12 Include="    private static readonly JsonSerializerOptions Options = new()" />
+    <_BootstrapFile12 Include="    {" />
+    <_BootstrapFile12 Include="        WriteIndented = true" />
+    <_BootstrapFile12 Include="    }%3B" />
+    <_BootstrapFile12 Include="    public WorkspaceDocument Load(string path)" />
+    <_BootstrapFile12 Include="    {" />
+    <_BootstrapFile12 Include="        if (!File.Exists(path))" />
+    <_BootstrapFile12 Include="        {" />
+    <_BootstrapFile12 Include="            return WorkspaceDocument.CreateDefault()%3B" />
+    <_BootstrapFile12 Include="        }" />
+    <_BootstrapFile12 Include="        string json = File.ReadAllText(path)%3B" />
+    <_BootstrapFile12 Include="        WorkspaceDocument%3F document = JsonSerializer.Deserialize&lt;WorkspaceDocument&gt;(json, Options)%3B" />
+    <_BootstrapFile12 Include="        return document is null || document.ResultSets.Count == 0 %3F WorkspaceDocument.CreateDefault() : document%3B" />
+    <_BootstrapFile12 Include="    }" />
+    <_BootstrapFile12 Include="    public void Save(string path, WorkspaceDocument document)" />
+    <_BootstrapFile12 Include="    {" />
+    <_BootstrapFile12 Include="        ArgumentNullException.ThrowIfNull(document)%3B" />
+    <_BootstrapFile12 Include="        string%3F directory = Path.GetDirectoryName(path)%3B" />
+    <_BootstrapFile12 Include="        if (!string.IsNullOrWhiteSpace(directory))" />
+    <_BootstrapFile12 Include="        {" />
+    <_BootstrapFile12 Include="            Directory.CreateDirectory(directory)%3B" />
+    <_BootstrapFile12 Include="        }" />
+    <_BootstrapFile12 Include="        string json = JsonSerializer.Serialize(document, Options)%3B" />
+    <_BootstrapFile12 Include="        File.WriteAllText(path, json)%3B" />
+    <_BootstrapFile12 Include="    }" />
+    <_BootstrapFile12 Include="}" />
   </ItemGroup>
   <ItemGroup>
-    <_BootstrapFile13 Include="namespace TestDataCreater%3B" />
-    <_BootstrapFile13 Include="static class Program" />
-    <_BootstrapFile13 Include="{" />
-    <_BootstrapFile13 Include="    /// &lt;summary&gt;" />
-    <_BootstrapFile13 Include="    ///  The main entry point for the application." />
-    <_BootstrapFile13 Include="    /// &lt;/summary&gt;" />
-    <_BootstrapFile13 Include="    [STAThread]" />
-    <_BootstrapFile13 Include="    static void Main()" />
-    <_BootstrapFile13 Include="    {" />
-    <_BootstrapFile13 Include="        // To customize application configuration such as set high DPI settings or default font," />
-    <_BootstrapFile13 Include="        // see https://aka.ms/applicationconfiguration." />
-    <_BootstrapFile13 Include="        ApplicationConfiguration.Initialize()%3B" />
-    <_BootstrapFile13 Include="        Application.Run(new Form1())%3B" />
-    <_BootstrapFile13 Include="    }    " />
-    <_BootstrapFile13 Include="}" />
+    <_BootstrapFile13 Include="&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;" />
+    <_BootstrapFile13 Include="  &lt;ItemGroup&gt;" />
+    <_BootstrapFile13 Include="    &lt;ProjectReference Include=&quot;..%5CTestDataCreater.Core%5CTestDataCreater.Core.csproj&quot; /&gt;" />
+    <_BootstrapFile13 Include="  &lt;/ItemGroup&gt;" />
+    <_BootstrapFile13 Include="  &lt;PropertyGroup&gt;" />
+    <_BootstrapFile13 Include="    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;" />
+    <_BootstrapFile13 Include="    &lt;TargetFramework&gt;net9.0-windows&lt;/TargetFramework&gt;" />
+    <_BootstrapFile13 Include="    &lt;Nullable&gt;enable&lt;/Nullable&gt;" />
+    <_BootstrapFile13 Include="    &lt;UseWindowsForms&gt;true&lt;/UseWindowsForms&gt;" />
+    <_BootstrapFile13 Include="    &lt;EnableWindowsTargeting&gt;true&lt;/EnableWindowsTargeting&gt;" />
+    <_BootstrapFile13 Include="    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;" />
+    <_BootstrapFile13 Include="  &lt;/PropertyGroup&gt;" />
+    <_BootstrapFile13 Include="&lt;/Project&gt;" />
   </ItemGroup>
   <ItemGroup>
-    <_BootstrapFile14 Include="using TestDataCreater.Core%3B" />
     <_BootstrapFile14 Include="namespace TestDataCreater%3B" />
-    <_BootstrapFile14 Include="public partial class Form1 : Form" />
+    <_BootstrapFile14 Include="static class Program" />
     <_BootstrapFile14 Include="{" />
-    <_BootstrapFile14 Include="    private readonly WorkspaceStore _store = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly HashMapCSharpExporter _exporter = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly string _workspacePath = Path.Combine(" />
-    <_BootstrapFile14 Include="        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)," />
-    <_BootstrapFile14 Include="        &quot;TestDataCreater&quot;," />
-    <_BootstrapFile14 Include="        &quot;workspace.json&quot;)%3B" />
-    <_BootstrapFile14 Include="    private WorkspaceDocument _document = new()%3B" />
-    <_BootstrapFile14 Include="    private ResultSet%3F _currentResultSet%3B" />
-    <_BootstrapFile14 Include="    private bool _loading%3B" />
-    <_BootstrapFile14 Include="    private int _dragRowIndex = -1%3B" />
-    <_BootstrapFile14 Include="    private Point _dragStartPoint%3B" />
-    <_BootstrapFile14 Include="    private readonly ListBox _workspaceList = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly TextBox _workspaceNameBox = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly DataGridView _grid = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly TextBox _previewBox = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly TextBox _columnNameBox = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly ComboBox _cellKindBox = new()%3B" />
-    <_BootstrapFile14 Include="    private readonly Label _statusLabel = new()%3B" />
-    <_BootstrapFile14 Include="    public Form1()" />
+    <_BootstrapFile14 Include="    /// &lt;summary&gt;" />
+    <_BootstrapFile14 Include="    ///  The main entry point for the application." />
+    <_BootstrapFile14 Include="    /// &lt;/summary&gt;" />
+    <_BootstrapFile14 Include="    [STAThread]" />
+    <_BootstrapFile14 Include="    static void Main()" />
     <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        InitializeComponent()%3B" />
-    <_BootstrapFile14 Include="        BuildUi()%3B" />
-    <_BootstrapFile14 Include="        LoadWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void BuildUi()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        Text = &quot;TestDataCreater&quot;%3B" />
-    <_BootstrapFile14 Include="        Width = 1280%3B" />
-    <_BootstrapFile14 Include="        Height = 820%3B" />
-    <_BootstrapFile14 Include="        MinimumSize = new Size(1024, 640)%3B" />
-    <_BootstrapFile14 Include="        Font = new Font(&quot;Segoe UI&quot;, 9F)%3B" />
-    <_BootstrapFile14 Include="        TableLayoutPanel root = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            ColumnCount = 1," />
-    <_BootstrapFile14 Include="            RowCount = 3," />
-    <_BootstrapFile14 Include="            BackColor = SystemColors.Control" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 52))%3B" />
-    <_BootstrapFile14 Include="        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile14 Include="        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 24))%3B" />
-    <_BootstrapFile14 Include="        _statusLabel.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _statusLabel.TextAlign = ContentAlignment.MiddleLeft%3B" />
-    <_BootstrapFile14 Include="        _statusLabel.Padding = new Padding(8, 0, 0, 0)%3B" />
-    <_BootstrapFile14 Include="        root.Controls.Add(CreateHeaderPanel(), 0, 0)%3B" />
-    <_BootstrapFile14 Include="        root.Controls.Add(CreateBodyPanel(), 0, 1)%3B" />
-    <_BootstrapFile14 Include="        root.Controls.Add(_statusLabel, 0, 2)%3B" />
-    <_BootstrapFile14 Include="        Controls.Add(root)%3B" />
-    <_BootstrapFile14 Include="        FormClosing += (_, _) =&gt; SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private Control CreateHeaderPanel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        TableLayoutPanel header = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            ColumnCount = 6," />
-    <_BootstrapFile14 Include="            Padding = new Padding(10, 8, 10, 8)" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 96))%3B" />
-    <_BootstrapFile14 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile14 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
-    <_BootstrapFile14 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
-    <_BootstrapFile14 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72))%3B" />
-    <_BootstrapFile14 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8))%3B" />
-    <_BootstrapFile14 Include="        Label nameLabel = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Text = &quot;結果セット名&quot;," />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            TextAlign = ContentAlignment.MiddleLeft" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        _workspaceNameBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _workspaceNameBox.Margin = new Padding(0, 2, 12, 2)%3B" />
-    <_BootstrapFile14 Include="        _workspaceNameBox.TextChanged += (_, _) =&gt;" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            if (_loading || _currentResultSet is null)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                return%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="            _currentResultSet.Name = string.IsNullOrWhiteSpace(_workspaceNameBox.Text)" />
-    <_BootstrapFile14 Include="                %3F &quot;Result Set&quot;" />
-    <_BootstrapFile14 Include="                : _workspaceNameBox.Text.Trim()%3B" />
-    <_BootstrapFile14 Include="            _workspaceList.Refresh()%3B" />
-    <_BootstrapFile14 Include="            SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        header.Controls.Add(nameLabel, 0, 0)%3B" />
-    <_BootstrapFile14 Include="        header.Controls.Add(_workspaceNameBox, 1, 0)%3B" />
-    <_BootstrapFile14 Include="        header.Controls.Add(CreateButton(&quot;プレビュー&quot;, PreviewExport), 2, 0)%3B" />
-    <_BootstrapFile14 Include="        header.Controls.Add(CreateButton(&quot;コピー&quot;, ExportToClipboard), 3, 0)%3B" />
-    <_BootstrapFile14 Include="        header.Controls.Add(CreateButton(&quot;保存&quot;, SaveWorkspaceDocument), 4, 0)%3B" />
-    <_BootstrapFile14 Include="        return header%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private Control CreateBodyPanel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        SplitContainer outer = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            FixedPanel = FixedPanel.Panel1," />
-    <_BootstrapFile14 Include="            SplitterDistance = 210" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        outer.Panel1.Controls.Add(CreateWorkspacePanel())%3B" />
-    <_BootstrapFile14 Include="        outer.Panel2.Controls.Add(CreateEditorPanel())%3B" />
-    <_BootstrapFile14 Include="        return outer%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private Control CreateWorkspacePanel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        TableLayoutPanel workspacePanel = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            ColumnCount = 1," />
-    <_BootstrapFile14 Include="            RowCount = 3," />
-    <_BootstrapFile14 Include="            Padding = new Padding(8, 4, 6, 6)" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28))%3B" />
-    <_BootstrapFile14 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile14 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 36))%3B" />
-    <_BootstrapFile14 Include="        Label workspaceLabel = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Text = &quot;ワークスペース&quot;," />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            TextAlign = ContentAlignment.MiddleLeft" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        _workspaceList.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _workspaceList.DisplayMember = nameof(ResultSet.Name)%3B" />
-    <_BootstrapFile14 Include="        _workspaceList.SelectedIndexChanged += (_, _) =&gt; SelectWorkspaceFromList()%3B" />
-    <_BootstrapFile14 Include="        FlowLayoutPanel workspaceCommands = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            FlowDirection = FlowDirection.LeftToRight," />
-    <_BootstrapFile14 Include="            WrapContents = false" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        workspaceCommands.Controls.Add(CreateButton(&quot;追加&quot;, AddWorkspace))%3B" />
-    <_BootstrapFile14 Include="        workspaceCommands.Controls.Add(CreateButton(&quot;削除&quot;, DeleteWorkspace))%3B" />
-    <_BootstrapFile14 Include="        workspacePanel.Controls.Add(workspaceLabel, 0, 0)%3B" />
-    <_BootstrapFile14 Include="        workspacePanel.Controls.Add(_workspaceList, 0, 1)%3B" />
-    <_BootstrapFile14 Include="        workspacePanel.Controls.Add(workspaceCommands, 0, 2)%3B" />
-    <_BootstrapFile14 Include="        return workspacePanel%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private Control CreateEditorPanel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        TableLayoutPanel editor = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            ColumnCount = 1," />
-    <_BootstrapFile14 Include="            RowCount = 3," />
-    <_BootstrapFile14 Include="            Padding = new Padding(4, 4, 8, 6)" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 70))%3B" />
-    <_BootstrapFile14 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile14 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 170))%3B" />
-    <_BootstrapFile14 Include="        ConfigureGrid()%3B" />
-    <_BootstrapFile14 Include="        ConfigurePreviewBox()%3B" />
-    <_BootstrapFile14 Include="        editor.Controls.Add(CreateGridCommandPanel(), 0, 0)%3B" />
-    <_BootstrapFile14 Include="        editor.Controls.Add(_grid, 0, 1)%3B" />
-    <_BootstrapFile14 Include="        editor.Controls.Add(CreatePreviewPanel(), 0, 2)%3B" />
-    <_BootstrapFile14 Include="        return editor%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private Control CreateGridCommandPanel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        TableLayoutPanel commandPanel = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            ColumnCount = 2," />
-    <_BootstrapFile14 Include="            RowCount = 1" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile14 Include="        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 380))%3B" />
-    <_BootstrapFile14 Include="        FlowLayoutPanel editCommands = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            FlowDirection = FlowDirection.LeftToRight," />
-    <_BootstrapFile14 Include="            WrapContents = true" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;+ 行&quot;, AddRow))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;- 行&quot;, DeleteSelectedRows))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;↑ 行&quot;, () =&gt; MoveCurrentRow(-1)))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;↓ 行&quot;, () =&gt; MoveCurrentRow(1)))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;+ 列&quot;, AddColumn))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;- 列&quot;, DeleteCurrentColumn))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;← 列&quot;, () =&gt; MoveCurrentColumn(-1)))%3B" />
-    <_BootstrapFile14 Include="        editCommands.Controls.Add(CreateButton(&quot;→ 列&quot;, () =&gt; MoveCurrentColumn(1)))%3B" />
-    <_BootstrapFile14 Include="        _columnNameBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _columnNameBox.Margin = new Padding(0, 20, 8, 20)%3B" />
-    <_BootstrapFile14 Include="        _columnNameBox.TextChanged += (_, _) =&gt; RenameCurrentColumn()%3B" />
-    <_BootstrapFile14 Include="        _cellKindBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _cellKindBox.Margin = new Padding(0, 20, 0, 20)%3B" />
-    <_BootstrapFile14 Include="        _cellKindBox.DropDownStyle = ComboBoxStyle.DropDownList%3B" />
-    <_BootstrapFile14 Include="        _cellKindBox.DataSource = Enum.GetValues&lt;CellValueKind&gt;()%3B" />
-    <_BootstrapFile14 Include="        _cellKindBox.SelectedIndexChanged += (_, _) =&gt; ApplySelectedCellKind()%3B" />
-    <_BootstrapFile14 Include="        TableLayoutPanel inspector = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile14 Include="            ColumnCount = 4," />
-    <_BootstrapFile14 Include="            RowCount = 1" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48))%3B" />
-    <_BootstrapFile14 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58))%3B" />
-    <_BootstrapFile14 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32))%3B" />
-    <_BootstrapFile14 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42))%3B" />
-    <_BootstrapFile14 Include="        inspector.Controls.Add(new Label { Text = &quot;列名&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0)%3B" />
-    <_BootstrapFile14 Include="        inspector.Controls.Add(_columnNameBox, 1, 0)%3B" />
-    <_BootstrapFile14 Include="        inspector.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0)%3B" />
-    <_BootstrapFile14 Include="        inspector.Controls.Add(_cellKindBox, 3, 0)%3B" />
-    <_BootstrapFile14 Include="        commandPanel.Controls.Add(editCommands, 0, 0)%3B" />
-    <_BootstrapFile14 Include="        commandPanel.Controls.Add(inspector, 1, 0)%3B" />
-    <_BootstrapFile14 Include="        return commandPanel%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void ConfigurePreviewBox()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        _previewBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _previewBox.Multiline = true%3B" />
-    <_BootstrapFile14 Include="        _previewBox.ScrollBars = ScrollBars.Both%3B" />
-    <_BootstrapFile14 Include="        _previewBox.WordWrap = false%3B" />
-    <_BootstrapFile14 Include="        _previewBox.Font = new Font(FontFamily.GenericMonospace, 10)%3B" />
-    <_BootstrapFile14 Include="        _previewBox.ReadOnly = true%3B" />
-    <_BootstrapFile14 Include="        _previewBox.BackColor = SystemColors.Window%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private Control CreatePreviewPanel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        TabControl tabs = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Dock = DockStyle.Fill" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        TabPage previewPage = new(&quot;C# プレビュー&quot;)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Padding = new Padding(4)" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        previewPage.Controls.Add(_previewBox)%3B" />
-    <_BootstrapFile14 Include="        tabs.TabPages.Add(previewPage)%3B" />
-    <_BootstrapFile14 Include="        return tabs%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private static Button CreateButton(string text, Action action)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        Button button = new()" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Text = text," />
-    <_BootstrapFile14 Include="            AutoSize = true," />
-    <_BootstrapFile14 Include="            Height = 28," />
-    <_BootstrapFile14 Include="            Margin = new Padding(3, 5, 3, 5)," />
-    <_BootstrapFile14 Include="            Padding = new Padding(8, 0, 8, 0)" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        button.Click += (_, _) =&gt; action()%3B" />
-    <_BootstrapFile14 Include="        return button%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void ConfigureGrid()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        _grid.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile14 Include="        _grid.AllowDrop = true%3B" />
-    <_BootstrapFile14 Include="        _grid.AllowUserToAddRows = false%3B" />
-    <_BootstrapFile14 Include="        _grid.AllowUserToDeleteRows = false%3B" />
-    <_BootstrapFile14 Include="        _grid.AllowUserToOrderColumns = true%3B" />
-    <_BootstrapFile14 Include="        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None%3B" />
-    <_BootstrapFile14 Include="        _grid.MultiSelect = true%3B" />
-    <_BootstrapFile14 Include="        _grid.SelectionMode = DataGridViewSelectionMode.CellSelect%3B" />
-    <_BootstrapFile14 Include="        _grid.RowHeadersWidth = 54%3B" />
-    <_BootstrapFile14 Include="        _grid.CellEndEdit += (_, _) =&gt; SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _grid.SelectionChanged += (_, _) =&gt; RefreshInspector()%3B" />
-    <_BootstrapFile14 Include="        _grid.ColumnDisplayIndexChanged += (_, _) =&gt;" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            if (!_loading)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                BeginInvoke(SyncColumnOrderFromGrid)%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="        }%3B" />
-    <_BootstrapFile14 Include="        _grid.MouseDown += GridMouseDown%3B" />
-    <_BootstrapFile14 Include="        _grid.MouseMove += GridMouseMove%3B" />
-    <_BootstrapFile14 Include="        _grid.DragOver += (_, e) =&gt; e.Effect = DragDropEffects.Move%3B" />
-    <_BootstrapFile14 Include="        _grid.DragDrop += GridDragDrop%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void LoadWorkspaceDocument()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        _document = _store.Load(_workspacePath)%3B" />
-    <_BootstrapFile14 Include="        if (_document.ResultSets.Count == 0)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _document = WorkspaceDocument.CreateDefault()%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        ReloadWorkspaceList()%3B" />
-    <_BootstrapFile14 Include="        ResultSet%3F active = _document.ResultSets.FirstOrDefault(resultSet =&gt; resultSet.Id == _document.ActiveResultSetId)" />
-    <_BootstrapFile14 Include="            %3F%3F _document.ResultSets.FirstOrDefault()%3B" />
-    <_BootstrapFile14 Include="        if (active is not null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _workspaceList.SelectedItem = active%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void ReloadWorkspaceList()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        _loading = true%3B" />
-    <_BootstrapFile14 Include="        _workspaceList.Items.Clear()%3B" />
-    <_BootstrapFile14 Include="        foreach (ResultSet resultSet in _document.ResultSets)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _workspaceList.Items.Add(resultSet)%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _loading = false%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void SelectWorkspaceFromList()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet = _workspaceList.SelectedItem as ResultSet%3B" />
-    <_BootstrapFile14 Include="        _document.ActiveResultSetId = _currentResultSet%3F.Id%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void LoadGrid()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        _loading = true%3B" />
-    <_BootstrapFile14 Include="        _grid.Columns.Clear()%3B" />
-    <_BootstrapFile14 Include="        _grid.Rows.Clear()%3B" />
-    <_BootstrapFile14 Include="        _workspaceNameBox.Text = _currentResultSet%3F.Name %3F%3F &quot;&quot;%3B" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _loading = false%3B" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        foreach (ResultColumn column in _currentResultSet.Columns)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _grid.Columns.Add(new DataGridViewTextBoxColumn" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                Name = column.Id," />
-    <_BootstrapFile14 Include="                HeaderText = column.Name," />
-    <_BootstrapFile14 Include="                SortMode = DataGridViewColumnSortMode.NotSortable," />
-    <_BootstrapFile14 Include="                Width = Math.Max(140, column.Name.Length %2A 12)" />
-    <_BootstrapFile14 Include="            })%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        foreach (ResultRow resultRow in _currentResultSet.Rows)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            int rowIndex = _grid.Rows.Add()%3B" />
-    <_BootstrapFile14 Include="            DataGridViewRow gridRow = _grid.Rows[rowIndex]%3B" />
-    <_BootstrapFile14 Include="            gridRow.Tag = resultRow.Id%3B" />
-    <_BootstrapFile14 Include="            gridRow.HeaderCell.Value = (rowIndex + 1).ToString()%3B" />
-    <_BootstrapFile14 Include="            foreach (ResultColumn column in _currentResultSet.Columns)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                gridRow.Cells[column.Id].Value = resultRow.GetCell(column.Id, column.DefaultKind).Text%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _loading = false%3B" />
-    <_BootstrapFile14 Include="        _grid.ClearSelection()%3B" />
-    <_BootstrapFile14 Include="        _grid.CurrentCell = null%3B" />
-    <_BootstrapFile14 Include="        RefreshInspector()%3B" />
-    <_BootstrapFile14 Include="        PreviewExport()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void SyncGridToModel()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading || _currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncColumnOrderFromGrid()%3B" />
-    <_BootstrapFile14 Include="        foreach (DataGridViewRow gridRow in _grid.Rows)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            if (gridRow.Tag is not string rowId)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                continue%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="            ResultRow%3F resultRow = _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3B" />
-    <_BootstrapFile14 Include="            if (resultRow is null)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                continue%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="            foreach (DataGridViewColumn gridColumn in _grid.Columns)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                CellValue cellValue = resultRow.GetCell(gridColumn.Name)%3B" />
-    <_BootstrapFile14 Include="                cellValue.Text = Convert.ToString(gridRow.Cells[gridColumn.Index].Value) %3F%3F &quot;&quot;%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void SyncColumnOrderFromGrid()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading || _currentResultSet is null || _grid.Columns.Count != _currentResultSet.Columns.Count)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        List&lt;string&gt; orderedIds = _grid.Columns" />
-    <_BootstrapFile14 Include="            .Cast&lt;DataGridViewColumn&gt;()" />
-    <_BootstrapFile14 Include="            .OrderBy(column =&gt; column.DisplayIndex)" />
-    <_BootstrapFile14 Include="            .Select(column =&gt; column.Name)" />
-    <_BootstrapFile14 Include="            .ToList()%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet.Columns = orderedIds" />
-    <_BootstrapFile14 Include="            .Select(id =&gt; _currentResultSet.Columns.First(column =&gt; column.Id == id))" />
-    <_BootstrapFile14 Include="            .ToList()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void AddWorkspace()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        ResultSet resultSet = new($&quot;Result Set {_document.ResultSets.Count + 1}&quot;)%3B" />
-    <_BootstrapFile14 Include="        resultSet.AddColumn(&quot;COLUMN1&quot;)%3B" />
-    <_BootstrapFile14 Include="        resultSet.AddRow()%3B" />
-    <_BootstrapFile14 Include="        _document.ResultSets.Add(resultSet)%3B" />
-    <_BootstrapFile14 Include="        _document.ActiveResultSetId = resultSet.Id%3B" />
-    <_BootstrapFile14 Include="        ReloadWorkspaceList()%3B" />
-    <_BootstrapFile14 Include="        _workspaceList.SelectedItem = resultSet%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void DeleteWorkspace()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _document.ResultSets.Remove(_currentResultSet)%3B" />
-    <_BootstrapFile14 Include="        if (_document.ResultSets.Count == 0)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _document = WorkspaceDocument.CreateDefault()%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        ReloadWorkspaceList()%3B" />
-    <_BootstrapFile14 Include="        _workspaceList.SelectedItem = _document.ResultSets[0]%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void AddRow()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet.AddRow()%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SelectGridRow(_currentResultSet.Rows.Count - 1)%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void DeleteSelectedRows()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        List&lt;string&gt; rowIds = GetSelectedRowIds()%3B" />
-    <_BootstrapFile14 Include="        if (rowIds.Count == 0 &amp;&amp; _grid.CurrentRow%3F.Tag is string currentId)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            rowIds.Add(currentId)%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        foreach (string rowId in rowIds)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _currentResultSet.RemoveRow(rowId)%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void MoveCurrentRow(int direction)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null || _grid.CurrentCell is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        int fromIndex = _grid.CurrentCell.RowIndex%3B" />
-    <_BootstrapFile14 Include="        int toIndex = Math.Clamp(fromIndex + direction, 0, _currentResultSet.Rows.Count - 1)%3B" />
-    <_BootstrapFile14 Include="        if (fromIndex == toIndex)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet.MoveRow(fromIndex, toIndex)%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SelectGridRow(toIndex)%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void AddColumn()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet.AddColumn($&quot;COLUMN{_currentResultSet.Columns.Count + 1}&quot;)%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SelectGridCell(0, _currentResultSet.Columns.Count - 1)%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void DeleteCurrentColumn()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null || _grid.CurrentCell is null || _currentResultSet.Columns.Count == 0)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        string columnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet.RemoveColumn(columnId)%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void MoveCurrentColumn(int direction)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null || _grid.CurrentCell is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        int fromIndex = _currentResultSet.Columns.FindIndex(column =&gt; column.Id == _grid.Columns[_grid.CurrentCell.ColumnIndex].Name)%3B" />
-    <_BootstrapFile14 Include="        int toIndex = Math.Clamp(fromIndex + direction, 0, _currentResultSet.Columns.Count - 1)%3B" />
-    <_BootstrapFile14 Include="        if (fromIndex &lt; 0 || fromIndex == toIndex)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _currentResultSet.MoveColumn(fromIndex, toIndex)%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        _grid.CurrentCell = _grid.Rows.Count &gt; 0 &amp;&amp; _grid.Columns.Count &gt; 0 %3F _grid.Rows[0].Cells[toIndex] : null%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void RenameCurrentColumn()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading || _currentResultSet is null || _grid.CurrentCell is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        string columnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name%3B" />
-    <_BootstrapFile14 Include="        ResultColumn%3F column = _currentResultSet.Columns.FirstOrDefault(item =&gt; item.Id == columnId)%3B" />
-    <_BootstrapFile14 Include="        if (column is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        column.Name = string.IsNullOrWhiteSpace(_columnNameBox.Text) %3F &quot;Column&quot; : _columnNameBox.Text.Trim()%3B" />
-    <_BootstrapFile14 Include="        _grid.Columns[_grid.CurrentCell.ColumnIndex].HeaderText = column.Name%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="        PreviewExport()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void ApplySelectedCellKind()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading || _currentResultSet is null || _cellKindBox.SelectedItem is not CellValueKind kind)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        if (_grid.CurrentCell is not null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            string currentColumnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name%3B" />
-    <_BootstrapFile14 Include="            ResultColumn%3F currentColumn = _currentResultSet.Columns.FirstOrDefault(column =&gt; column.Id == currentColumnId)%3B" />
-    <_BootstrapFile14 Include="            if (currentColumn is not null)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                currentColumn.DefaultKind = kind%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        foreach (DataGridViewCell gridCell in _grid.SelectedCells)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            if (gridCell.RowIndex &lt; 0 || gridCell.ColumnIndex &lt; 0)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                continue%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="            DataGridViewRow gridRow = _grid.Rows[gridCell.RowIndex]%3B" />
-    <_BootstrapFile14 Include="            DataGridViewColumn gridColumn = _grid.Columns[gridCell.ColumnIndex]%3B" />
-    <_BootstrapFile14 Include="            if (gridRow.Tag is not string rowId)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                continue%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="            ResultRow%3F resultRow = _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3B" />
-    <_BootstrapFile14 Include="            if (resultRow is not null)" />
-    <_BootstrapFile14 Include="            {" />
-    <_BootstrapFile14 Include="                resultRow.GetCell(gridColumn.Name).Kind = kind%3B" />
-    <_BootstrapFile14 Include="            }" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="        PreviewExport()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void RefreshInspector()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _loading = true%3B" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null || _grid.CurrentCell is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _columnNameBox.Text = &quot;&quot;%3B" />
-    <_BootstrapFile14 Include="            _cellKindBox.SelectedIndex = -1%3B" />
-    <_BootstrapFile14 Include="            _loading = false%3B" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
-    <_BootstrapFile14 Include="        ResultColumn%3F resultColumn = _currentResultSet.Columns.FirstOrDefault(column =&gt; column.Id == gridColumn.Name)%3B" />
-    <_BootstrapFile14 Include="        _columnNameBox.Text = resultColumn%3F.Name %3F%3F gridColumn.HeaderText%3B" />
-    <_BootstrapFile14 Include="        CellValue%3F cellValue = CurrentCellValue()%3B" />
-    <_BootstrapFile14 Include="        _cellKindBox.SelectedItem = cellValue%3F.Kind %3F%3F CellValueKind.String%3B" />
-    <_BootstrapFile14 Include="        _loading = false%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private CellValue%3F CurrentCellValue()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null || _grid.CurrentCell is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return null%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        DataGridViewRow gridRow = _grid.Rows[_grid.CurrentCell.RowIndex]%3B" />
-    <_BootstrapFile14 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
-    <_BootstrapFile14 Include="        return gridRow.Tag is string rowId" />
-    <_BootstrapFile14 Include="            %3F _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3F.GetCell(gridColumn.Name)" />
-    <_BootstrapFile14 Include="            : null%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private List&lt;string&gt; GetSelectedRowIds()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        HashSet&lt;int&gt; selectedIndexes = _grid.SelectedCells" />
-    <_BootstrapFile14 Include="            .Cast&lt;DataGridViewCell&gt;()" />
-    <_BootstrapFile14 Include="            .Where(cell =&gt; cell.RowIndex &gt;= 0)" />
-    <_BootstrapFile14 Include="            .Select(cell =&gt; cell.RowIndex)" />
-    <_BootstrapFile14 Include="            .ToHashSet()%3B" />
-    <_BootstrapFile14 Include="        foreach (DataGridViewRow selectedRow in _grid.SelectedRows)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            selectedIndexes.Add(selectedRow.Index)%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        return selectedIndexes" />
-    <_BootstrapFile14 Include="            .OrderBy(index =&gt; index)" />
-    <_BootstrapFile14 Include="            .Select(index =&gt; _grid.Rows[index].Tag as string)" />
-    <_BootstrapFile14 Include="            .Where(rowId =&gt; rowId is not null)" />
-    <_BootstrapFile14 Include="            .Cast&lt;string&gt;()" />
-    <_BootstrapFile14 Include="            .ToList()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private IReadOnlyList&lt;ResultRow&gt; GetRowsForExport()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return []%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        List&lt;string&gt; selectedRowIds = GetSelectedRowIds()%3B" />
-    <_BootstrapFile14 Include="        if (selectedRowIds.Count == 0)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return _currentResultSet.Rows%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        HashSet&lt;string&gt; selected = selectedRowIds.ToHashSet()%3B" />
-    <_BootstrapFile14 Include="        return _currentResultSet.Rows.Where(row =&gt; selected.Contains(row.Id)).ToList()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void PreviewExport()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _previewBox.Text = &quot;&quot;%3B" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _previewBox.Text = _exporter.Export(_currentResultSet, GetRowsForExport())%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void ExportToClipboard()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        PreviewExport()%3B" />
-    <_BootstrapFile14 Include="        try" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            Clipboard.SetText(_previewBox.Text)%3B" />
-    <_BootstrapFile14 Include="            _statusLabel.Text = &quot;C# 初期化コードをクリップボードへコピーしました。&quot;%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        catch (Exception ex)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _statusLabel.Text = $&quot;クリップボードへのコピーに失敗しました: {ex.Message}&quot;%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void SaveWorkspaceDocument()" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_loading)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _document.ActiveResultSetId = _currentResultSet%3F.Id%3B" />
-    <_BootstrapFile14 Include="        _store.Save(_workspacePath, _document)%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void GridMouseDown(object%3F sender, MouseEventArgs e)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        DataGridView.HitTestInfo hit = _grid.HitTest(e.X, e.Y)%3B" />
-    <_BootstrapFile14 Include="        _dragRowIndex = hit.RowIndex%3B" />
-    <_BootstrapFile14 Include="        _dragStartPoint = e.Location%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void GridMouseMove(object%3F sender, MouseEventArgs e)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if ((e.Button &amp; MouseButtons.Left) != MouseButtons.Left || _dragRowIndex &lt; 0)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        Rectangle dragBounds = new(" />
-    <_BootstrapFile14 Include="            _dragStartPoint.X - SystemInformation.DragSize.Width / 2," />
-    <_BootstrapFile14 Include="            _dragStartPoint.Y - SystemInformation.DragSize.Height / 2," />
-    <_BootstrapFile14 Include="            SystemInformation.DragSize.Width," />
-    <_BootstrapFile14 Include="            SystemInformation.DragSize.Height)%3B" />
-    <_BootstrapFile14 Include="        if (!dragBounds.Contains(e.Location))" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            _grid.DoDragDrop(_dragRowIndex, DragDropEffects.Move)%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void GridDragDrop(object%3F sender, DragEventArgs e)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (_currentResultSet is null || e.Data%3F.GetData(typeof(int)) is not int fromIndex)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        Point clientPoint = _grid.PointToClient(new Point(e.X, e.Y))%3B" />
-    <_BootstrapFile14 Include="        int toIndex = _grid.HitTest(clientPoint.X, clientPoint.Y).RowIndex%3B" />
-    <_BootstrapFile14 Include="        if (toIndex &lt; 0 || fromIndex == toIndex)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        SyncGridToModel()%3B" />
-    <_BootstrapFile14 Include="        _currentResultSet.MoveRow(fromIndex, toIndex)%3B" />
-    <_BootstrapFile14 Include="        LoadGrid()%3B" />
-    <_BootstrapFile14 Include="        SelectGridRow(toIndex)%3B" />
-    <_BootstrapFile14 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void SelectGridRow(int rowIndex)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (rowIndex &lt; 0 || rowIndex &gt;= _grid.Rows.Count || _grid.Columns.Count == 0)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _grid.ClearSelection()%3B" />
-    <_BootstrapFile14 Include="        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[0]%3B" />
-    <_BootstrapFile14 Include="        _grid.Rows[rowIndex].Selected = true%3B" />
-    <_BootstrapFile14 Include="    }" />
-    <_BootstrapFile14 Include="    private void SelectGridCell(int rowIndex, int columnIndex)" />
-    <_BootstrapFile14 Include="    {" />
-    <_BootstrapFile14 Include="        if (rowIndex &lt; 0 || rowIndex &gt;= _grid.Rows.Count || columnIndex &lt; 0 || columnIndex &gt;= _grid.Columns.Count)" />
-    <_BootstrapFile14 Include="        {" />
-    <_BootstrapFile14 Include="            return%3B" />
-    <_BootstrapFile14 Include="        }" />
-    <_BootstrapFile14 Include="        _grid.ClearSelection()%3B" />
-    <_BootstrapFile14 Include="        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[columnIndex]%3B" />
-    <_BootstrapFile14 Include="    }" />
+    <_BootstrapFile14 Include="        // To customize application configuration such as set high DPI settings or default font," />
+    <_BootstrapFile14 Include="        // see https://aka.ms/applicationconfiguration." />
+    <_BootstrapFile14 Include="        ApplicationConfiguration.Initialize()%3B" />
+    <_BootstrapFile14 Include="        Application.Run(new Form1())%3B" />
+    <_BootstrapFile14 Include="    }    " />
     <_BootstrapFile14 Include="}" />
   </ItemGroup>
   <ItemGroup>
+    <_BootstrapFile15 Include="using TestDataCreater.Core%3B" />
     <_BootstrapFile15 Include="namespace TestDataCreater%3B" />
-    <_BootstrapFile15 Include="partial class Form1" />
+    <_BootstrapFile15 Include="public partial class Form1 : Form" />
     <_BootstrapFile15 Include="{" />
-    <_BootstrapFile15 Include="    /// &lt;summary&gt;" />
-    <_BootstrapFile15 Include="    ///  Required designer variable." />
-    <_BootstrapFile15 Include="    /// &lt;/summary&gt;" />
-    <_BootstrapFile15 Include="    private System.ComponentModel.IContainer components = null%3B" />
-    <_BootstrapFile15 Include="    /// &lt;summary&gt;" />
-    <_BootstrapFile15 Include="    ///  Clean up any resources being used." />
-    <_BootstrapFile15 Include="    /// &lt;/summary&gt;" />
-    <_BootstrapFile15 Include="    /// &lt;param name=&quot;disposing&quot;&gt;true if managed resources should be disposed%3B otherwise, false.&lt;/param&gt;" />
-    <_BootstrapFile15 Include="    protected override void Dispose(bool disposing)" />
+    <_BootstrapFile15 Include="    private const string RowCommandColumnName = &quot;__row_command&quot;%3B" />
+    <_BootstrapFile15 Include="    private const string AddColumnCommandColumnName = &quot;__add_column&quot;%3B" />
+    <_BootstrapFile15 Include="    private const string ColumnCommandRowTag = &quot;__column_commands&quot;%3B" />
+    <_BootstrapFile15 Include="    private const string AddRowRowTag = &quot;__add_row&quot;%3B" />
+    <_BootstrapFile15 Include="    private readonly WorkspaceStore _store = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly HashMapCSharpExporter _exporter = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly string _workspacePath = Path.Combine(" />
+    <_BootstrapFile15 Include="        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)," />
+    <_BootstrapFile15 Include="        &quot;TestDataCreater&quot;," />
+    <_BootstrapFile15 Include="        &quot;workspace.json&quot;)%3B" />
+    <_BootstrapFile15 Include="    private WorkspaceDocument _document = new()%3B" />
+    <_BootstrapFile15 Include="    private ResultSet%3F _currentResultSet%3B" />
+    <_BootstrapFile15 Include="    private bool _loading%3B" />
+    <_BootstrapFile15 Include="    private int _dragRowIndex = -1%3B" />
+    <_BootstrapFile15 Include="    private Point _dragStartPoint%3B" />
+    <_BootstrapFile15 Include="    private TextBox%3F _activeEditingTextBox%3B" />
+    <_BootstrapFile15 Include="    private readonly ListBox _workspaceList = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly TextBox _workspaceNameBox = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly DataGridView _grid = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly TextBox _previewBox = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly TextBox _columnNameBox = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly ComboBox _cellKindBox = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly Label _statusLabel = new()%3B" />
+    <_BootstrapFile15 Include="    public Form1()" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        if (disposing &amp;&amp; (components != null))" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            components.Dispose()%3B" />
-    <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        base.Dispose(disposing)%3B" />
+    <_BootstrapFile15 Include="        InitializeComponent()%3B" />
+    <_BootstrapFile15 Include="        BuildUi()%3B" />
+    <_BootstrapFile15 Include="        LoadWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
-    <_BootstrapFile15 Include="    #region Windows Form Designer generated code" />
-    <_BootstrapFile15 Include="    /// &lt;summary&gt;" />
-    <_BootstrapFile15 Include="    ///  Required method for Designer support - do not modify" />
-    <_BootstrapFile15 Include="    ///  the contents of this method with the code editor." />
-    <_BootstrapFile15 Include="    /// &lt;/summary&gt;" />
-    <_BootstrapFile15 Include="    private void InitializeComponent()" />
+    <_BootstrapFile15 Include="    private void BuildUi()" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        components = new System.ComponentModel.Container()%3B" />
-    <_BootstrapFile15 Include="        AutoScaleMode = AutoScaleMode.Font%3B" />
-    <_BootstrapFile15 Include="        ClientSize = new Size(800, 450)%3B" />
     <_BootstrapFile15 Include="        Text = &quot;TestDataCreater&quot;%3B" />
+    <_BootstrapFile15 Include="        Width = 1280%3B" />
+    <_BootstrapFile15 Include="        Height = 820%3B" />
+    <_BootstrapFile15 Include="        MinimumSize = new Size(1024, 640)%3B" />
+    <_BootstrapFile15 Include="        Font = new Font(&quot;Segoe UI&quot;, 9F)%3B" />
+    <_BootstrapFile15 Include="        TableLayoutPanel root = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            ColumnCount = 1," />
+    <_BootstrapFile15 Include="            RowCount = 3," />
+    <_BootstrapFile15 Include="            BackColor = SystemColors.Control" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 52))%3B" />
+    <_BootstrapFile15 Include="        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 24))%3B" />
+    <_BootstrapFile15 Include="        _statusLabel.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _statusLabel.TextAlign = ContentAlignment.MiddleLeft%3B" />
+    <_BootstrapFile15 Include="        _statusLabel.Padding = new Padding(8, 0, 0, 0)%3B" />
+    <_BootstrapFile15 Include="        root.Controls.Add(CreateHeaderPanel(), 0, 0)%3B" />
+    <_BootstrapFile15 Include="        root.Controls.Add(CreateBodyPanel(), 0, 1)%3B" />
+    <_BootstrapFile15 Include="        root.Controls.Add(_statusLabel, 0, 2)%3B" />
+    <_BootstrapFile15 Include="        Controls.Add(root)%3B" />
+    <_BootstrapFile15 Include="        FormClosing += (_, _) =&gt; SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
-    <_BootstrapFile15 Include="    #endregion" />
+    <_BootstrapFile15 Include="    private Control CreateHeaderPanel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        TableLayoutPanel header = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            ColumnCount = 5," />
+    <_BootstrapFile15 Include="            Padding = new Padding(10, 8, 10, 8)" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 96))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8))%3B" />
+    <_BootstrapFile15 Include="        Label nameLabel = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Text = &quot;結果セット名&quot;," />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            TextAlign = ContentAlignment.MiddleLeft" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        _workspaceNameBox.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _workspaceNameBox.Margin = new Padding(0, 2, 12, 2)%3B" />
+    <_BootstrapFile15 Include="        _workspaceNameBox.TextChanged += (_, _) =&gt;" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (_loading || _currentResultSet is null)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                return%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            _currentResultSet.Name = string.IsNullOrWhiteSpace(_workspaceNameBox.Text)" />
+    <_BootstrapFile15 Include="                %3F &quot;Result Set&quot;" />
+    <_BootstrapFile15 Include="                : _workspaceNameBox.Text.Trim()%3B" />
+    <_BootstrapFile15 Include="            _workspaceList.Refresh()%3B" />
+    <_BootstrapFile15 Include="            SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(nameLabel, 0, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(_workspaceNameBox, 1, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateButton(&quot;プレビュー&quot;, PreviewExport), 2, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateButton(&quot;コピー&quot;, ExportToClipboard), 3, 0)%3B" />
+    <_BootstrapFile15 Include="        return header%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private Control CreateBodyPanel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        SplitContainer outer = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            FixedPanel = FixedPanel.Panel1," />
+    <_BootstrapFile15 Include="            SplitterDistance = 210" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        outer.Panel1.Controls.Add(CreateWorkspacePanel())%3B" />
+    <_BootstrapFile15 Include="        outer.Panel2.Controls.Add(CreateEditorPanel())%3B" />
+    <_BootstrapFile15 Include="        return outer%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private Control CreateWorkspacePanel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        TableLayoutPanel workspacePanel = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            ColumnCount = 1," />
+    <_BootstrapFile15 Include="            RowCount = 3," />
+    <_BootstrapFile15 Include="            Padding = new Padding(8, 4, 6, 6)" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28))%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 36))%3B" />
+    <_BootstrapFile15 Include="        Label workspaceLabel = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Text = &quot;ワークスペース&quot;," />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            TextAlign = ContentAlignment.MiddleLeft" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.DisplayMember = nameof(ResultSet.Name)%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.SelectedIndexChanged += (_, _) =&gt; SelectWorkspaceFromList()%3B" />
+    <_BootstrapFile15 Include="        FlowLayoutPanel workspaceCommands = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            FlowDirection = FlowDirection.LeftToRight," />
+    <_BootstrapFile15 Include="            WrapContents = false" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        workspaceCommands.Controls.Add(CreateButton(&quot;追加&quot;, AddWorkspace))%3B" />
+    <_BootstrapFile15 Include="        workspaceCommands.Controls.Add(CreateButton(&quot;削除&quot;, DeleteWorkspace))%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.Controls.Add(workspaceLabel, 0, 0)%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.Controls.Add(_workspaceList, 0, 1)%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.Controls.Add(workspaceCommands, 0, 2)%3B" />
+    <_BootstrapFile15 Include="        return workspacePanel%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private Control CreateEditorPanel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        TableLayoutPanel editor = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            ColumnCount = 1," />
+    <_BootstrapFile15 Include="            RowCount = 3," />
+    <_BootstrapFile15 Include="            Padding = new Padding(4, 4, 8, 6)" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 70))%3B" />
+    <_BootstrapFile15 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 170))%3B" />
+    <_BootstrapFile15 Include="        ConfigureGrid()%3B" />
+    <_BootstrapFile15 Include="        ConfigurePreviewBox()%3B" />
+    <_BootstrapFile15 Include="        editor.Controls.Add(CreateGridCommandPanel(), 0, 0)%3B" />
+    <_BootstrapFile15 Include="        editor.Controls.Add(_grid, 0, 1)%3B" />
+    <_BootstrapFile15 Include="        editor.Controls.Add(CreatePreviewPanel(), 0, 2)%3B" />
+    <_BootstrapFile15 Include="        return editor%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private Control CreateGridCommandPanel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        TableLayoutPanel commandPanel = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            ColumnCount = 2," />
+    <_BootstrapFile15 Include="            RowCount = 1" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 380))%3B" />
+    <_BootstrapFile15 Include="        _columnNameBox.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _columnNameBox.Margin = new Padding(0, 20, 8, 20)%3B" />
+    <_BootstrapFile15 Include="        _columnNameBox.TextChanged += (_, _) =&gt; RenameCurrentColumn()%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.Margin = new Padding(0, 20, 0, 20)%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.DropDownStyle = ComboBoxStyle.DropDownList%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.DataSource = Enum.GetValues&lt;CellValueKind&gt;()%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.SelectedIndexChanged += (_, _) =&gt; ApplySelectedCellKind()%3B" />
+    <_BootstrapFile15 Include="        TableLayoutPanel inspector = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            ColumnCount = 4," />
+    <_BootstrapFile15 Include="            RowCount = 1" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48))%3B" />
+    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58))%3B" />
+    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32))%3B" />
+    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42))%3B" />
+    <_BootstrapFile15 Include="        inspector.Controls.Add(new Label { Text = &quot;列名&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0)%3B" />
+    <_BootstrapFile15 Include="        inspector.Controls.Add(_columnNameBox, 1, 0)%3B" />
+    <_BootstrapFile15 Include="        inspector.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0)%3B" />
+    <_BootstrapFile15 Include="        inspector.Controls.Add(_cellKindBox, 3, 0)%3B" />
+    <_BootstrapFile15 Include="        commandPanel.Controls.Add(inspector, 1, 0)%3B" />
+    <_BootstrapFile15 Include="        return commandPanel%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ConfigurePreviewBox()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        _previewBox.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _previewBox.Multiline = true%3B" />
+    <_BootstrapFile15 Include="        _previewBox.ScrollBars = ScrollBars.Both%3B" />
+    <_BootstrapFile15 Include="        _previewBox.WordWrap = false%3B" />
+    <_BootstrapFile15 Include="        _previewBox.Font = new Font(FontFamily.GenericMonospace, 10)%3B" />
+    <_BootstrapFile15 Include="        _previewBox.ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="        _previewBox.BackColor = SystemColors.Window%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private Control CreatePreviewPanel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        TabControl tabs = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        TabPage previewPage = new(&quot;C# プレビュー&quot;)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Padding = new Padding(4)" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        previewPage.Controls.Add(_previewBox)%3B" />
+    <_BootstrapFile15 Include="        tabs.TabPages.Add(previewPage)%3B" />
+    <_BootstrapFile15 Include="        return tabs%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private static Button CreateButton(string text, Action action)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        Button button = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Text = text," />
+    <_BootstrapFile15 Include="            AutoSize = true," />
+    <_BootstrapFile15 Include="            Height = 28," />
+    <_BootstrapFile15 Include="            Margin = new Padding(3, 5, 3, 5)," />
+    <_BootstrapFile15 Include="            Padding = new Padding(8, 0, 8, 0)" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        button.Click += (_, _) =&gt; action()%3B" />
+    <_BootstrapFile15 Include="        return button%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ConfigureGrid()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        _grid.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        _grid.AllowDrop = true%3B" />
+    <_BootstrapFile15 Include="        _grid.AllowUserToAddRows = false%3B" />
+    <_BootstrapFile15 Include="        _grid.AllowUserToDeleteRows = false%3B" />
+    <_BootstrapFile15 Include="        _grid.AllowUserToOrderColumns = true%3B" />
+    <_BootstrapFile15 Include="        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None%3B" />
+    <_BootstrapFile15 Include="        _grid.MultiSelect = true%3B" />
+    <_BootstrapFile15 Include="        _grid.SelectionMode = DataGridViewSelectionMode.CellSelect%3B" />
+    <_BootstrapFile15 Include="        _grid.RowHeadersWidth = 54%3B" />
+    <_BootstrapFile15 Include="        _grid.CellBeginEdit += GridCellBeginEdit%3B" />
+    <_BootstrapFile15 Include="        _grid.CellClick += GridCellClick%3B" />
+    <_BootstrapFile15 Include="        _grid.CellEndEdit += GridCellEndEdit%3B" />
+    <_BootstrapFile15 Include="        _grid.CellValueChanged += GridCellValueChanged%3B" />
+    <_BootstrapFile15 Include="        _grid.ColumnHeaderMouseClick += GridColumnHeaderMouseClick%3B" />
+    <_BootstrapFile15 Include="        _grid.EditingControlShowing += GridEditingControlShowing%3B" />
+    <_BootstrapFile15 Include="        _grid.SelectionChanged += (_, _) =&gt; RefreshInspector()%3B" />
+    <_BootstrapFile15 Include="        _grid.ColumnDisplayIndexChanged += (_, _) =&gt;" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (!_loading)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                BeginInvoke(() =&gt;" />
+    <_BootstrapFile15 Include="                {" />
+    <_BootstrapFile15 Include="                    EnsureSpecialColumnDisplayOrder()%3B" />
+    <_BootstrapFile15 Include="                    SyncColumnOrderFromGrid()%3B" />
+    <_BootstrapFile15 Include="                    PreviewExport()%3B" />
+    <_BootstrapFile15 Include="                    SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="                })%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        _grid.MouseDown += GridMouseDown%3B" />
+    <_BootstrapFile15 Include="        _grid.MouseMove += GridMouseMove%3B" />
+    <_BootstrapFile15 Include="        _grid.DragOver += (_, e) =&gt; e.Effect = DragDropEffects.Move%3B" />
+    <_BootstrapFile15 Include="        _grid.DragDrop += GridDragDrop%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void LoadWorkspaceDocument()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        _document = _store.Load(_workspacePath)%3B" />
+    <_BootstrapFile15 Include="        if (_document.ResultSets.Count == 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _document = WorkspaceDocument.CreateDefault()%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
+    <_BootstrapFile15 Include="        ResultSet%3F active = _document.ResultSets.FirstOrDefault(resultSet =&gt; resultSet.Id == _document.ActiveResultSetId)" />
+    <_BootstrapFile15 Include="            %3F%3F _document.ResultSets.FirstOrDefault()%3B" />
+    <_BootstrapFile15 Include="        if (active is not null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _workspaceList.SelectedItem = active%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ReloadWorkspaceList()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        _loading = true%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.Items.Clear()%3B" />
+    <_BootstrapFile15 Include="        foreach (ResultSet resultSet in _document.ResultSets)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _workspaceList.Items.Add(resultSet)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _loading = false%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SelectWorkspaceFromList()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet = _workspaceList.SelectedItem as ResultSet%3B" />
+    <_BootstrapFile15 Include="        _document.ActiveResultSetId = _currentResultSet%3F.Id%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void LoadGrid()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        _loading = true%3B" />
+    <_BootstrapFile15 Include="        _grid.Columns.Clear()%3B" />
+    <_BootstrapFile15 Include="        _grid.Rows.Clear()%3B" />
+    <_BootstrapFile15 Include="        _workspaceNameBox.Text = _currentResultSet%3F.Name %3F%3F &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _loading = false%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _grid.Columns.Add(new DataGridViewButtonColumn" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Name = RowCommandColumnName," />
+    <_BootstrapFile15 Include="            HeaderText = &quot;&quot;," />
+    <_BootstrapFile15 Include="            Width = 38," />
+    <_BootstrapFile15 Include="            ReadOnly = true," />
+    <_BootstrapFile15 Include="            SortMode = DataGridViewColumnSortMode.NotSortable" />
+    <_BootstrapFile15 Include="        })%3B" />
+    <_BootstrapFile15 Include="        foreach (ResultColumn column in _currentResultSet.Columns)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _grid.Columns.Add(new DataGridViewTextBoxColumn" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                Name = column.Id," />
+    <_BootstrapFile15 Include="                HeaderText = column.Name," />
+    <_BootstrapFile15 Include="                SortMode = DataGridViewColumnSortMode.NotSortable," />
+    <_BootstrapFile15 Include="                Width = Math.Max(140, column.Name.Length %2A 12)" />
+    <_BootstrapFile15 Include="            })%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _grid.Columns.Add(new DataGridViewButtonColumn" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Name = AddColumnCommandColumnName," />
+    <_BootstrapFile15 Include="            HeaderText = &quot;+&quot;," />
+    <_BootstrapFile15 Include="            Width = 38," />
+    <_BootstrapFile15 Include="            ReadOnly = true," />
+    <_BootstrapFile15 Include="            SortMode = DataGridViewColumnSortMode.NotSortable" />
+    <_BootstrapFile15 Include="        })%3B" />
+    <_BootstrapFile15 Include="        AddColumnCommandRow()%3B" />
+    <_BootstrapFile15 Include="        foreach (ResultRow resultRow in _currentResultSet.Rows)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            int rowIndex = _grid.Rows.Add()%3B" />
+    <_BootstrapFile15 Include="            DataGridViewRow gridRow = _grid.Rows[rowIndex]%3B" />
+    <_BootstrapFile15 Include="            gridRow.Tag = resultRow.Id%3B" />
+    <_BootstrapFile15 Include="            gridRow.HeaderCell.Value = rowIndex.ToString()%3B" />
+    <_BootstrapFile15 Include="            gridRow.Cells[RowCommandColumnName].Value = &quot;-&quot;%3B" />
+    <_BootstrapFile15 Include="            gridRow.Cells[AddColumnCommandColumnName].ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="            foreach (ResultColumn column in _currentResultSet.Columns)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                gridRow.Cells[column.Id].Value = resultRow.GetCell(column.Id, column.DefaultKind).Text%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        AddRowCommandRow()%3B" />
+    <_BootstrapFile15 Include="        _loading = false%3B" />
+    <_BootstrapFile15 Include="        _grid.ClearSelection()%3B" />
+    <_BootstrapFile15 Include="        _grid.CurrentCell = null%3B" />
+    <_BootstrapFile15 Include="        RefreshInspector()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void AddColumnCommandRow()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        int rowIndex = _grid.Rows.Add()%3B" />
+    <_BootstrapFile15 Include="        DataGridViewRow row = _grid.Rows[rowIndex]%3B" />
+    <_BootstrapFile15 Include="        row.Tag = ColumnCommandRowTag%3B" />
+    <_BootstrapFile15 Include="        row.ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="        row.DefaultCellStyle.BackColor = SystemColors.Control%3B" />
+    <_BootstrapFile15 Include="        row.DefaultCellStyle.ForeColor = SystemColors.ControlText%3B" />
+    <_BootstrapFile15 Include="        row.HeaderCell.Value = &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="        row.Cells[RowCommandColumnName].Value = &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="        row.Cells[AddColumnCommandColumnName].Value = &quot;+&quot;%3B" />
+    <_BootstrapFile15 Include="        foreach (DataGridViewColumn column in _grid.Columns)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (IsDataColumn(column))" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                row.Cells[column.Name].Value = &quot;-&quot;%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void AddRowCommandRow()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        int rowIndex = _grid.Rows.Add()%3B" />
+    <_BootstrapFile15 Include="        DataGridViewRow row = _grid.Rows[rowIndex]%3B" />
+    <_BootstrapFile15 Include="        row.Tag = AddRowRowTag%3B" />
+    <_BootstrapFile15 Include="        row.ReadOnly = true%3B" />
+    <_BootstrapFile15 Include="        row.DefaultCellStyle.BackColor = SystemColors.Control%3B" />
+    <_BootstrapFile15 Include="        row.DefaultCellStyle.ForeColor = SystemColors.ControlText%3B" />
+    <_BootstrapFile15 Include="        row.HeaderCell.Value = &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="        row.Cells[RowCommandColumnName].Value = &quot;+&quot;%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SyncGridToModel()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading || _currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncColumnOrderFromGrid()%3B" />
+    <_BootstrapFile15 Include="        foreach (DataGridViewRow gridRow in _grid.Rows)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (gridRow.Tag is not string rowId)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                continue%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            ResultRow%3F resultRow = _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3B" />
+    <_BootstrapFile15 Include="            if (resultRow is null)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                continue%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            foreach (DataGridViewColumn gridColumn in _grid.Columns)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                if (!IsDataColumn(gridColumn))" />
+    <_BootstrapFile15 Include="                {" />
+    <_BootstrapFile15 Include="                    continue%3B" />
+    <_BootstrapFile15 Include="                }" />
+    <_BootstrapFile15 Include="                CellValue cellValue = resultRow.GetCell(gridColumn.Name)%3B" />
+    <_BootstrapFile15 Include="                cellValue.Text = Convert.ToString(gridRow.Cells[gridColumn.Index].Value) %3F%3F &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SyncColumnOrderFromGrid()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading || _currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        List&lt;string&gt; orderedIds = _grid.Columns" />
+    <_BootstrapFile15 Include="            .Cast&lt;DataGridViewColumn&gt;()" />
+    <_BootstrapFile15 Include="            .Where(IsDataColumn)" />
+    <_BootstrapFile15 Include="            .OrderBy(column =&gt; column.DisplayIndex)" />
+    <_BootstrapFile15 Include="            .Select(column =&gt; column.Name)" />
+    <_BootstrapFile15 Include="            .ToList()%3B" />
+    <_BootstrapFile15 Include="        if (orderedIds.Count != _currentResultSet.Columns.Count)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _currentResultSet.Columns = orderedIds" />
+    <_BootstrapFile15 Include="            .Select(id =&gt; _currentResultSet.Columns.First(column =&gt; column.Id == id))" />
+    <_BootstrapFile15 Include="            .ToList()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void EnsureSpecialColumnDisplayOrder()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_grid.Columns[RowCommandColumnName] is { } rowCommandColumn &amp;&amp; rowCommandColumn.DisplayIndex != 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            rowCommandColumn.DisplayIndex = 0%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn &amp;&amp;" />
+    <_BootstrapFile15 Include="            addColumnCommandColumn.DisplayIndex != _grid.Columns.Count - 1)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            addColumnCommandColumn.DisplayIndex = _grid.Columns.Count - 1%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridCellBeginEdit(object%3F sender, DataGridViewCellCancelEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        e.Cancel = !IsEditableDataCell(e.RowIndex, e.ColumnIndex)%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridCellClick(object%3F sender, DataGridViewCellEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (e.RowIndex &lt; 0 || e.ColumnIndex &lt; 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        HandleGridCommandCell(e.RowIndex, e.ColumnIndex)%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridColumnHeaderMouseClick(object%3F sender, DataGridViewCellMouseEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (e.ColumnIndex &gt;= 0 &amp;&amp; _grid.Columns[e.ColumnIndex].Name == AddColumnCommandColumnName)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            AddColumn()%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridCellEndEdit(object%3F sender, DataGridViewCellEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (!IsEditableDataCell(e.RowIndex, e.ColumnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncSingleCell(e.RowIndex, e.ColumnIndex)%3B" />
+    <_BootstrapFile15 Include="        RefreshInspector()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridCellValueChanged(object%3F sender, DataGridViewCellEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading || !IsEditableDataCell(e.RowIndex, e.ColumnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncSingleCell(e.RowIndex, e.ColumnIndex)%3B" />
+    <_BootstrapFile15 Include="        RefreshInspector()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridEditingControlShowing(object%3F sender, DataGridViewEditingControlShowingEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_activeEditingTextBox is not null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _activeEditingTextBox.TextChanged -= ActiveEditingTextBoxTextChanged%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _activeEditingTextBox = e.Control as TextBox%3B" />
+    <_BootstrapFile15 Include="        if (_activeEditingTextBox is not null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _activeEditingTextBox.TextChanged += ActiveEditingTextBoxTextChanged%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ActiveEditingTextBoxTextChanged(object%3F sender, EventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading || sender is not TextBox textBox || _grid.CurrentCell is null ||" />
+    <_BootstrapFile15 Include="            !IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncSingleCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex, textBox.Text)%3B" />
+    <_BootstrapFile15 Include="        RefreshInspector()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void HandleGridCommandCell(int rowIndex, int columnIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        DataGridViewColumn column = _grid.Columns[columnIndex]%3B" />
+    <_BootstrapFile15 Include="        object%3F rowTag = _grid.Rows[rowIndex].Tag%3B" />
+    <_BootstrapFile15 Include="        if (rowTag as string == AddRowRowTag &amp;&amp; column.Name == RowCommandColumnName)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            AddRow()%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (rowTag as string == ColumnCommandRowTag)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (column.Name == AddColumnCommandColumnName)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                AddColumn()%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            else if (IsDataColumn(column))" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                DeleteColumn(column.Name)%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (IsDataGridRowIndex(rowIndex) &amp;&amp; column.Name == RowCommandColumnName)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            DeleteRowAtGridIndex(rowIndex)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SyncSingleCell(int rowIndex, int columnIndex, string%3F editedText = null)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || !IsEditableDataCell(rowIndex, columnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        DataGridViewRow gridRow = _grid.Rows[rowIndex]%3B" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[columnIndex]%3B" />
+    <_BootstrapFile15 Include="        if (gridRow.Tag is not string rowId)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        ResultRow%3F resultRow = _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3B" />
+    <_BootstrapFile15 Include="        if (resultRow is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        CellValue cellValue = resultRow.GetCell(gridColumn.Name)%3B" />
+    <_BootstrapFile15 Include="        cellValue.Text = editedText %3F%3F Convert.ToString(gridRow.Cells[columnIndex].Value) %3F%3F &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="        cellValue.Kind = CellValueKindRules.CoerceToAllowedKind(cellValue.Kind, cellValue.Text)%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void DeleteRowAtGridIndex(int rowIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || !IsDataGridRowIndex(rowIndex) || _grid.Rows[rowIndex].Tag is not string rowId)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.RemoveRow(rowId)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void DeleteColumn(string columnId)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.RemoveColumn(columnId)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private bool IsEditableDataCell(int rowIndex, int columnIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        return IsDataGridRowIndex(rowIndex) &amp;&amp;" />
+    <_BootstrapFile15 Include="            columnIndex &gt;= 0 &amp;&amp;" />
+    <_BootstrapFile15 Include="            columnIndex &lt; _grid.Columns.Count &amp;&amp;" />
+    <_BootstrapFile15 Include="            IsDataColumn(_grid.Columns[columnIndex])%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private bool IsDataGridRowIndex(int rowIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (rowIndex &lt; 0 || rowIndex &gt;= _grid.Rows.Count)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return false%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string%3F tag = _grid.Rows[rowIndex].Tag as string%3B" />
+    <_BootstrapFile15 Include="        return tag is not null &amp;&amp; tag != ColumnCommandRowTag &amp;&amp; tag != AddRowRowTag%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private static bool IsDataColumn(DataGridViewColumn column)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        return column.Name != RowCommandColumnName &amp;&amp; column.Name != AddColumnCommandColumnName%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private static int GridRowIndexToModelIndex(int gridRowIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        return gridRowIndex - 1%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void AddWorkspace()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        ResultSet resultSet = new($&quot;Result Set {_document.ResultSets.Count + 1}&quot;)%3B" />
+    <_BootstrapFile15 Include="        resultSet.AddColumn(&quot;COLUMN1&quot;)%3B" />
+    <_BootstrapFile15 Include="        resultSet.AddRow()%3B" />
+    <_BootstrapFile15 Include="        _document.ResultSets.Add(resultSet)%3B" />
+    <_BootstrapFile15 Include="        _document.ActiveResultSetId = resultSet.Id%3B" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.SelectedItem = resultSet%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void DeleteWorkspace()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _document.ResultSets.Remove(_currentResultSet)%3B" />
+    <_BootstrapFile15 Include="        if (_document.ResultSets.Count == 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _document = WorkspaceDocument.CreateDefault()%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.SelectedItem = _document.ResultSets[0]%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void AddRow()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.AddRow()%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SelectGridRow(_currentResultSet.Rows.Count - 1)%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void DeleteSelectedRows()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        List&lt;string&gt; rowIds = GetSelectedRowIds()%3B" />
+    <_BootstrapFile15 Include="        if (rowIds.Count == 0 &amp;&amp; _grid.CurrentRow%3F.Tag is string currentId)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            rowIds.Add(currentId)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        foreach (string rowId in rowIds)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _currentResultSet.RemoveRow(rowId)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void MoveCurrentRow(int direction)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || _grid.CurrentCell is null || !IsDataGridRowIndex(_grid.CurrentCell.RowIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int fromIndex = GridRowIndexToModelIndex(_grid.CurrentCell.RowIndex)%3B" />
+    <_BootstrapFile15 Include="        int toIndex = Math.Clamp(fromIndex + direction, 0, _currentResultSet.Rows.Count - 1)%3B" />
+    <_BootstrapFile15 Include="        if (fromIndex == toIndex)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.MoveRow(fromIndex, toIndex)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SelectGridRow(toIndex)%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void AddColumn()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.AddColumn($&quot;COLUMN{_currentResultSet.Columns.Count + 1}&quot;)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SelectGridCell(0, _currentResultSet.Columns.Count - 1)%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void DeleteCurrentColumn()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || _grid.CurrentCell is null || _currentResultSet.Columns.Count == 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
+    <_BootstrapFile15 Include="        if (!IsDataColumn(gridColumn))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string columnId = gridColumn.Name%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.RemoveColumn(columnId)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void MoveCurrentColumn(int direction)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || _grid.CurrentCell is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
+    <_BootstrapFile15 Include="        if (!IsDataColumn(gridColumn))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int fromIndex = _currentResultSet.Columns.FindIndex(column =&gt; column.Id == gridColumn.Name)%3B" />
+    <_BootstrapFile15 Include="        int toIndex = Math.Clamp(fromIndex + direction, 0, _currentResultSet.Columns.Count - 1)%3B" />
+    <_BootstrapFile15 Include="        if (fromIndex &lt; 0 || fromIndex == toIndex)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _currentResultSet.MoveColumn(fromIndex, toIndex)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SelectGridCell(0, toIndex)%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void RenameCurrentColumn()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading || _currentResultSet is null || _grid.CurrentCell is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
+    <_BootstrapFile15 Include="        if (!IsDataColumn(gridColumn))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string columnId = gridColumn.Name%3B" />
+    <_BootstrapFile15 Include="        ResultColumn%3F column = _currentResultSet.Columns.FirstOrDefault(item =&gt; item.Id == columnId)%3B" />
+    <_BootstrapFile15 Include="        if (column is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        column.Name = string.IsNullOrWhiteSpace(_columnNameBox.Text) %3F &quot;Column&quot; : _columnNameBox.Text.Trim()%3B" />
+    <_BootstrapFile15 Include="        _grid.Columns[_grid.CurrentCell.ColumnIndex].HeaderText = column.Name%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ApplySelectedCellKind()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading || _currentResultSet is null || _cellKindBox.SelectedItem is not CellValueKind kind)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (_grid.CurrentCell is not null &amp;&amp; IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            string currentColumnId = _grid.Columns[_grid.CurrentCell.ColumnIndex].Name%3B" />
+    <_BootstrapFile15 Include="            ResultColumn%3F currentColumn = _currentResultSet.Columns.FirstOrDefault(column =&gt; column.Id == currentColumnId)%3B" />
+    <_BootstrapFile15 Include="            if (currentColumn is not null)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                currentColumn.DefaultKind = kind%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        foreach (DataGridViewCell gridCell in _grid.SelectedCells)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (!IsEditableDataCell(gridCell.RowIndex, gridCell.ColumnIndex))" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                continue%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            DataGridViewRow gridRow = _grid.Rows[gridCell.RowIndex]%3B" />
+    <_BootstrapFile15 Include="            DataGridViewColumn gridColumn = _grid.Columns[gridCell.ColumnIndex]%3B" />
+    <_BootstrapFile15 Include="            if (gridRow.Tag is not string rowId)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                continue%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            ResultRow%3F resultRow = _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3B" />
+    <_BootstrapFile15 Include="            if (resultRow is not null)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                resultRow.GetCell(gridColumn.Name).Kind = kind%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void RefreshInspector()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _loading = true%3B" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || _grid.CurrentCell is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _columnNameBox.Text = &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="            _cellKindBox.SelectedIndex = -1%3B" />
+    <_BootstrapFile15 Include="            _loading = false%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (!IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _columnNameBox.Text = &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="            _cellKindBox.DataSource = Array.Empty&lt;CellValueKind&gt;()%3B" />
+    <_BootstrapFile15 Include="            _loading = false%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
+    <_BootstrapFile15 Include="        ResultColumn%3F resultColumn = _currentResultSet.Columns.FirstOrDefault(column =&gt; column.Id == gridColumn.Name)%3B" />
+    <_BootstrapFile15 Include="        _columnNameBox.Text = resultColumn%3F.Name %3F%3F gridColumn.HeaderText%3B" />
+    <_BootstrapFile15 Include="        CellValue%3F cellValue = CurrentCellValue()%3B" />
+    <_BootstrapFile15 Include="        UpdateCellKindChoices(cellValue)%3B" />
+    <_BootstrapFile15 Include="        _loading = false%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private CellValue%3F CurrentCellValue()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || _grid.CurrentCell is null ||" />
+    <_BootstrapFile15 Include="            !IsEditableDataCell(_grid.CurrentCell.RowIndex, _grid.CurrentCell.ColumnIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return null%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        DataGridViewRow gridRow = _grid.Rows[_grid.CurrentCell.RowIndex]%3B" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[_grid.CurrentCell.ColumnIndex]%3B" />
+    <_BootstrapFile15 Include="        return gridRow.Tag is string rowId" />
+    <_BootstrapFile15 Include="            %3F _currentResultSet.Rows.FirstOrDefault(row =&gt; row.Id == rowId)%3F.GetCell(gridColumn.Name)" />
+    <_BootstrapFile15 Include="            : null%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void UpdateCellKindChoices(CellValue%3F cellValue)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (cellValue is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _cellKindBox.DataSource = Array.Empty&lt;CellValueKind&gt;()%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        CellValueKind allowedKind = CellValueKindRules.CoerceToAllowedKind(cellValue.Kind, cellValue.Text)%3B" />
+    <_BootstrapFile15 Include="        if (allowedKind != cellValue.Kind)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            cellValue.Kind = allowedKind%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _cellKindBox.DataSource = CellValueKindRules.GetAllowedKinds(cellValue.Text).ToList()%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.SelectedItem = cellValue.Kind%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private List&lt;string&gt; GetSelectedRowIds()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        HashSet&lt;int&gt; selectedIndexes = _grid.SelectedCells" />
+    <_BootstrapFile15 Include="            .Cast&lt;DataGridViewCell&gt;()" />
+    <_BootstrapFile15 Include="            .Where(cell =&gt; IsDataGridRowIndex(cell.RowIndex))" />
+    <_BootstrapFile15 Include="            .Select(cell =&gt; cell.RowIndex)" />
+    <_BootstrapFile15 Include="            .ToHashSet()%3B" />
+    <_BootstrapFile15 Include="        foreach (DataGridViewRow selectedRow in _grid.SelectedRows)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (IsDataGridRowIndex(selectedRow.Index))" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                selectedIndexes.Add(selectedRow.Index)%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        return selectedIndexes" />
+    <_BootstrapFile15 Include="            .OrderBy(index =&gt; index)" />
+    <_BootstrapFile15 Include="            .Select(index =&gt; _grid.Rows[index].Tag as string)" />
+    <_BootstrapFile15 Include="            .Where(rowId =&gt; rowId is not null)" />
+    <_BootstrapFile15 Include="            .Cast&lt;string&gt;()" />
+    <_BootstrapFile15 Include="            .ToList()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private IReadOnlyList&lt;ResultRow&gt; GetRowsForExport()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return []%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        return _currentResultSet.Rows%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void PreviewExport()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _previewBox.Text = &quot;&quot;%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _previewBox.Text = _exporter.Export(_currentResultSet, GetRowsForExport())%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ExportToClipboard()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="        try" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Clipboard.SetText(_previewBox.Text)%3B" />
+    <_BootstrapFile15 Include="            _statusLabel.Text = &quot;C# 初期化コードをクリップボードへコピーしました。&quot;%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        catch (Exception ex)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _statusLabel.Text = $&quot;クリップボードへのコピーに失敗しました: {ex.Message}&quot;%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SaveWorkspaceDocument()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_loading)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _document.ActiveResultSetId = _currentResultSet%3F.Id%3B" />
+    <_BootstrapFile15 Include="        _store.Save(_workspacePath, _document)%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridMouseDown(object%3F sender, MouseEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        DataGridView.HitTestInfo hit = _grid.HitTest(e.X, e.Y)%3B" />
+    <_BootstrapFile15 Include="        _dragRowIndex = IsDataGridRowIndex(hit.RowIndex) %3F hit.RowIndex : -1%3B" />
+    <_BootstrapFile15 Include="        _dragStartPoint = e.Location%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridMouseMove(object%3F sender, MouseEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if ((e.Button &amp; MouseButtons.Left) != MouseButtons.Left || _dragRowIndex &lt; 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        Rectangle dragBounds = new(" />
+    <_BootstrapFile15 Include="            _dragStartPoint.X - SystemInformation.DragSize.Width / 2," />
+    <_BootstrapFile15 Include="            _dragStartPoint.Y - SystemInformation.DragSize.Height / 2," />
+    <_BootstrapFile15 Include="            SystemInformation.DragSize.Width," />
+    <_BootstrapFile15 Include="            SystemInformation.DragSize.Height)%3B" />
+    <_BootstrapFile15 Include="        if (!dragBounds.Contains(e.Location))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _grid.DoDragDrop(_dragRowIndex, DragDropEffects.Move)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridDragDrop(object%3F sender, DragEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || e.Data%3F.GetData(typeof(int)) is not int fromGridIndex ||" />
+    <_BootstrapFile15 Include="            !IsDataGridRowIndex(fromGridIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        Point clientPoint = _grid.PointToClient(new Point(e.X, e.Y))%3B" />
+    <_BootstrapFile15 Include="        int toGridIndex = _grid.HitTest(clientPoint.X, clientPoint.Y).RowIndex%3B" />
+    <_BootstrapFile15 Include="        if (toGridIndex &lt; 0 || toGridIndex == fromGridIndex)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int fromIndex = GridRowIndexToModelIndex(fromGridIndex)%3B" />
+    <_BootstrapFile15 Include="        int toIndex = toGridIndex &gt;= _grid.Rows.Count - 1" />
+    <_BootstrapFile15 Include="            %3F _currentResultSet.Rows.Count - 1" />
+    <_BootstrapFile15 Include="            : Math.Clamp(GridRowIndexToModelIndex(toGridIndex), 0, _currentResultSet.Rows.Count - 1)%3B" />
+    <_BootstrapFile15 Include="        if (fromIndex == toIndex)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.MoveRow(fromIndex, toIndex)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SelectGridRow(toIndex)%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SelectGridRow(int rowIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        int gridRowIndex = rowIndex + 1%3B" />
+    <_BootstrapFile15 Include="        int firstDataColumnIndex = _grid.Columns" />
+    <_BootstrapFile15 Include="            .Cast&lt;DataGridViewColumn&gt;()" />
+    <_BootstrapFile15 Include="            .Where(IsDataColumn)" />
+    <_BootstrapFile15 Include="            .OrderBy(column =&gt; column.DisplayIndex)" />
+    <_BootstrapFile15 Include="            .Select(column =&gt; column.Index)" />
+    <_BootstrapFile15 Include="            .FirstOrDefault(-1)%3B" />
+    <_BootstrapFile15 Include="        if (gridRowIndex &lt; 0 || gridRowIndex &gt;= _grid.Rows.Count || firstDataColumnIndex &lt; 0)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _grid.ClearSelection()%3B" />
+    <_BootstrapFile15 Include="        _grid.CurrentCell = _grid.Rows[gridRowIndex].Cells[firstDataColumnIndex]%3B" />
+    <_BootstrapFile15 Include="        _grid.Rows[gridRowIndex].Selected = true%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void SelectGridCell(int rowIndex, int columnIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        int gridRowIndex = rowIndex + 1%3B" />
+    <_BootstrapFile15 Include="        int gridColumnIndex = columnIndex + 1%3B" />
+    <_BootstrapFile15 Include="        if (gridRowIndex &lt; 0 || gridRowIndex &gt;= _grid.Rows.Count || gridColumnIndex &lt; 0 || gridColumnIndex &gt;= _grid.Columns.Count)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _grid.ClearSelection()%3B" />
+    <_BootstrapFile15 Include="        _grid.CurrentCell = _grid.Rows[rowIndex].Cells[columnIndex]%3B" />
+    <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="}" />
+  </ItemGroup>
+  <ItemGroup>
+    <_BootstrapFile16 Include="namespace TestDataCreater%3B" />
+    <_BootstrapFile16 Include="partial class Form1" />
+    <_BootstrapFile16 Include="{" />
+    <_BootstrapFile16 Include="    /// &lt;summary&gt;" />
+    <_BootstrapFile16 Include="    ///  Required designer variable." />
+    <_BootstrapFile16 Include="    /// &lt;/summary&gt;" />
+    <_BootstrapFile16 Include="    private System.ComponentModel.IContainer components = null%3B" />
+    <_BootstrapFile16 Include="    /// &lt;summary&gt;" />
+    <_BootstrapFile16 Include="    ///  Clean up any resources being used." />
+    <_BootstrapFile16 Include="    /// &lt;/summary&gt;" />
+    <_BootstrapFile16 Include="    /// &lt;param name=&quot;disposing&quot;&gt;true if managed resources should be disposed%3B otherwise, false.&lt;/param&gt;" />
+    <_BootstrapFile16 Include="    protected override void Dispose(bool disposing)" />
+    <_BootstrapFile16 Include="    {" />
+    <_BootstrapFile16 Include="        if (disposing &amp;&amp; (components != null))" />
+    <_BootstrapFile16 Include="        {" />
+    <_BootstrapFile16 Include="            components.Dispose()%3B" />
+    <_BootstrapFile16 Include="        }" />
+    <_BootstrapFile16 Include="        base.Dispose(disposing)%3B" />
+    <_BootstrapFile16 Include="    }" />
+    <_BootstrapFile16 Include="    #region Windows Form Designer generated code" />
+    <_BootstrapFile16 Include="    /// &lt;summary&gt;" />
+    <_BootstrapFile16 Include="    ///  Required method for Designer support - do not modify" />
+    <_BootstrapFile16 Include="    ///  the contents of this method with the code editor." />
+    <_BootstrapFile16 Include="    /// &lt;/summary&gt;" />
+    <_BootstrapFile16 Include="    private void InitializeComponent()" />
+    <_BootstrapFile16 Include="    {" />
+    <_BootstrapFile16 Include="        components = new System.ComponentModel.Container()%3B" />
+    <_BootstrapFile16 Include="        AutoScaleMode = AutoScaleMode.Font%3B" />
+    <_BootstrapFile16 Include="        ClientSize = new Size(800, 450)%3B" />
+    <_BootstrapFile16 Include="        Text = &quot;TestDataCreater&quot;%3B" />
+    <_BootstrapFile16 Include="    }" />
+    <_BootstrapFile16 Include="    #endregion" />
+    <_BootstrapFile16 Include="}" />
   </ItemGroup>
   <Target Name="ExpandTestDataCreater" AfterTargets="Build">
     <MakeDir Directories="$(BootstrapOutputRoot)" />
@@ -1324,16 +1722,17 @@
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/TestDataCreater.Core.csproj" Lines="@(_BootstrapFile3)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/TestDataCreater.Core.csproj')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValue.cs" Lines="@(_BootstrapFile4)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValue.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKind.cs" Lines="@(_BootstrapFile5)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKind.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/HashMapCSharpExporter.cs" Lines="@(_BootstrapFile6)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/HashMapCSharpExporter.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultColumn.cs" Lines="@(_BootstrapFile7)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultColumn.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultRow.cs" Lines="@(_BootstrapFile8)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultRow.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultSet.cs" Lines="@(_BootstrapFile9)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultSet.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceDocument.cs" Lines="@(_BootstrapFile10)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceDocument.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceStore.cs" Lines="@(_BootstrapFile11)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceStore.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/TestDataCreater.csproj" Lines="@(_BootstrapFile12)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/TestDataCreater.csproj')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Program.cs" Lines="@(_BootstrapFile13)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Program.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Form1.cs" Lines="@(_BootstrapFile14)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Form1.cs')" />
-    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Form1.Designer.cs" Lines="@(_BootstrapFile15)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Form1.Designer.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKindRules.cs" Lines="@(_BootstrapFile6)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKindRules.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/HashMapCSharpExporter.cs" Lines="@(_BootstrapFile7)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/HashMapCSharpExporter.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultColumn.cs" Lines="@(_BootstrapFile8)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultColumn.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultRow.cs" Lines="@(_BootstrapFile9)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultRow.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultSet.cs" Lines="@(_BootstrapFile10)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultSet.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceDocument.cs" Lines="@(_BootstrapFile11)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceDocument.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceStore.cs" Lines="@(_BootstrapFile12)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/WorkspaceStore.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/TestDataCreater.csproj" Lines="@(_BootstrapFile13)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/TestDataCreater.csproj')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Program.cs" Lines="@(_BootstrapFile14)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Program.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Form1.cs" Lines="@(_BootstrapFile15)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Form1.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Form1.Designer.cs" Lines="@(_BootstrapFile16)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Form1.Designer.cs')" />
     <Message Importance="High" Text="Expanded TestDataCreater files under $(BootstrapOutputRoot)" />
     <Message Importance="High" Text="Existing files were left unchanged. Rebuild with /p:BootstrapOverwrite=true to refresh them." Condition="'$(BootstrapOverwrite)' != 'true'" />
   </Target>
