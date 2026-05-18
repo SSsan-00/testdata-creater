@@ -4,6 +4,25 @@ namespace TestDataCreater.Core;
 
 public static class CellValueKindRules
 {
+    public static string ToCSharpTypeName(CellValueKind kind)
+    {
+        return kind switch
+        {
+            CellValueKind.String => "string",
+            CellValueKind.Int32 => "int",
+            CellValueKind.Int64 => "long",
+            CellValueKind.Decimal => "decimal",
+            CellValueKind.Double => "double",
+            CellValueKind.Boolean => "bool",
+            CellValueKind.DateTime => "DateTime",
+            CellValueKind.Guid => "Guid",
+            CellValueKind.Null => "null",
+            CellValueKind.DbNull => "DBNull.Value",
+            CellValueKind.CustomExpression => "C# expression",
+            _ => kind.ToString()
+        };
+    }
+
     public static IReadOnlyList<CellValueKind> GetAllowedKinds(string? text)
     {
         string value = text?.Trim() ?? "";

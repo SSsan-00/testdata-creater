@@ -32,8 +32,8 @@
     <_BootstrapFile0 Include="%2A.nupkg" />
   </ItemGroup>
   <ItemGroup>
-    <_BootstrapFile1 Include="# TestDataCreater" />
-    <_BootstrapFile1 Include="`TestDataCreater` は、クエリ結果セットのテストデータを GUI で編集し、C# の `HashMap` 初期化コードとして出力する WinForms アプリです。" />
+    <_BootstrapFile1 Include="# HashMap Maker" />
+    <_BootstrapFile1 Include="`HashMap Maker` は、クエリ結果セットのテストデータを GUI で編集し、C# の `HashMap` 初期化コードとして出力する WinForms アプリです。" />
     <_BootstrapFile1 Include="1 行の結果セットは `new HashMap`、複数行の結果セットは `new HashMap&lt;HashMap&gt;` として出力します。複数行の場合、外側の key は現在の表示順に従って `0, 1, 2...` に振り直されます。" />
     <_BootstrapFile1 Include="## 動作環境" />
     <_BootstrapFile1 Include="- .NET 9 SDK" />
@@ -69,15 +69,15 @@
     <_BootstrapFile1 Include="## 使い方" />
     <_BootstrapFile1 Include="1. 左側の `ワークスペース` で結果セットを選択します。" />
     <_BootstrapFile1 Include="2. `追加` で結果セットを追加します。" />
-    <_BootstrapFile1 Include="3. 画面上部の `結果セット名` で名前を変更します。" />
-    <_BootstrapFile1 Include="4. グリッド左上の固定操作エリアにある `+ 行` で行を追加します。" />
-    <_BootstrapFile1 Include="5. 各行の左端にある `- 行` で行を削除します。" />
-    <_BootstrapFile1 Include="6. グリッド左上の固定操作エリアにある `+ 列` で列を追加します。" />
-    <_BootstrapFile1 Include="7. グリッド最上段の各列にある `- 列` で列を削除します。" />
-    <_BootstrapFile1 Include="8. グリッドのセルに値を入力します。" />
-    <_BootstrapFile1 Include="9. グリッド上部の `列名` で選択列の名前を変更します。" />
-    <_BootstrapFile1 Include="10. グリッド上部の `型` で選択セルの値型を指定します。" />
-    <_BootstrapFile1 Include="11. `プレビュー` で C# 出力内容を確認します。" />
+    <_BootstrapFile1 Include="3. グリッド左上の固定操作エリアにある `+ 行` で行を追加します。" />
+    <_BootstrapFile1 Include="4. 各行の左端にある `- 行` で行を削除します。" />
+    <_BootstrapFile1 Include="5. グリッド左上の固定操作エリアにある `+ 列` で列を追加します。" />
+    <_BootstrapFile1 Include="6. グリッド最上段の各列にある `- 列` で列を削除します。" />
+    <_BootstrapFile1 Include="7. グリッドのセルに値を入力します。" />
+    <_BootstrapFile1 Include="8. 列ヘッダーをクリックしてフィールド名を直接変更します。" />
+    <_BootstrapFile1 Include="9. 画面上部の `列名` でも選択列の名前を変更できます。" />
+    <_BootstrapFile1 Include="10. 画面上部の `型` で選択セルの値型を指定します。型名は C# に近い表記で表示されます。" />
+    <_BootstrapFile1 Include="11. 下部の `プレビュー` で C# 出力内容を確認します。グリッドとプレビューの境界を上下にドラッグすると表示領域を変更できます。" />
     <_BootstrapFile1 Include="12. `コピー` でプレビュー内容をクリップボードへコピーします。" />
     <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。" />
     <_BootstrapFile1 Include="プレビューとコピーは常に現在の全レコードを出力します。セル入力中もプレビューは入力内容に追従します。" />
@@ -112,18 +112,18 @@
     <_BootstrapFile1 Include="複数行出力時の外側 key は、GUI 上の表示順に従って `0` から連番で再採番します。" />
     <_BootstrapFile1 Include="## 値型" />
     <_BootstrapFile1 Include="セルごとに次の型を選択できます。" />
-    <_BootstrapFile1 Include="- `String`" />
-    <_BootstrapFile1 Include="- `Int32`" />
-    <_BootstrapFile1 Include="- `Int64`" />
-    <_BootstrapFile1 Include="- `Decimal`" />
-    <_BootstrapFile1 Include="- `Double`" />
-    <_BootstrapFile1 Include="- `Boolean`" />
+    <_BootstrapFile1 Include="- `string`" />
+    <_BootstrapFile1 Include="- `int`" />
+    <_BootstrapFile1 Include="- `long`" />
+    <_BootstrapFile1 Include="- `decimal`" />
+    <_BootstrapFile1 Include="- `double`" />
+    <_BootstrapFile1 Include="- `bool`" />
     <_BootstrapFile1 Include="- `DateTime`" />
     <_BootstrapFile1 Include="- `Guid`" />
-    <_BootstrapFile1 Include="- `Null`" />
-    <_BootstrapFile1 Include="- `DbNull`" />
-    <_BootstrapFile1 Include="- `CustomExpression`" />
-    <_BootstrapFile1 Include="`CustomExpression` は任意の C# 式をそのまま出力するための型です。たとえば `OrderStatus.Completed` や `new Money(1200, &quot;JPY&quot;)` のような、プロジェクト固有の型や enum を使う場合に指定します。" />
+    <_BootstrapFile1 Include="- `null`" />
+    <_BootstrapFile1 Include="- `DBNull.Value`" />
+    <_BootstrapFile1 Include="- `C# expression`" />
+    <_BootstrapFile1 Include="`C# expression` は任意の C# 式をそのまま出力するための型です。たとえば `OrderStatus.Completed` や `new Money(1200, &quot;JPY&quot;)` のような、プロジェクト固有の型や enum を使う場合に指定します。" />
     <_BootstrapFile1 Include="## データ保存" />
     <_BootstrapFile1 Include="入力した workspace はアプリ終了時や編集操作時に自動保存されます。保存先はユーザーのアプリケーションデータフォルダ配下の `TestDataCreater/workspace.json` です。" />
     <_BootstrapFile1 Include="アプリを再起動すると、前回の workspace、行、列、セル値、値型が復元されます。" />
@@ -220,6 +220,24 @@
     <_BootstrapFile6 Include="namespace TestDataCreater.Core%3B" />
     <_BootstrapFile6 Include="public static class CellValueKindRules" />
     <_BootstrapFile6 Include="{" />
+    <_BootstrapFile6 Include="    public static string ToCSharpTypeName(CellValueKind kind)" />
+    <_BootstrapFile6 Include="    {" />
+    <_BootstrapFile6 Include="        return kind switch" />
+    <_BootstrapFile6 Include="        {" />
+    <_BootstrapFile6 Include="            CellValueKind.String =&gt; &quot;string&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Int32 =&gt; &quot;int&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Int64 =&gt; &quot;long&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Decimal =&gt; &quot;decimal&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Double =&gt; &quot;double&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Boolean =&gt; &quot;bool&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.DateTime =&gt; &quot;DateTime&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Guid =&gt; &quot;Guid&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.Null =&gt; &quot;null&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.DbNull =&gt; &quot;DBNull.Value&quot;," />
+    <_BootstrapFile6 Include="            CellValueKind.CustomExpression =&gt; &quot;C# expression&quot;," />
+    <_BootstrapFile6 Include="            _ =&gt; kind.ToString()" />
+    <_BootstrapFile6 Include="        }%3B" />
+    <_BootstrapFile6 Include="    }" />
     <_BootstrapFile6 Include="    public static IReadOnlyList&lt;CellValueKind&gt; GetAllowedKinds(string%3F text)" />
     <_BootstrapFile6 Include="    {" />
     <_BootstrapFile6 Include="        string value = text%3F.Trim() %3F%3F &quot;&quot;%3B" />
@@ -684,6 +702,7 @@
     <_BootstrapFile15 Include="    private const string AddColumnCommandColumnName = &quot;__add_column&quot;%3B" />
     <_BootstrapFile15 Include="    private const string ColumnCommandRowTag = &quot;__column_commands&quot;%3B" />
     <_BootstrapFile15 Include="    private const int GridCommandColumnWidth = 64%3B" />
+    <_BootstrapFile15 Include="    private const int WorkspacePanelMinWidth = 240%3B" />
     <_BootstrapFile15 Include="    private readonly WorkspaceStore _store = new()%3B" />
     <_BootstrapFile15 Include="    private readonly HashMapCSharpExporter _exporter = new()%3B" />
     <_BootstrapFile15 Include="    private readonly string _workspacePath = Path.Combine(" />
@@ -696,11 +715,13 @@
     <_BootstrapFile15 Include="    private int _dragRowIndex = -1%3B" />
     <_BootstrapFile15 Include="    private Point _dragStartPoint%3B" />
     <_BootstrapFile15 Include="    private TextBox%3F _activeEditingTextBox%3B" />
+    <_BootstrapFile15 Include="    private string%3F _editingColumnHeaderId%3B" />
+    <_BootstrapFile15 Include="    private bool _previewSplitterInitialized%3B" />
     <_BootstrapFile15 Include="    private readonly ListBox _workspaceList = new()%3B" />
-    <_BootstrapFile15 Include="    private readonly TextBox _workspaceNameBox = new()%3B" />
     <_BootstrapFile15 Include="    private readonly DataGridView _grid = new()%3B" />
     <_BootstrapFile15 Include="    private readonly TextBox _previewBox = new()%3B" />
     <_BootstrapFile15 Include="    private readonly TextBox _columnNameBox = new()%3B" />
+    <_BootstrapFile15 Include="    private readonly TextBox _columnHeaderEditBox = new()%3B" />
     <_BootstrapFile15 Include="    private readonly ComboBox _cellKindBox = new()%3B" />
     <_BootstrapFile15 Include="    private readonly Label _statusLabel = new()%3B" />
     <_BootstrapFile15 Include="    public Form1()" />
@@ -711,10 +732,10 @@
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void BuildUi()" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        Text = &quot;TestDataCreater&quot;%3B" />
+    <_BootstrapFile15 Include="        Text = &quot;HashMap Maker&quot;%3B" />
     <_BootstrapFile15 Include="        Width = 1280%3B" />
     <_BootstrapFile15 Include="        Height = 820%3B" />
-    <_BootstrapFile15 Include="        MinimumSize = new Size(1024, 640)%3B" />
+    <_BootstrapFile15 Include="        MinimumSize = new Size(1100, 680)%3B" />
     <_BootstrapFile15 Include="        Font = new Font(&quot;Segoe UI&quot;, 9F)%3B" />
     <_BootstrapFile15 Include="        TableLayoutPanel root = new()" />
     <_BootstrapFile15 Include="        {" />
@@ -740,38 +761,30 @@
     <_BootstrapFile15 Include="        TableLayoutPanel header = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 5," />
+    <_BootstrapFile15 Include="            ColumnCount = 7," />
     <_BootstrapFile15 Include="            Padding = new Padding(10, 8, 10, 8)" />
     <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 96))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8))%3B" />
-    <_BootstrapFile15 Include="        Label nameLabel = new()" />
+    <_BootstrapFile15 Include="        Label appNameLabel = new()" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Text = &quot;結果セット名&quot;," />
+    <_BootstrapFile15 Include="            Text = &quot;HashMap Maker&quot;," />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            TextAlign = ContentAlignment.MiddleLeft" />
+    <_BootstrapFile15 Include="            TextAlign = ContentAlignment.MiddleLeft," />
+    <_BootstrapFile15 Include="            Font = new Font(Font, FontStyle.Bold)" />
     <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        _workspaceNameBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile15 Include="        _workspaceNameBox.Margin = new Padding(0, 2, 12, 2)%3B" />
-    <_BootstrapFile15 Include="        _workspaceNameBox.TextChanged += (_, _) =&gt;" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            if (_loading || _currentResultSet is null)" />
-    <_BootstrapFile15 Include="            {" />
-    <_BootstrapFile15 Include="                return%3B" />
-    <_BootstrapFile15 Include="            }" />
-    <_BootstrapFile15 Include="            _currentResultSet.Name = string.IsNullOrWhiteSpace(_workspaceNameBox.Text)" />
-    <_BootstrapFile15 Include="                %3F &quot;Result Set&quot;" />
-    <_BootstrapFile15 Include="                : _workspaceNameBox.Text.Trim()%3B" />
-    <_BootstrapFile15 Include="            _workspaceList.Refresh()%3B" />
-    <_BootstrapFile15 Include="            SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(nameLabel, 0, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(_workspaceNameBox, 1, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(CreateButton(&quot;プレビュー&quot;, PreviewExport), 2, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(CreateButton(&quot;コピー&quot;, ExportToClipboard), 3, 0)%3B" />
+    <_BootstrapFile15 Include="        ConfigureInspectorControls()%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(appNameLabel, 0, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;列名&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(_columnNameBox, 3, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 4, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(_cellKindBox, 5, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateButton(&quot;コピー&quot;, ExportToClipboard), 6, 0)%3B" />
     <_BootstrapFile15 Include="        return header%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreateBodyPanel()" />
@@ -780,7 +793,8 @@
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
     <_BootstrapFile15 Include="            FixedPanel = FixedPanel.Panel1," />
-    <_BootstrapFile15 Include="            SplitterDistance = 210" />
+    <_BootstrapFile15 Include="            SplitterDistance = WorkspacePanelMinWidth," />
+    <_BootstrapFile15 Include="            Panel1MinSize = WorkspacePanelMinWidth" />
     <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        outer.Panel1.Controls.Add(CreateWorkspacePanel())%3B" />
     <_BootstrapFile15 Include="        outer.Panel2.Controls.Add(CreateEditorPanel())%3B" />
@@ -797,7 +811,7 @@
     <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28))%3B" />
     <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 36))%3B" />
+    <_BootstrapFile15 Include="        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 42))%3B" />
     <_BootstrapFile15 Include="        Label workspaceLabel = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Text = &quot;ワークスペース&quot;," />
@@ -807,14 +821,17 @@
     <_BootstrapFile15 Include="        _workspaceList.Dock = DockStyle.Fill%3B" />
     <_BootstrapFile15 Include="        _workspaceList.DisplayMember = nameof(ResultSet.Name)%3B" />
     <_BootstrapFile15 Include="        _workspaceList.SelectedIndexChanged += (_, _) =&gt; SelectWorkspaceFromList()%3B" />
-    <_BootstrapFile15 Include="        FlowLayoutPanel workspaceCommands = new()" />
+    <_BootstrapFile15 Include="        TableLayoutPanel workspaceCommands = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            FlowDirection = FlowDirection.LeftToRight," />
-    <_BootstrapFile15 Include="            WrapContents = false" />
+    <_BootstrapFile15 Include="            ColumnCount = 2," />
+    <_BootstrapFile15 Include="            RowCount = 1," />
+    <_BootstrapFile15 Include="            Padding = new Padding(0, 4, 0, 0)" />
     <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        workspaceCommands.Controls.Add(CreateButton(&quot;追加&quot;, AddWorkspace))%3B" />
-    <_BootstrapFile15 Include="        workspaceCommands.Controls.Add(CreateButton(&quot;削除&quot;, DeleteWorkspace))%3B" />
+    <_BootstrapFile15 Include="        workspaceCommands.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50))%3B" />
+    <_BootstrapFile15 Include="        workspaceCommands.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50))%3B" />
+    <_BootstrapFile15 Include="        workspaceCommands.Controls.Add(CreateWorkspaceButton(&quot;追加&quot;, AddWorkspace), 0, 0)%3B" />
+    <_BootstrapFile15 Include="        workspaceCommands.Controls.Add(CreateWorkspaceButton(&quot;削除&quot;, DeleteWorkspace), 1, 0)%3B" />
     <_BootstrapFile15 Include="        workspacePanel.Controls.Add(workspaceLabel, 0, 0)%3B" />
     <_BootstrapFile15 Include="        workspacePanel.Controls.Add(_workspaceList, 0, 1)%3B" />
     <_BootstrapFile15 Include="        workspacePanel.Controls.Add(workspaceCommands, 0, 2)%3B" />
@@ -822,57 +839,59 @@
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreateEditorPanel()" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        TableLayoutPanel editor = new()" />
+    <_BootstrapFile15 Include="        SplitContainer editor = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 1," />
-    <_BootstrapFile15 Include="            RowCount = 3," />
-    <_BootstrapFile15 Include="            Padding = new Padding(4, 4, 8, 6)" />
+    <_BootstrapFile15 Include="            Orientation = Orientation.Horizontal," />
+    <_BootstrapFile15 Include="            SplitterWidth = 7," />
+    <_BootstrapFile15 Include="            BackColor = SystemColors.Control" />
     <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 70))%3B" />
-    <_BootstrapFile15 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile15 Include="        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 170))%3B" />
+    <_BootstrapFile15 Include="        editor.SizeChanged += (_, _) =&gt; ConfigurePreviewSplitter(editor)%3B" />
     <_BootstrapFile15 Include="        ConfigureGrid()%3B" />
     <_BootstrapFile15 Include="        ConfigurePreviewBox()%3B" />
-    <_BootstrapFile15 Include="        editor.Controls.Add(CreateGridCommandPanel(), 0, 0)%3B" />
-    <_BootstrapFile15 Include="        editor.Controls.Add(_grid, 0, 1)%3B" />
-    <_BootstrapFile15 Include="        editor.Controls.Add(CreatePreviewPanel(), 0, 2)%3B" />
+    <_BootstrapFile15 Include="        editor.Panel1.Padding = new Padding(4, 4, 8, 3)%3B" />
+    <_BootstrapFile15 Include="        editor.Panel2.Padding = new Padding(4, 3, 8, 6)%3B" />
+    <_BootstrapFile15 Include="        editor.Panel1.Controls.Add(_grid)%3B" />
+    <_BootstrapFile15 Include="        editor.Panel2.Controls.Add(CreatePreviewPanel())%3B" />
     <_BootstrapFile15 Include="        return editor%3B" />
     <_BootstrapFile15 Include="    }" />
-    <_BootstrapFile15 Include="    private Control CreateGridCommandPanel()" />
+    <_BootstrapFile15 Include="    private void ConfigurePreviewSplitter(SplitContainer editor)" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        TableLayoutPanel commandPanel = new()" />
+    <_BootstrapFile15 Include="        int minimumGridHeight = 240%3B" />
+    <_BootstrapFile15 Include="        int minimumPreviewHeight = 110%3B" />
+    <_BootstrapFile15 Include="        if (editor.Height &lt;= minimumGridHeight + minimumPreviewHeight + editor.SplitterWidth)" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 2," />
-    <_BootstrapFile15 Include="            RowCount = 1" />
-    <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
-    <_BootstrapFile15 Include="        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 380))%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        editor.Panel1MinSize = minimumGridHeight%3B" />
+    <_BootstrapFile15 Include="        editor.Panel2MinSize = minimumPreviewHeight%3B" />
+    <_BootstrapFile15 Include="        if (_previewSplitterInitialized)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _previewSplitterInitialized = true%3B" />
+    <_BootstrapFile15 Include="        int previewHeight = 180%3B" />
+    <_BootstrapFile15 Include="        editor.SplitterDistance = Math.Max(" />
+    <_BootstrapFile15 Include="            minimumGridHeight," />
+    <_BootstrapFile15 Include="            editor.Height - previewHeight - editor.SplitterWidth)%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ConfigureInspectorControls()" />
+    <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        _columnNameBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile15 Include="        _columnNameBox.Margin = new Padding(0, 20, 8, 20)%3B" />
+    <_BootstrapFile15 Include="        _columnNameBox.Margin = new Padding(0, 2, 10, 2)%3B" />
     <_BootstrapFile15 Include="        _columnNameBox.TextChanged += (_, _) =&gt; RenameCurrentColumn()%3B" />
     <_BootstrapFile15 Include="        _cellKindBox.Dock = DockStyle.Fill%3B" />
-    <_BootstrapFile15 Include="        _cellKindBox.Margin = new Padding(0, 20, 0, 20)%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.Margin = new Padding(0, 2, 10, 2)%3B" />
     <_BootstrapFile15 Include="        _cellKindBox.DropDownStyle = ComboBoxStyle.DropDownList%3B" />
+    <_BootstrapFile15 Include="        _cellKindBox.Format += (_, e) =&gt;" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            if (e.ListItem is CellValueKind kind)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                e.Value = CellValueKindRules.ToCSharpTypeName(kind)%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        _cellKindBox.DataSource = Enum.GetValues&lt;CellValueKind&gt;()%3B" />
     <_BootstrapFile15 Include="        _cellKindBox.SelectedIndexChanged += (_, _) =&gt; ApplySelectedCellKind()%3B" />
-    <_BootstrapFile15 Include="        TableLayoutPanel inspector = new()" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 4," />
-    <_BootstrapFile15 Include="            RowCount = 1" />
-    <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48))%3B" />
-    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58))%3B" />
-    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32))%3B" />
-    <_BootstrapFile15 Include="        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42))%3B" />
-    <_BootstrapFile15 Include="        inspector.Controls.Add(new Label { Text = &quot;列名&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0)%3B" />
-    <_BootstrapFile15 Include="        inspector.Controls.Add(_columnNameBox, 1, 0)%3B" />
-    <_BootstrapFile15 Include="        inspector.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0)%3B" />
-    <_BootstrapFile15 Include="        inspector.Controls.Add(_cellKindBox, 3, 0)%3B" />
-    <_BootstrapFile15 Include="        commandPanel.Controls.Add(inspector, 1, 0)%3B" />
-    <_BootstrapFile15 Include="        return commandPanel%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void ConfigurePreviewBox()" />
     <_BootstrapFile15 Include="    {" />
@@ -886,17 +905,14 @@
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreatePreviewPanel()" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        TabControl tabs = new()" />
+    <_BootstrapFile15 Include="        GroupBox previewPanel = new()" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Dock = DockStyle.Fill" />
+    <_BootstrapFile15 Include="            Text = &quot;プレビュー&quot;," />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            Padding = new Padding(8, 18, 8, 8)" />
     <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        TabPage previewPage = new(&quot;C# プレビュー&quot;)" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Padding = new Padding(4)" />
-    <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        previewPage.Controls.Add(_previewBox)%3B" />
-    <_BootstrapFile15 Include="        tabs.TabPages.Add(previewPage)%3B" />
-    <_BootstrapFile15 Include="        return tabs%3B" />
+    <_BootstrapFile15 Include="        previewPanel.Controls.Add(_previewBox)%3B" />
+    <_BootstrapFile15 Include="        return previewPanel%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private static Button CreateButton(string text, Action action)" />
     <_BootstrapFile15 Include="    {" />
@@ -909,6 +925,14 @@
     <_BootstrapFile15 Include="            Padding = new Padding(8, 0, 8, 0)" />
     <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        button.Click += (_, _) =&gt; action()%3B" />
+    <_BootstrapFile15 Include="        return button%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private static Button CreateWorkspaceButton(string text, Action action)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        Button button = CreateButton(text, action)%3B" />
+    <_BootstrapFile15 Include="        button.AutoSize = false%3B" />
+    <_BootstrapFile15 Include="        button.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        button.Margin = new Padding(0, 0, 6, 4)%3B" />
     <_BootstrapFile15 Include="        return button%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void ConfigureGrid()" />
@@ -932,6 +956,7 @@
     <_BootstrapFile15 Include="        _grid.CellClick += GridCellClick%3B" />
     <_BootstrapFile15 Include="        _grid.CellEndEdit += GridCellEndEdit%3B" />
     <_BootstrapFile15 Include="        _grid.CellValueChanged += GridCellValueChanged%3B" />
+    <_BootstrapFile15 Include="        _grid.ColumnHeaderMouseClick += GridColumnHeaderMouseClick%3B" />
     <_BootstrapFile15 Include="        _grid.EditingControlShowing += GridEditingControlShowing%3B" />
     <_BootstrapFile15 Include="        _grid.SelectionChanged += (_, _) =&gt; RefreshInspector()%3B" />
     <_BootstrapFile15 Include="        _grid.ColumnDisplayIndexChanged += (_, _) =&gt;" />
@@ -951,6 +976,11 @@
     <_BootstrapFile15 Include="        _grid.MouseMove += GridMouseMove%3B" />
     <_BootstrapFile15 Include="        _grid.DragOver += (_, e) =&gt; e.Effect = DragDropEffects.Move%3B" />
     <_BootstrapFile15 Include="        _grid.DragDrop += GridDragDrop%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.Visible = false%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.BorderStyle = BorderStyle.FixedSingle%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.LostFocus += (_, _) =&gt; FinishColumnHeaderEdit(commit: true)%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.KeyDown += ColumnHeaderEditBoxKeyDown%3B" />
+    <_BootstrapFile15 Include="        _grid.Controls.Add(_columnHeaderEditBox)%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void LoadWorkspaceDocument()" />
     <_BootstrapFile15 Include="    {" />
@@ -992,9 +1022,9 @@
     <_BootstrapFile15 Include="    private void LoadGrid()" />
     <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        _loading = true%3B" />
+    <_BootstrapFile15 Include="        FinishColumnHeaderEdit(commit: false)%3B" />
     <_BootstrapFile15 Include="        _grid.Columns.Clear()%3B" />
     <_BootstrapFile15 Include="        _grid.Rows.Clear()%3B" />
-    <_BootstrapFile15 Include="        _workspaceNameBox.Text = _currentResultSet%3F.Name %3F%3F &quot;&quot;%3B" />
     <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            _loading = false%3B" />
@@ -1168,6 +1198,14 @@
     <_BootstrapFile15 Include="            return%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        HandleGridCommandCell(e.RowIndex, e.ColumnIndex)%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void GridColumnHeaderMouseClick(object%3F sender, DataGridViewCellMouseEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (e.ColumnIndex &lt; 0 || !IsDataColumn(_grid.Columns[e.ColumnIndex]))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        BeginColumnHeaderEdit(e.ColumnIndex)%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void GridCellEndEdit(object%3F sender, DataGridViewCellEventArgs e)" />
     <_BootstrapFile15 Include="    {" />
@@ -1459,6 +1497,77 @@
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="        PreviewExport()%3B" />
     <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void BeginColumnHeaderEdit(int columnIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || columnIndex &lt; 0 || columnIndex &gt;= _grid.Columns.Count)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        DataGridViewColumn gridColumn = _grid.Columns[columnIndex]%3B" />
+    <_BootstrapFile15 Include="        if (!IsDataColumn(gridColumn))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        Rectangle headerBounds = _grid.GetCellDisplayRectangle(columnIndex, -1, cutOverflow: true)%3B" />
+    <_BootstrapFile15 Include="        if (headerBounds.Width &lt;= 8 || headerBounds.Height &lt;= 8)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _editingColumnHeaderId = gridColumn.Name%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.Bounds = new Rectangle(" />
+    <_BootstrapFile15 Include="            headerBounds.Left + 2," />
+    <_BootstrapFile15 Include="            headerBounds.Top + 2," />
+    <_BootstrapFile15 Include="            Math.Max(40, headerBounds.Width - 4)," />
+    <_BootstrapFile15 Include="            Math.Max(22, headerBounds.Height - 4))%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.Text = gridColumn.HeaderText%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.Visible = true%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.BringToFront()%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.Focus()%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.SelectAll()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ColumnHeaderEditBoxKeyDown(object%3F sender, KeyEventArgs e)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (e.KeyCode == Keys.Enter)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            e.SuppressKeyPress = true%3B" />
+    <_BootstrapFile15 Include="            FinishColumnHeaderEdit(commit: true)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        else if (e.KeyCode == Keys.Escape)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            e.SuppressKeyPress = true%3B" />
+    <_BootstrapFile15 Include="            FinishColumnHeaderEdit(commit: false)%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void FinishColumnHeaderEdit(bool commit)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_editingColumnHeaderId is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string columnId = _editingColumnHeaderId%3B" />
+    <_BootstrapFile15 Include="        _editingColumnHeaderId = null%3B" />
+    <_BootstrapFile15 Include="        _columnHeaderEditBox.Visible = false%3B" />
+    <_BootstrapFile15 Include="        if (!commit || _currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string columnName = string.IsNullOrWhiteSpace(_columnHeaderEditBox.Text)" />
+    <_BootstrapFile15 Include="            %3F &quot;Column&quot;" />
+    <_BootstrapFile15 Include="            : _columnHeaderEditBox.Text.Trim()%3B" />
+    <_BootstrapFile15 Include="        ResultColumn%3F column = _currentResultSet.Columns.FirstOrDefault(item =&gt; item.Id == columnId)%3B" />
+    <_BootstrapFile15 Include="        if (column is null || _grid.Columns[columnId] is not { } gridColumn)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        column.Name = columnName%3B" />
+    <_BootstrapFile15 Include="        gridColumn.HeaderText = columnName%3B" />
+    <_BootstrapFile15 Include="        if (_grid.CurrentCell is not null &amp;&amp; _grid.Columns[_grid.CurrentCell.ColumnIndex].Name == columnId)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _columnNameBox.Text = columnName%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
+    <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void ApplySelectedCellKind()" />
     <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        if (_loading || _currentResultSet is null || _cellKindBox.SelectedItem is not CellValueKind kind)" />
@@ -1704,7 +1813,7 @@
     <_BootstrapFile15 Include="}" />
   </ItemGroup>
   <ItemGroup>
-    <_BootstrapFile16 Include="namespace TestDataCreater%3B" />
+    <_BootstrapFile16 Include="﻿namespace TestDataCreater%3B" />
     <_BootstrapFile16 Include="partial class Form1" />
     <_BootstrapFile16 Include="{" />
     <_BootstrapFile16 Include="    /// &lt;summary&gt;" />
@@ -1733,7 +1842,7 @@
     <_BootstrapFile16 Include="        components = new System.ComponentModel.Container()%3B" />
     <_BootstrapFile16 Include="        AutoScaleMode = AutoScaleMode.Font%3B" />
     <_BootstrapFile16 Include="        ClientSize = new Size(800, 450)%3B" />
-    <_BootstrapFile16 Include="        Text = &quot;TestDataCreater&quot;%3B" />
+    <_BootstrapFile16 Include="        Text = &quot;HashMap Maker&quot;%3B" />
     <_BootstrapFile16 Include="    }" />
     <_BootstrapFile16 Include="    #endregion" />
     <_BootstrapFile16 Include="}" />

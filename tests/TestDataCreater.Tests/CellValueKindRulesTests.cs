@@ -6,6 +6,20 @@ namespace TestDataCreater.Tests;
 public sealed class CellValueKindRulesTests
 {
     [TestMethod]
+    public void ValueKindDisplayNamesUseCSharpTypeNames()
+    {
+        Assert.AreEqual("string", CellValueKindRules.ToCSharpTypeName(CellValueKind.String));
+        Assert.AreEqual("int", CellValueKindRules.ToCSharpTypeName(CellValueKind.Int32));
+        Assert.AreEqual("long", CellValueKindRules.ToCSharpTypeName(CellValueKind.Int64));
+        Assert.AreEqual("decimal", CellValueKindRules.ToCSharpTypeName(CellValueKind.Decimal));
+        Assert.AreEqual("double", CellValueKindRules.ToCSharpTypeName(CellValueKind.Double));
+        Assert.AreEqual("bool", CellValueKindRules.ToCSharpTypeName(CellValueKind.Boolean));
+        Assert.AreEqual("DateTime", CellValueKindRules.ToCSharpTypeName(CellValueKind.DateTime));
+        Assert.AreEqual("Guid", CellValueKindRules.ToCSharpTypeName(CellValueKind.Guid));
+        Assert.AreEqual("C# expression", CellValueKindRules.ToCSharpTypeName(CellValueKind.CustomExpression));
+    }
+
+    [TestMethod]
     public void LeadingZeroTextDoesNotAllowNumericKinds()
     {
         IReadOnlyList<CellValueKind> allowed = CellValueKindRules.GetAllowedKinds("01");

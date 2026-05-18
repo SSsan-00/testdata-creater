@@ -8,6 +8,7 @@ public partial class Form1 : Form
     private const string AddColumnCommandColumnName = "__add_column";
     private const string ColumnCommandRowTag = "__column_commands";
     private const int GridCommandColumnWidth = 64;
+    private const int WorkspacePanelMinWidth = 240;
 
     private readonly WorkspaceStore _store = new();
     private readonly HashMapCSharpExporter _exporter = new();
@@ -22,12 +23,14 @@ public partial class Form1 : Form
     private int _dragRowIndex = -1;
     private Point _dragStartPoint;
     private TextBox? _activeEditingTextBox;
+    private string? _editingColumnHeaderId;
+    private bool _previewSplitterInitialized;
 
     private readonly ListBox _workspaceList = new();
-    private readonly TextBox _workspaceNameBox = new();
     private readonly DataGridView _grid = new();
     private readonly TextBox _previewBox = new();
     private readonly TextBox _columnNameBox = new();
+    private readonly TextBox _columnHeaderEditBox = new();
     private readonly ComboBox _cellKindBox = new();
     private readonly Label _statusLabel = new();
 
@@ -40,10 +43,10 @@ public partial class Form1 : Form
 
     private void BuildUi()
     {
-        Text = "TestDataCreater";
+        Text = "HashMap Maker";
         Width = 1280;
         Height = 820;
-        MinimumSize = new Size(1024, 640);
+        MinimumSize = new Size(1100, 680);
         Font = new Font("Segoe UI", 9F);
 
         TableLayoutPanel root = new()
@@ -74,42 +77,33 @@ public partial class Form1 : Form
         TableLayoutPanel header = new()
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 5,
+            ColumnCount = 7,
             Padding = new Padding(10, 8, 10, 8)
         };
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 96));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8));
 
-        Label nameLabel = new()
+        Label appNameLabel = new()
         {
-            Text = "結果セット名",
+            Text = "HashMap Maker",
             Dock = DockStyle.Fill,
-            TextAlign = ContentAlignment.MiddleLeft
+            TextAlign = ContentAlignment.MiddleLeft,
+            Font = new Font(Font, FontStyle.Bold)
         };
 
-        _workspaceNameBox.Dock = DockStyle.Fill;
-        _workspaceNameBox.Margin = new Padding(0, 2, 12, 2);
-        _workspaceNameBox.TextChanged += (_, _) =>
-        {
-            if (_loading || _currentResultSet is null)
-            {
-                return;
-            }
+        ConfigureInspectorControls();
 
-            _currentResultSet.Name = string.IsNullOrWhiteSpace(_workspaceNameBox.Text)
-                ? "Result Set"
-                : _workspaceNameBox.Text.Trim();
-            _workspaceList.Refresh();
-            SaveWorkspaceDocument();
-        };
-
-        header.Controls.Add(nameLabel, 0, 0);
-        header.Controls.Add(_workspaceNameBox, 1, 0);
-        header.Controls.Add(CreateButton("プレビュー", PreviewExport), 2, 0);
-        header.Controls.Add(CreateButton("コピー", ExportToClipboard), 3, 0);
+        header.Controls.Add(appNameLabel, 0, 0);
+        header.Controls.Add(new Label { Text = "列名", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0);
+        header.Controls.Add(_columnNameBox, 3, 0);
+        header.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 4, 0);
+        header.Controls.Add(_cellKindBox, 5, 0);
+        header.Controls.Add(CreateButton("コピー", ExportToClipboard), 6, 0);
 
         return header;
     }
@@ -120,7 +114,8 @@ public partial class Form1 : Form
         {
             Dock = DockStyle.Fill,
             FixedPanel = FixedPanel.Panel1,
-            SplitterDistance = 210
+            SplitterDistance = WorkspacePanelMinWidth,
+            Panel1MinSize = WorkspacePanelMinWidth
         };
 
         outer.Panel1.Controls.Add(CreateWorkspacePanel());
@@ -139,7 +134,7 @@ public partial class Form1 : Form
         };
         workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
         workspacePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 36));
+        workspacePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
 
         Label workspaceLabel = new()
         {
@@ -152,14 +147,17 @@ public partial class Form1 : Form
         _workspaceList.DisplayMember = nameof(ResultSet.Name);
         _workspaceList.SelectedIndexChanged += (_, _) => SelectWorkspaceFromList();
 
-        FlowLayoutPanel workspaceCommands = new()
+        TableLayoutPanel workspaceCommands = new()
         {
             Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.LeftToRight,
-            WrapContents = false
+            ColumnCount = 2,
+            RowCount = 1,
+            Padding = new Padding(0, 4, 0, 0)
         };
-        workspaceCommands.Controls.Add(CreateButton("追加", AddWorkspace));
-        workspaceCommands.Controls.Add(CreateButton("削除", DeleteWorkspace));
+        workspaceCommands.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+        workspaceCommands.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+        workspaceCommands.Controls.Add(CreateWorkspaceButton("追加", AddWorkspace), 0, 0);
+        workspaceCommands.Controls.Add(CreateWorkspaceButton("削除", DeleteWorkspace), 1, 0);
 
         workspacePanel.Controls.Add(workspaceLabel, 0, 0);
         workspacePanel.Controls.Add(_workspaceList, 0, 1);
@@ -169,65 +167,68 @@ public partial class Form1 : Form
 
     private Control CreateEditorPanel()
     {
-        TableLayoutPanel editor = new()
+        SplitContainer editor = new()
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 1,
-            RowCount = 3,
-            Padding = new Padding(4, 4, 8, 6)
+            Orientation = Orientation.Horizontal,
+            SplitterWidth = 7,
+            BackColor = SystemColors.Control
         };
-        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
-        editor.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        editor.RowStyles.Add(new RowStyle(SizeType.Absolute, 170));
+        editor.SizeChanged += (_, _) => ConfigurePreviewSplitter(editor);
 
         ConfigureGrid();
         ConfigurePreviewBox();
 
-        editor.Controls.Add(CreateGridCommandPanel(), 0, 0);
-        editor.Controls.Add(_grid, 0, 1);
-        editor.Controls.Add(CreatePreviewPanel(), 0, 2);
+        editor.Panel1.Padding = new Padding(4, 4, 8, 3);
+        editor.Panel2.Padding = new Padding(4, 3, 8, 6);
+        editor.Panel1.Controls.Add(_grid);
+        editor.Panel2.Controls.Add(CreatePreviewPanel());
         return editor;
     }
 
-    private Control CreateGridCommandPanel()
+    private void ConfigurePreviewSplitter(SplitContainer editor)
     {
-        TableLayoutPanel commandPanel = new()
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 1
-        };
-        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        commandPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 380));
+        int minimumGridHeight = 240;
+        int minimumPreviewHeight = 110;
 
+        if (editor.Height <= minimumGridHeight + minimumPreviewHeight + editor.SplitterWidth)
+        {
+            return;
+        }
+
+        editor.Panel1MinSize = minimumGridHeight;
+        editor.Panel2MinSize = minimumPreviewHeight;
+
+        if (_previewSplitterInitialized)
+        {
+            return;
+        }
+
+        _previewSplitterInitialized = true;
+        int previewHeight = 180;
+        editor.SplitterDistance = Math.Max(
+            minimumGridHeight,
+            editor.Height - previewHeight - editor.SplitterWidth);
+    }
+
+    private void ConfigureInspectorControls()
+    {
         _columnNameBox.Dock = DockStyle.Fill;
-        _columnNameBox.Margin = new Padding(0, 20, 8, 20);
+        _columnNameBox.Margin = new Padding(0, 2, 10, 2);
         _columnNameBox.TextChanged += (_, _) => RenameCurrentColumn();
 
         _cellKindBox.Dock = DockStyle.Fill;
-        _cellKindBox.Margin = new Padding(0, 20, 0, 20);
+        _cellKindBox.Margin = new Padding(0, 2, 10, 2);
         _cellKindBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        _cellKindBox.Format += (_, e) =>
+        {
+            if (e.ListItem is CellValueKind kind)
+            {
+                e.Value = CellValueKindRules.ToCSharpTypeName(kind);
+            }
+        };
         _cellKindBox.DataSource = Enum.GetValues<CellValueKind>();
         _cellKindBox.SelectedIndexChanged += (_, _) => ApplySelectedCellKind();
-
-        TableLayoutPanel inspector = new()
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 4,
-            RowCount = 1
-        };
-        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48));
-        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58));
-        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32));
-        inspector.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42));
-
-        inspector.Controls.Add(new Label { Text = "列名", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 0);
-        inspector.Controls.Add(_columnNameBox, 1, 0);
-        inspector.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0);
-        inspector.Controls.Add(_cellKindBox, 3, 0);
-
-        commandPanel.Controls.Add(inspector, 1, 0);
-        return commandPanel;
     }
 
     private void ConfigurePreviewBox()
@@ -243,18 +244,14 @@ public partial class Form1 : Form
 
     private Control CreatePreviewPanel()
     {
-        TabControl tabs = new()
+        GroupBox previewPanel = new()
         {
-            Dock = DockStyle.Fill
+            Text = "プレビュー",
+            Dock = DockStyle.Fill,
+            Padding = new Padding(8, 18, 8, 8)
         };
-
-        TabPage previewPage = new("C# プレビュー")
-        {
-            Padding = new Padding(4)
-        };
-        previewPage.Controls.Add(_previewBox);
-        tabs.TabPages.Add(previewPage);
-        return tabs;
+        previewPanel.Controls.Add(_previewBox);
+        return previewPanel;
     }
 
     private static Button CreateButton(string text, Action action)
@@ -268,6 +265,15 @@ public partial class Form1 : Form
             Padding = new Padding(8, 0, 8, 0)
         };
         button.Click += (_, _) => action();
+        return button;
+    }
+
+    private static Button CreateWorkspaceButton(string text, Action action)
+    {
+        Button button = CreateButton(text, action);
+        button.AutoSize = false;
+        button.Dock = DockStyle.Fill;
+        button.Margin = new Padding(0, 0, 6, 4);
         return button;
     }
 
@@ -293,6 +299,7 @@ public partial class Form1 : Form
         _grid.CellClick += GridCellClick;
         _grid.CellEndEdit += GridCellEndEdit;
         _grid.CellValueChanged += GridCellValueChanged;
+        _grid.ColumnHeaderMouseClick += GridColumnHeaderMouseClick;
         _grid.EditingControlShowing += GridEditingControlShowing;
         _grid.SelectionChanged += (_, _) => RefreshInspector();
         _grid.ColumnDisplayIndexChanged += (_, _) =>
@@ -312,6 +319,12 @@ public partial class Form1 : Form
         _grid.MouseMove += GridMouseMove;
         _grid.DragOver += (_, e) => e.Effect = DragDropEffects.Move;
         _grid.DragDrop += GridDragDrop;
+
+        _columnHeaderEditBox.Visible = false;
+        _columnHeaderEditBox.BorderStyle = BorderStyle.FixedSingle;
+        _columnHeaderEditBox.LostFocus += (_, _) => FinishColumnHeaderEdit(commit: true);
+        _columnHeaderEditBox.KeyDown += ColumnHeaderEditBoxKeyDown;
+        _grid.Controls.Add(_columnHeaderEditBox);
     }
 
     private void LoadWorkspaceDocument()
@@ -364,10 +377,9 @@ public partial class Form1 : Form
     private void LoadGrid()
     {
         _loading = true;
+        FinishColumnHeaderEdit(commit: false);
         _grid.Columns.Clear();
         _grid.Rows.Clear();
-
-        _workspaceNameBox.Text = _currentResultSet?.Name ?? "";
 
         if (_currentResultSet is null)
         {
@@ -566,6 +578,16 @@ public partial class Form1 : Form
         }
 
         HandleGridCommandCell(e.RowIndex, e.ColumnIndex);
+    }
+
+    private void GridColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
+    {
+        if (e.ColumnIndex < 0 || !IsDataColumn(_grid.Columns[e.ColumnIndex]))
+        {
+            return;
+        }
+
+        BeginColumnHeaderEdit(e.ColumnIndex);
     }
 
     private void GridCellEndEdit(object? sender, DataGridViewCellEventArgs e)
@@ -913,6 +935,90 @@ public partial class Form1 : Form
 
         column.Name = string.IsNullOrWhiteSpace(_columnNameBox.Text) ? "Column" : _columnNameBox.Text.Trim();
         _grid.Columns[_grid.CurrentCell.ColumnIndex].HeaderText = column.Name;
+        SaveWorkspaceDocument();
+        PreviewExport();
+    }
+
+    private void BeginColumnHeaderEdit(int columnIndex)
+    {
+        if (_currentResultSet is null || columnIndex < 0 || columnIndex >= _grid.Columns.Count)
+        {
+            return;
+        }
+
+        DataGridViewColumn gridColumn = _grid.Columns[columnIndex];
+        if (!IsDataColumn(gridColumn))
+        {
+            return;
+        }
+
+        Rectangle headerBounds = _grid.GetCellDisplayRectangle(columnIndex, -1, cutOverflow: true);
+        if (headerBounds.Width <= 8 || headerBounds.Height <= 8)
+        {
+            return;
+        }
+
+        _editingColumnHeaderId = gridColumn.Name;
+        _columnHeaderEditBox.Bounds = new Rectangle(
+            headerBounds.Left + 2,
+            headerBounds.Top + 2,
+            Math.Max(40, headerBounds.Width - 4),
+            Math.Max(22, headerBounds.Height - 4));
+        _columnHeaderEditBox.Text = gridColumn.HeaderText;
+        _columnHeaderEditBox.Visible = true;
+        _columnHeaderEditBox.BringToFront();
+        _columnHeaderEditBox.Focus();
+        _columnHeaderEditBox.SelectAll();
+    }
+
+    private void ColumnHeaderEditBoxKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            FinishColumnHeaderEdit(commit: true);
+        }
+        else if (e.KeyCode == Keys.Escape)
+        {
+            e.SuppressKeyPress = true;
+            FinishColumnHeaderEdit(commit: false);
+        }
+    }
+
+    private void FinishColumnHeaderEdit(bool commit)
+    {
+        if (_editingColumnHeaderId is null)
+        {
+            return;
+        }
+
+        string columnId = _editingColumnHeaderId;
+        _editingColumnHeaderId = null;
+        _columnHeaderEditBox.Visible = false;
+
+        if (!commit || _currentResultSet is null)
+        {
+            return;
+        }
+
+        string columnName = string.IsNullOrWhiteSpace(_columnHeaderEditBox.Text)
+            ? "Column"
+            : _columnHeaderEditBox.Text.Trim();
+
+        ResultColumn? column = _currentResultSet.Columns.FirstOrDefault(item => item.Id == columnId);
+        if (column is null || _grid.Columns[columnId] is not { } gridColumn)
+        {
+            return;
+        }
+
+        column.Name = columnName;
+        gridColumn.HeaderText = columnName;
+
+        if (_grid.CurrentCell is not null && _grid.Columns[_grid.CurrentCell.ColumnIndex].Name == columnId)
+        {
+            _columnNameBox.Text = columnName;
+        }
+
         SaveWorkspaceDocument();
         PreviewExport();
     }
