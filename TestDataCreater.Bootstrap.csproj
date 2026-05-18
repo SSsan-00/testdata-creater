@@ -702,7 +702,7 @@
     <_BootstrapFile15 Include="    private const string AddColumnCommandColumnName = &quot;__add_column&quot;%3B" />
     <_BootstrapFile15 Include="    private const string ColumnCommandRowTag = &quot;__column_commands&quot;%3B" />
     <_BootstrapFile15 Include="    private const int GridCommandColumnWidth = 64%3B" />
-    <_BootstrapFile15 Include="    private const int WorkspacePanelMinWidth = 240%3B" />
+    <_BootstrapFile15 Include="    private const int WorkspacePanelMinWidth = 280%3B" />
     <_BootstrapFile15 Include="    private readonly WorkspaceStore _store = new()%3B" />
     <_BootstrapFile15 Include="    private readonly HashMapCSharpExporter _exporter = new()%3B" />
     <_BootstrapFile15 Include="    private readonly string _workspacePath = Path.Combine(" />
@@ -796,9 +796,23 @@
     <_BootstrapFile15 Include="            SplitterDistance = WorkspacePanelMinWidth," />
     <_BootstrapFile15 Include="            Panel1MinSize = WorkspacePanelMinWidth" />
     <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        outer.HandleCreated += (_, _) =&gt; outer.BeginInvoke((MethodInvoker)(() =&gt; EnsureWorkspacePanelWidth(outer)))%3B" />
+    <_BootstrapFile15 Include="        outer.SizeChanged += (_, _) =&gt; EnsureWorkspacePanelWidth(outer)%3B" />
     <_BootstrapFile15 Include="        outer.Panel1.Controls.Add(CreateWorkspacePanel())%3B" />
     <_BootstrapFile15 Include="        outer.Panel2.Controls.Add(CreateEditorPanel())%3B" />
     <_BootstrapFile15 Include="        return outer%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private static void EnsureWorkspacePanelWidth(SplitContainer outer)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (outer.Width &lt;= 0 || outer.SplitterDistance &gt;= WorkspacePanelMinWidth)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int maximumSplitterDistance = outer.Width - outer.Panel2MinSize - outer.SplitterWidth%3B" />
+    <_BootstrapFile15 Include="        if (maximumSplitterDistance &gt;= WorkspacePanelMinWidth)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            outer.SplitterDistance = WorkspacePanelMinWidth%3B" />
+    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreateWorkspacePanel()" />
     <_BootstrapFile15 Include="    {" />

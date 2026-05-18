@@ -8,7 +8,7 @@ public partial class Form1 : Form
     private const string AddColumnCommandColumnName = "__add_column";
     private const string ColumnCommandRowTag = "__column_commands";
     private const int GridCommandColumnWidth = 64;
-    private const int WorkspacePanelMinWidth = 240;
+    private const int WorkspacePanelMinWidth = 280;
 
     private readonly WorkspaceStore _store = new();
     private readonly HashMapCSharpExporter _exporter = new();
@@ -117,10 +117,26 @@ public partial class Form1 : Form
             SplitterDistance = WorkspacePanelMinWidth,
             Panel1MinSize = WorkspacePanelMinWidth
         };
+        outer.HandleCreated += (_, _) => outer.BeginInvoke((MethodInvoker)(() => EnsureWorkspacePanelWidth(outer)));
+        outer.SizeChanged += (_, _) => EnsureWorkspacePanelWidth(outer);
 
         outer.Panel1.Controls.Add(CreateWorkspacePanel());
         outer.Panel2.Controls.Add(CreateEditorPanel());
         return outer;
+    }
+
+    private static void EnsureWorkspacePanelWidth(SplitContainer outer)
+    {
+        if (outer.Width <= 0 || outer.SplitterDistance >= WorkspacePanelMinWidth)
+        {
+            return;
+        }
+
+        int maximumSplitterDistance = outer.Width - outer.Panel2MinSize - outer.SplitterWidth;
+        if (maximumSplitterDistance >= WorkspacePanelMinWidth)
+        {
+            outer.SplitterDistance = WorkspacePanelMinWidth;
+        }
     }
 
     private Control CreateWorkspacePanel()
