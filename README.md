@@ -1,57 +1,142 @@
 # TestDataCreater
 
-C# WinForms tool for editing query result-set test data and exporting it as HashMap initializer code.
+`TestDataCreater` は、クエリ結果セットのテストデータを GUI で編集し、C# の `HashMap` 初期化コードとして出力する WinForms アプリです。
 
-## Features
+1 行の結果セットは `new HashMap`、複数行の結果セットは `new HashMap<HashMap>` として出力します。複数行の場合、外側の key は現在の表示順に従って `0, 1, 2...` に振り直されます。
 
-- Manage multiple result-set workspaces.
-- Add, delete, and reorder rows and columns.
-- Drag rows in the grid and drag columns by their headers.
-- Persist workspace data under the user's application data folder.
-- Preview generated C# code before exporting.
-- Copy exported code to the clipboard.
-- Export one row as `new HashMap`.
-- Export multiple rows as `new HashMap<HashMap>` with outer keys renumbered from `0`.
-- Choose value kinds such as string, numeric values, bool, DateTime, Guid, null, DBNull.Value, and custom C# expressions.
-
-## Requirements
+## 動作環境
 
 - .NET 9 SDK
-- Windows environment for running the WinForms UI
+- Windows 環境
+- WinForms UI の起動は Windows が必要です
 
-## Build
+macOS / Linux でも Windows ターゲットの restore / build は可能ですが、画面の起動確認は Windows 上で行ってください。
 
-Run this from the repository root:
+## 導入手順
+
+GitHub から取得できる場合:
 
 ```bash
+git clone https://github.com/SSsan-00/testdata-creater.git
+cd testdata-creater
 dotnet build TestDataCreater.sln
 ```
 
-On macOS or Linux, the project can be restored and built as a Windows-targeting project, but the WinForms UI must be run on Windows.
+リポジトリをダウンロードできない場合:
 
-## Test
-
-MSTest tests live under `tests/` and are intended for repository development only.
-
-```bash
-dotnet test TestDataCreater.sln
-```
-
-The bootstrap project does not expand test source files.
-
-## Bootstrap without downloading the repository
-
-Copy [TestDataCreater.Bootstrap.csproj](TestDataCreater.Bootstrap.csproj) into an empty folder and run:
+1. 空のフォルダを作成します。
+2. [TestDataCreater.Bootstrap.csproj](TestDataCreater.Bootstrap.csproj) だけをそのフォルダへコピーします。
+3. 次のコマンドを実行します。
 
 ```bash
 dotnet build TestDataCreater.Bootstrap.csproj
 dotnet build TestDataCreater.sln
 ```
 
-The bootstrap build expands the solution, Core project, WinForms project, and source files into the current folder. It does not expand MSTest source files.
+bootstrap は solution、Core プロジェクト、WinForms プロジェクト、ソースファイルを現在のフォルダへ展開します。MSTest のテストソースは展開しません。
 
-If files already exist, the bootstrap leaves them unchanged. To regenerate them, run:
+既存ファイルがある場合、bootstrap は上書きしません。再生成したい場合は次を実行してください。
 
 ```bash
 dotnet build TestDataCreater.Bootstrap.csproj /p:BootstrapOverwrite=true
 ```
+
+## 起動方法
+
+Windows 上で次のコマンドを実行します。
+
+```bash
+dotnet run --project src/TestDataCreater/TestDataCreater.csproj
+```
+
+Visual Studio を使う場合は `TestDataCreater.sln` を開き、`TestDataCreater` プロジェクトを起動プロジェクトに設定して実行してください。
+
+## 使い方
+
+1. 左側の `Workspace` で結果セットを選択します。
+2. `Add workspace` で結果セットを追加します。
+3. `Workspace` 上部の入力欄で結果セット名を変更します。
+4. `Add row` / `Delete row` で行を増減します。
+5. `Add column` / `Delete column` で列を増減します。
+6. グリッドのセルに値を入力します。
+7. 右側の `Selected cell type` で選択セルの値型を指定します。
+8. `Preview` で C# 出力内容を確認します。
+9. `Export copy` でプレビュー内容をクリップボードへコピーします。
+
+行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。`Row up` / `Row down`、`Column left` / `Column right` でも順序を変更できます。
+
+行を選択して export すると、選択行だけが出力対象になります。未選択の場合は全行を出力します。
+
+## 出力形式
+
+1 行のみの場合:
+
+```csharp
+var data = new HashMap
+{
+    { "USER_ID", 1 },
+    { "USER_NAME", "Alice" },
+};
+```
+
+複数行の場合:
+
+```csharp
+var data = new HashMap<HashMap>
+{
+    { 0, new HashMap
+        {
+            { "USER_ID", 1 },
+            { "USER_NAME", "Alice" },
+        }
+    },
+    { 1, new HashMap
+        {
+            { "USER_ID", 2 },
+            { "USER_NAME", "Bob" },
+        }
+    },
+};
+```
+
+複数行出力時の外側 key は、GUI 上の表示順に従って `0` から連番で再採番します。
+
+## 値型
+
+セルごとに次の型を選択できます。
+
+- `String`
+- `Int32`
+- `Int64`
+- `Decimal`
+- `Double`
+- `Boolean`
+- `DateTime`
+- `Guid`
+- `Null`
+- `DbNull`
+- `CustomExpression`
+
+`CustomExpression` は任意の C# 式をそのまま出力するための型です。たとえば `OrderStatus.Completed` や `new Money(1200, "JPY")` のような、プロジェクト固有の型や enum を使う場合に指定します。
+
+## データ保存
+
+入力した workspace はアプリ終了時や編集操作時に自動保存されます。保存先はユーザーのアプリケーションデータフォルダ配下の `TestDataCreater/workspace.json` です。
+
+アプリを再起動すると、前回の workspace、行、列、セル値、値型が復元されます。
+
+## 開発者向け
+
+通常ビルド:
+
+```bash
+dotnet build TestDataCreater.sln
+```
+
+テスト実行:
+
+```bash
+dotnet test TestDataCreater.sln
+```
+
+MSTest のテストは `tests/` 配下にあります。bootstrap で展開されるソースにはテストプロジェクトを含めていません。
