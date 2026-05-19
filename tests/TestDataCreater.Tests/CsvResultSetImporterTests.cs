@@ -27,7 +27,7 @@ public sealed class CsvResultSetImporterTests
     }
 
     [TestMethod]
-    public void ImportIntoAppendsRowsWhenTableHasData()
+    public void ImportIntoReplacesExistingTableData()
     {
         ResultSet resultSet = new("Existing");
         ResultColumn id = resultSet.AddColumn("ID");
@@ -39,9 +39,9 @@ public sealed class CsvResultSetImporterTests
         Assert.AreEqual(1, importedRows);
         CollectionAssert.AreEqual(new[] { "ID", "VALUE" }, resultSet.Columns.Select(column => column.Name).ToArray());
         CollectionAssert.AreEqual(
-            new[] { "existing", "10" },
+            new[] { "10" },
             resultSet.Rows.Select(row => row.GetCell(resultSet.Columns[0].Id).Text).ToArray());
-        Assert.AreEqual(CellValueKind.Int32, resultSet.Rows[1].GetCell(resultSet.Columns[0].Id).Kind);
-        Assert.AreEqual("New", resultSet.Rows[1].GetCell(resultSet.Columns[1].Id).Text);
+        Assert.AreEqual(CellValueKind.Int32, resultSet.Rows[0].GetCell(resultSet.Columns[0].Id).Kind);
+        Assert.AreEqual("New", resultSet.Rows[0].GetCell(resultSet.Columns[1].Id).Text);
     }
 }

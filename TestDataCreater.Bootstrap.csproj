@@ -85,7 +85,7 @@
     <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。" />
     <_BootstrapFile1 Include="プレビューとコピーは常に現在の全レコードを出力します。セル入力中もプレビューは入力内容に追従します。" />
     <_BootstrapFile1 Include="`型` の候補は入力値に応じて絞り込まれます。たとえば `01` のような文字列は数値型として選択できません。" />
-    <_BootstrapFile1 Include="CSVインポート時は、既存の表が空の場合はCSVの表として置き換え、既存データがある場合は列名を照合して不足列を追加し、行を末尾へ追加します。セルの型は基本 `string` として扱い、`null` は `null`、C# の `int` として成立する値は `int` として取り込みます。" />
+    <_BootstrapFile1 Include="CSVインポート時は、既存入力の有無に関係なく現在の表をCSVの内容で上書きします。セルの型は基本 `string` として扱い、`null` は `null`、C# の `int` として成立する値は `int` として取り込みます。" />
     <_BootstrapFile1 Include="## 出力形式" />
     <_BootstrapFile1 Include="1 行のみの場合:" />
     <_BootstrapFile1 Include="```csharp" />
@@ -2035,11 +2035,8 @@
     <_BootstrapFile17 Include="            .Skip(1)" />
     <_BootstrapFile17 Include="            .Where(row =&gt; row.Any(value =&gt; value.Length &gt; 0))" />
     <_BootstrapFile17 Include="            .ToList()%3B" />
-    <_BootstrapFile17 Include="        if (ShouldReplaceCurrentTable(resultSet))" />
-    <_BootstrapFile17 Include="        {" />
-    <_BootstrapFile17 Include="            resultSet.Columns.Clear()%3B" />
-    <_BootstrapFile17 Include="            resultSet.Rows.Clear()%3B" />
-    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        resultSet.Columns.Clear()%3B" />
+    <_BootstrapFile17 Include="        resultSet.Rows.Clear()%3B" />
     <_BootstrapFile17 Include="        List&lt;ResultColumn&gt; columns = ResolveColumns(resultSet, headers)%3B" />
     <_BootstrapFile17 Include="        foreach (List&lt;string&gt; rowValues in dataRows)" />
     <_BootstrapFile17 Include="        {" />
@@ -2075,16 +2072,6 @@
     <_BootstrapFile17 Include="            columns.Add(existingColumn %3F%3F resultSet.AddColumn(header))%3B" />
     <_BootstrapFile17 Include="        }" />
     <_BootstrapFile17 Include="        return columns%3B" />
-    <_BootstrapFile17 Include="    }" />
-    <_BootstrapFile17 Include="    private static bool ShouldReplaceCurrentTable(ResultSet resultSet)" />
-    <_BootstrapFile17 Include="    {" />
-    <_BootstrapFile17 Include="        if (resultSet.Rows.Count == 0)" />
-    <_BootstrapFile17 Include="        {" />
-    <_BootstrapFile17 Include="            return true%3B" />
-    <_BootstrapFile17 Include="        }" />
-    <_BootstrapFile17 Include="        return resultSet.Rows.All(row =&gt;" />
-    <_BootstrapFile17 Include="            resultSet.Columns.All(column =&gt;" />
-    <_BootstrapFile17 Include="                string.IsNullOrWhiteSpace(row.GetCell(column.Id, column.DefaultKind).Text)))%3B" />
     <_BootstrapFile17 Include="    }" />
     <_BootstrapFile17 Include="    private static List&lt;string&gt; NormalizeHeaders(IReadOnlyList&lt;string&gt; headerRow, int columnCount)" />
     <_BootstrapFile17 Include="    {" />

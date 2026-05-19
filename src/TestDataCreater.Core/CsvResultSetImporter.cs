@@ -21,12 +21,8 @@ public static class CsvResultSetImporter
             .Where(row => row.Any(value => value.Length > 0))
             .ToList();
 
-        if (ShouldReplaceCurrentTable(resultSet))
-        {
-            resultSet.Columns.Clear();
-            resultSet.Rows.Clear();
-        }
-
+        resultSet.Columns.Clear();
+        resultSet.Rows.Clear();
         List<ResultColumn> columns = ResolveColumns(resultSet, headers);
 
         foreach (List<string> rowValues in dataRows)
@@ -70,18 +66,6 @@ public static class CsvResultSetImporter
         }
 
         return columns;
-    }
-
-    private static bool ShouldReplaceCurrentTable(ResultSet resultSet)
-    {
-        if (resultSet.Rows.Count == 0)
-        {
-            return true;
-        }
-
-        return resultSet.Rows.All(row =>
-            resultSet.Columns.All(column =>
-                string.IsNullOrWhiteSpace(row.GetCell(column.Id, column.DefaultKind).Text)));
     }
 
     private static List<string> NormalizeHeaders(IReadOnlyList<string> headerRow, int columnCount)
