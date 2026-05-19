@@ -7,7 +7,7 @@ public partial class Form1 : Form
     private const string RowCommandColumnName = "__row_command";
     private const string AddColumnCommandColumnName = "__add_column";
     private const string ColumnCommandRowTag = "__column_commands";
-    private const int GridCommandColumnWidth = 64;
+    private const int GridCommandColumnWidth = 72;
     private const int WorkspacePanelMinWidth = 280;
 
     private readonly WorkspaceStore _store = new();
@@ -77,16 +77,17 @@ public partial class Form1 : Form
         TableLayoutPanel header = new()
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 7,
+            ColumnCount = 8,
             Padding = new Padding(10, 8, 10, 8)
         };
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48));
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32));
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 124));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
 
         Label appNameLabel = new()
         {
@@ -103,7 +104,8 @@ public partial class Form1 : Form
         header.Controls.Add(_columnNameBox, 3, 0);
         header.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 4, 0);
         header.Controls.Add(_cellKindBox, 5, 0);
-        header.Controls.Add(CreateButton("コピー", ExportToClipboard), 6, 0);
+        header.Controls.Add(CreateHeaderButton("CSVインポート", ImportCsvFromFile), 6, 0);
+        header.Controls.Add(CreateHeaderButton("コピー", ExportToClipboard), 7, 0);
 
         return header;
     }
@@ -162,6 +164,7 @@ public partial class Form1 : Form
         _workspaceList.Dock = DockStyle.Fill;
         _workspaceList.DisplayMember = nameof(ResultSet.Name);
         _workspaceList.SelectedIndexChanged += (_, _) => SelectWorkspaceFromList();
+        _workspaceList.DoubleClick += (_, _) => RenameSelectedWorkspace();
 
         TableLayoutPanel workspaceCommands = new()
         {
@@ -290,6 +293,15 @@ public partial class Form1 : Form
         button.AutoSize = false;
         button.Dock = DockStyle.Fill;
         button.Margin = new Padding(0, 0, 6, 4);
+        return button;
+    }
+
+    private static Button CreateHeaderButton(string text, Action action)
+    {
+        Button button = CreateButton(text, action);
+        button.AutoSize = false;
+        button.Dock = DockStyle.Fill;
+        button.Margin = new Padding(4, 2, 0, 2);
         return button;
     }
 
@@ -458,9 +470,10 @@ public partial class Form1 : Form
             if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn)
             {
                 int addColumnCommandIndex = addColumnCommandColumn.Index;
-                gridRow.Cells[addColumnCommandIndex] = new DataGridViewTextBoxCell
+                gridRow.Cells[addColumnCommandIndex] = new DataGridViewButtonCell
                 {
-                    Value = ""
+                    Value = "コピー",
+                    FlatStyle = FlatStyle.Flat
                 };
                 gridRow.Cells[addColumnCommandIndex].ReadOnly = true;
                 gridRow.Cells[addColumnCommandIndex].Style.BackColor = SystemColors.Control;
@@ -690,6 +703,12 @@ public partial class Form1 : Form
         if (IsDataGridRowIndex(rowIndex) && column.Name == RowCommandColumnName)
         {
             DeleteRowAtGridIndex(rowIndex);
+            return;
+        }
+
+        if (IsDataGridRowIndex(rowIndex) && column.Name == AddColumnCommandColumnName)
+        {
+            CopyRowAtGridIndex(rowIndex);
         }
     }
 
@@ -729,6 +748,36 @@ public partial class Form1 : Form
         SyncGridToModel();
         _currentResultSet.RemoveRow(rowId);
         LoadGrid();
+        SaveWorkspaceDocument();
+    }
+
+    private void CopyRowAtGridIndex(int rowIndex)
+    {
+        if (_currentResultSet is null || !IsDataGridRowIndex(rowIndex))
+        {
+            return;
+        }
+
+        int sourceIndex = GridRowIndexToModelIndex(rowIndex);
+        if (sourceIndex < 0 || sourceIndex >= _currentResultSet.Rows.Count)
+        {
+            return;
+        }
+
+        SyncGridToModel();
+        ResultRow sourceRow = _currentResultSet.Rows[sourceIndex];
+        ResultRow copiedRow = new();
+
+        foreach (ResultColumn column in _currentResultSet.Columns)
+        {
+            CellValue sourceCell = sourceRow.GetCell(column.Id, column.DefaultKind);
+            copiedRow.SetCell(column.Id, new CellValue(sourceCell.Kind, sourceCell.Text));
+        }
+
+        int insertIndex = sourceIndex + 1;
+        _currentResultSet.Rows.Insert(insertIndex, copiedRow);
+        LoadGrid();
+        SelectGridRow(insertIndex);
         SaveWorkspaceDocument();
     }
 
@@ -785,6 +834,90 @@ public partial class Form1 : Form
         ReloadWorkspaceList();
         _workspaceList.SelectedItem = resultSet;
         SaveWorkspaceDocument();
+    }
+
+    private void RenameSelectedWorkspace()
+    {
+        if (_workspaceList.SelectedItem is not ResultSet resultSet)
+        {
+            return;
+        }
+
+        string? newName = PromptWorkspaceName(resultSet.Name);
+        if (newName is null)
+        {
+            return;
+        }
+
+        resultSet.Name = string.IsNullOrWhiteSpace(newName) ? "Result Set" : newName.Trim();
+        _workspaceList.Refresh();
+        SaveWorkspaceDocument();
+    }
+
+    private string? PromptWorkspaceName(string currentName)
+    {
+        using Form dialog = new()
+        {
+            Text = "ワークスペース名",
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            StartPosition = FormStartPosition.CenterParent,
+            MinimizeBox = false,
+            MaximizeBox = false,
+            ShowInTaskbar = false,
+            ClientSize = new Size(380, 118),
+            Font = Font
+        };
+
+        TextBox nameBox = new()
+        {
+            Dock = DockStyle.Top,
+            Text = currentName,
+            Margin = new Padding(0, 0, 0, 12)
+        };
+
+        Button okButton = new()
+        {
+            Text = "OK",
+            DialogResult = DialogResult.OK,
+            Width = 88
+        };
+
+        Button cancelButton = new()
+        {
+            Text = "キャンセル",
+            DialogResult = DialogResult.Cancel,
+            Width = 88
+        };
+
+        FlowLayoutPanel commands = new()
+        {
+            Dock = DockStyle.Bottom,
+            FlowDirection = FlowDirection.RightToLeft,
+            Height = 36
+        };
+        commands.Controls.Add(cancelButton);
+        commands.Controls.Add(okButton);
+
+        TableLayoutPanel content = new()
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(12),
+            RowCount = 3,
+            ColumnCount = 1
+        };
+        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
+        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+        content.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        content.Controls.Add(new Label { Text = "ワークスペース名", Dock = DockStyle.Fill }, 0, 0);
+        content.Controls.Add(nameBox, 0, 1);
+        content.Controls.Add(commands, 0, 2);
+
+        dialog.AcceptButton = okButton;
+        dialog.CancelButton = cancelButton;
+        dialog.Controls.Add(content);
+
+        DialogResult result = dialog.ShowDialog(this);
+        return result == DialogResult.OK ? nameBox.Text : null;
     }
 
     private void DeleteWorkspace()
@@ -1214,6 +1347,41 @@ public partial class Form1 : Form
         SaveWorkspaceDocument();
     }
 
+    private void ImportCsvFromFile()
+    {
+        if (_currentResultSet is null)
+        {
+            return;
+        }
+
+        using OpenFileDialog dialog = new()
+        {
+            Title = "CSVをインポート",
+            Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+
+        if (dialog.ShowDialog(this) != DialogResult.OK)
+        {
+            return;
+        }
+
+        try
+        {
+            SyncGridToModel();
+            string csvText = File.ReadAllText(dialog.FileName);
+            int importedRows = CsvResultSetImporter.ImportInto(_currentResultSet, csvText);
+            LoadGrid();
+            SaveWorkspaceDocument();
+            _statusLabel.Text = $"{importedRows} 行のCSVデータをインポートしました。";
+        }
+        catch (Exception ex)
+        {
+            _statusLabel.Text = $"CSVインポートに失敗しました: {ex.Message}";
+        }
+    }
+
     private void SaveWorkspaceDocument()
     {
         if (_loading)
@@ -1229,6 +1397,12 @@ public partial class Form1 : Form
     private void GridMouseDown(object? sender, MouseEventArgs e)
     {
         DataGridView.HitTestInfo hit = _grid.HitTest(e.X, e.Y);
+        if (hit.ColumnIndex >= 0 && _grid.Columns[hit.ColumnIndex].Name == AddColumnCommandColumnName)
+        {
+            _dragRowIndex = -1;
+            return;
+        }
+
         _dragRowIndex = IsDataGridRowIndex(hit.RowIndex) ? hit.RowIndex : -1;
         _dragStartPoint = e.Location;
     }

@@ -69,19 +69,23 @@
     <_BootstrapFile1 Include="## 使い方" />
     <_BootstrapFile1 Include="1. 左側の `ワークスペース` で結果セットを選択します。" />
     <_BootstrapFile1 Include="2. `追加` で結果セットを追加します。" />
-    <_BootstrapFile1 Include="3. グリッド左上の固定操作エリアにある `+ 行` で行を追加します。" />
-    <_BootstrapFile1 Include="4. 各行の左端にある `- 行` で行を削除します。" />
-    <_BootstrapFile1 Include="5. グリッド左上の固定操作エリアにある `+ 列` で列を追加します。" />
-    <_BootstrapFile1 Include="6. グリッド最上段の各列にある `- 列` で列を削除します。" />
-    <_BootstrapFile1 Include="7. グリッドのセルに値を入力します。" />
-    <_BootstrapFile1 Include="8. 列ヘッダーをクリックしてフィールド名を直接変更します。" />
-    <_BootstrapFile1 Include="9. 画面上部の `列名` でも選択列の名前を変更できます。" />
-    <_BootstrapFile1 Include="10. 画面上部の `型` で選択セルの値型を指定します。型名は C# に近い表記で表示されます。" />
-    <_BootstrapFile1 Include="11. 下部の `プレビュー` で C# 出力内容を確認します。グリッドとプレビューの境界を上下にドラッグすると表示領域を変更できます。" />
-    <_BootstrapFile1 Include="12. `コピー` でプレビュー内容をクリップボードへコピーします。" />
+    <_BootstrapFile1 Include="3. ワークスペース名を変更する場合は一覧の項目をダブルクリックします。" />
+    <_BootstrapFile1 Include="4. グリッド左上の固定操作エリアにある `+ 行` で行を追加します。" />
+    <_BootstrapFile1 Include="5. 各行の左端にある `- 行` で行を削除します。" />
+    <_BootstrapFile1 Include="6. `+ 列` の下にある `コピー` で、その行を複製して一つ下へ挿入します。" />
+    <_BootstrapFile1 Include="7. グリッド左上の固定操作エリアにある `+ 列` で列を追加します。" />
+    <_BootstrapFile1 Include="8. グリッド最上段の各列にある `- 列` で列を削除します。" />
+    <_BootstrapFile1 Include="9. グリッドのセルに値を入力します。" />
+    <_BootstrapFile1 Include="10. 列ヘッダーをクリックしてフィールド名を直接変更します。" />
+    <_BootstrapFile1 Include="11. 画面上部の `列名` でも選択列の名前を変更できます。" />
+    <_BootstrapFile1 Include="12. 画面上部の `型` で選択セルの値型を指定します。型名は C# に近い表記で表示されます。" />
+    <_BootstrapFile1 Include="13. `CSVインポート` でCSVファイルを選択すると、1行目を列名、2行目以降をデータとして表へ取り込みます。" />
+    <_BootstrapFile1 Include="14. 下部の `プレビュー` で C# 出力内容を確認します。グリッドとプレビューの境界を上下にドラッグすると表示領域を変更できます。" />
+    <_BootstrapFile1 Include="15. `コピー` でプレビュー内容をクリップボードへコピーします。" />
     <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。" />
     <_BootstrapFile1 Include="プレビューとコピーは常に現在の全レコードを出力します。セル入力中もプレビューは入力内容に追従します。" />
     <_BootstrapFile1 Include="`型` の候補は入力値に応じて絞り込まれます。たとえば `01` のような文字列は数値型として選択できません。" />
+    <_BootstrapFile1 Include="CSVインポート時は、既存の表が空の場合はCSVの表として置き換え、既存データがある場合は列名を照合して不足列を追加し、行を末尾へ追加します。セルの型は基本 `string` として扱い、`null` は `null`、C# の `int` として成立する値は `int` として取り込みます。" />
     <_BootstrapFile1 Include="## 出力形式" />
     <_BootstrapFile1 Include="1 行のみの場合:" />
     <_BootstrapFile1 Include="```csharp" />
@@ -701,7 +705,7 @@
     <_BootstrapFile15 Include="    private const string RowCommandColumnName = &quot;__row_command&quot;%3B" />
     <_BootstrapFile15 Include="    private const string AddColumnCommandColumnName = &quot;__add_column&quot;%3B" />
     <_BootstrapFile15 Include="    private const string ColumnCommandRowTag = &quot;__column_commands&quot;%3B" />
-    <_BootstrapFile15 Include="    private const int GridCommandColumnWidth = 64%3B" />
+    <_BootstrapFile15 Include="    private const int GridCommandColumnWidth = 72%3B" />
     <_BootstrapFile15 Include="    private const int WorkspacePanelMinWidth = 280%3B" />
     <_BootstrapFile15 Include="    private readonly WorkspaceStore _store = new()%3B" />
     <_BootstrapFile15 Include="    private readonly HashMapCSharpExporter _exporter = new()%3B" />
@@ -761,16 +765,17 @@
     <_BootstrapFile15 Include="        TableLayoutPanel header = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 7," />
+    <_BootstrapFile15 Include="            ColumnCount = 8," />
     <_BootstrapFile15 Include="            Padding = new Padding(10, 8, 10, 8)" />
     <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48))%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32))%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180))%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 124))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92))%3B" />
     <_BootstrapFile15 Include="        Label appNameLabel = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Text = &quot;HashMap Maker&quot;," />
@@ -784,7 +789,8 @@
     <_BootstrapFile15 Include="        header.Controls.Add(_columnNameBox, 3, 0)%3B" />
     <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 4, 0)%3B" />
     <_BootstrapFile15 Include="        header.Controls.Add(_cellKindBox, 5, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(CreateButton(&quot;コピー&quot;, ExportToClipboard), 6, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;CSVインポート&quot;, ImportCsvFromFile), 6, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;コピー&quot;, ExportToClipboard), 7, 0)%3B" />
     <_BootstrapFile15 Include="        return header%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreateBodyPanel()" />
@@ -835,6 +841,7 @@
     <_BootstrapFile15 Include="        _workspaceList.Dock = DockStyle.Fill%3B" />
     <_BootstrapFile15 Include="        _workspaceList.DisplayMember = nameof(ResultSet.Name)%3B" />
     <_BootstrapFile15 Include="        _workspaceList.SelectedIndexChanged += (_, _) =&gt; SelectWorkspaceFromList()%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.DoubleClick += (_, _) =&gt; RenameSelectedWorkspace()%3B" />
     <_BootstrapFile15 Include="        TableLayoutPanel workspaceCommands = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
@@ -947,6 +954,14 @@
     <_BootstrapFile15 Include="        button.AutoSize = false%3B" />
     <_BootstrapFile15 Include="        button.Dock = DockStyle.Fill%3B" />
     <_BootstrapFile15 Include="        button.Margin = new Padding(0, 0, 6, 4)%3B" />
+    <_BootstrapFile15 Include="        return button%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private static Button CreateHeaderButton(string text, Action action)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        Button button = CreateButton(text, action)%3B" />
+    <_BootstrapFile15 Include="        button.AutoSize = false%3B" />
+    <_BootstrapFile15 Include="        button.Dock = DockStyle.Fill%3B" />
+    <_BootstrapFile15 Include="        button.Margin = new Padding(4, 2, 0, 2)%3B" />
     <_BootstrapFile15 Include="        return button%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void ConfigureGrid()" />
@@ -1095,9 +1110,10 @@
     <_BootstrapFile15 Include="            if (_grid.Columns[AddColumnCommandColumnName] is { } addColumnCommandColumn)" />
     <_BootstrapFile15 Include="            {" />
     <_BootstrapFile15 Include="                int addColumnCommandIndex = addColumnCommandColumn.Index%3B" />
-    <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex] = new DataGridViewTextBoxCell" />
+    <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex] = new DataGridViewButtonCell" />
     <_BootstrapFile15 Include="                {" />
-    <_BootstrapFile15 Include="                    Value = &quot;&quot;" />
+    <_BootstrapFile15 Include="                    Value = &quot;コピー&quot;," />
+    <_BootstrapFile15 Include="                    FlatStyle = FlatStyle.Flat" />
     <_BootstrapFile15 Include="                }%3B" />
     <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex].ReadOnly = true%3B" />
     <_BootstrapFile15 Include="                gridRow.Cells[addColumnCommandIndex].Style.BackColor = SystemColors.Control%3B" />
@@ -1292,6 +1308,11 @@
     <_BootstrapFile15 Include="        if (IsDataGridRowIndex(rowIndex) &amp;&amp; column.Name == RowCommandColumnName)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            DeleteRowAtGridIndex(rowIndex)%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (IsDataGridRowIndex(rowIndex) &amp;&amp; column.Name == AddColumnCommandColumnName)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            CopyRowAtGridIndex(rowIndex)%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void SyncSingleCell(int rowIndex, int columnIndex, string%3F editedText = null)" />
@@ -1324,6 +1345,31 @@
     <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
     <_BootstrapFile15 Include="        _currentResultSet.RemoveRow(rowId)%3B" />
     <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void CopyRowAtGridIndex(int rowIndex)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null || !IsDataGridRowIndex(rowIndex))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int sourceIndex = GridRowIndexToModelIndex(rowIndex)%3B" />
+    <_BootstrapFile15 Include="        if (sourceIndex &lt; 0 || sourceIndex &gt;= _currentResultSet.Rows.Count)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        ResultRow sourceRow = _currentResultSet.Rows[sourceIndex]%3B" />
+    <_BootstrapFile15 Include="        ResultRow copiedRow = new()%3B" />
+    <_BootstrapFile15 Include="        foreach (ResultColumn column in _currentResultSet.Columns)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            CellValue sourceCell = sourceRow.GetCell(column.Id, column.DefaultKind)%3B" />
+    <_BootstrapFile15 Include="            copiedRow.SetCell(column.Id, new CellValue(sourceCell.Kind, sourceCell.Text))%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        int insertIndex = sourceIndex + 1%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet.Rows.Insert(insertIndex, copiedRow)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SelectGridRow(insertIndex)%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void DeleteColumn(string columnId)" />
@@ -1372,6 +1418,79 @@
     <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
     <_BootstrapFile15 Include="        _workspaceList.SelectedItem = resultSet%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void RenameSelectedWorkspace()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_workspaceList.SelectedItem is not ResultSet resultSet)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        string%3F newName = PromptWorkspaceName(resultSet.Name)%3B" />
+    <_BootstrapFile15 Include="        if (newName is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        resultSet.Name = string.IsNullOrWhiteSpace(newName) %3F &quot;Result Set&quot; : newName.Trim()%3B" />
+    <_BootstrapFile15 Include="        _workspaceList.Refresh()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private string%3F PromptWorkspaceName(string currentName)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        using Form dialog = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Text = &quot;ワークスペース名&quot;," />
+    <_BootstrapFile15 Include="            FormBorderStyle = FormBorderStyle.FixedDialog," />
+    <_BootstrapFile15 Include="            StartPosition = FormStartPosition.CenterParent," />
+    <_BootstrapFile15 Include="            MinimizeBox = false," />
+    <_BootstrapFile15 Include="            MaximizeBox = false," />
+    <_BootstrapFile15 Include="            ShowInTaskbar = false," />
+    <_BootstrapFile15 Include="            ClientSize = new Size(380, 118)," />
+    <_BootstrapFile15 Include="            Font = Font" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        TextBox nameBox = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Top," />
+    <_BootstrapFile15 Include="            Text = currentName," />
+    <_BootstrapFile15 Include="            Margin = new Padding(0, 0, 0, 12)" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        Button okButton = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Text = &quot;OK&quot;," />
+    <_BootstrapFile15 Include="            DialogResult = DialogResult.OK," />
+    <_BootstrapFile15 Include="            Width = 88" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        Button cancelButton = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Text = &quot;キャンセル&quot;," />
+    <_BootstrapFile15 Include="            DialogResult = DialogResult.Cancel," />
+    <_BootstrapFile15 Include="            Width = 88" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        FlowLayoutPanel commands = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Bottom," />
+    <_BootstrapFile15 Include="            FlowDirection = FlowDirection.RightToLeft," />
+    <_BootstrapFile15 Include="            Height = 36" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        commands.Controls.Add(cancelButton)%3B" />
+    <_BootstrapFile15 Include="        commands.Controls.Add(okButton)%3B" />
+    <_BootstrapFile15 Include="        TableLayoutPanel content = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
+    <_BootstrapFile15 Include="            Padding = new Padding(12)," />
+    <_BootstrapFile15 Include="            RowCount = 3," />
+    <_BootstrapFile15 Include="            ColumnCount = 1" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 24))%3B" />
+    <_BootstrapFile15 Include="        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 30))%3B" />
+    <_BootstrapFile15 Include="        content.RowStyles.Add(new RowStyle(SizeType.Percent, 100))%3B" />
+    <_BootstrapFile15 Include="        content.Controls.Add(new Label { Text = &quot;ワークスペース名&quot;, Dock = DockStyle.Fill }, 0, 0)%3B" />
+    <_BootstrapFile15 Include="        content.Controls.Add(nameBox, 0, 1)%3B" />
+    <_BootstrapFile15 Include="        content.Controls.Add(commands, 0, 2)%3B" />
+    <_BootstrapFile15 Include="        dialog.AcceptButton = okButton%3B" />
+    <_BootstrapFile15 Include="        dialog.CancelButton = cancelButton%3B" />
+    <_BootstrapFile15 Include="        dialog.Controls.Add(content)%3B" />
+    <_BootstrapFile15 Include="        DialogResult result = dialog.ShowDialog(this)%3B" />
+    <_BootstrapFile15 Include="        return result == DialogResult.OK %3F nameBox.Text : null%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void DeleteWorkspace()" />
     <_BootstrapFile15 Include="    {" />
@@ -1727,6 +1846,37 @@
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ImportCsvFromFile()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        using OpenFileDialog dialog = new()" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            Title = &quot;CSVをインポート&quot;," />
+    <_BootstrapFile15 Include="            Filter = &quot;CSV files (%2A.csv)|%2A.csv|All files (%2A.%2A)|%2A.%2A&quot;," />
+    <_BootstrapFile15 Include="            CheckFileExists = true," />
+    <_BootstrapFile15 Include="            Multiselect = false" />
+    <_BootstrapFile15 Include="        }%3B" />
+    <_BootstrapFile15 Include="        if (dialog.ShowDialog(this) != DialogResult.OK)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        try" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="            string csvText = File.ReadAllText(dialog.FileName)%3B" />
+    <_BootstrapFile15 Include="            int importedRows = CsvResultSetImporter.ImportInto(_currentResultSet, csvText)%3B" />
+    <_BootstrapFile15 Include="            LoadGrid()%3B" />
+    <_BootstrapFile15 Include="            SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="            _statusLabel.Text = $&quot;{importedRows} 行のCSVデータをインポートしました。&quot;%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        catch (Exception ex)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _statusLabel.Text = $&quot;CSVインポートに失敗しました: {ex.Message}&quot;%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void SaveWorkspaceDocument()" />
     <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        if (_loading)" />
@@ -1740,6 +1890,11 @@
     <_BootstrapFile15 Include="    private void GridMouseDown(object%3F sender, MouseEventArgs e)" />
     <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        DataGridView.HitTestInfo hit = _grid.HitTest(e.X, e.Y)%3B" />
+    <_BootstrapFile15 Include="        if (hit.ColumnIndex &gt;= 0 &amp;&amp; _grid.Columns[hit.ColumnIndex].Name == AddColumnCommandColumnName)" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _dragRowIndex = -1%3B" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        _dragRowIndex = IsDataGridRowIndex(hit.RowIndex) %3F hit.RowIndex : -1%3B" />
     <_BootstrapFile15 Include="        _dragStartPoint = e.Location%3B" />
     <_BootstrapFile15 Include="    }" />
@@ -1861,6 +2016,177 @@
     <_BootstrapFile16 Include="    #endregion" />
     <_BootstrapFile16 Include="}" />
   </ItemGroup>
+  <ItemGroup>
+    <_BootstrapFile17 Include="using System.Text%3B" />
+    <_BootstrapFile17 Include="namespace TestDataCreater.Core%3B" />
+    <_BootstrapFile17 Include="public static class CsvResultSetImporter" />
+    <_BootstrapFile17 Include="{" />
+    <_BootstrapFile17 Include="    public static int ImportInto(ResultSet resultSet, string csvText)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        ArgumentNullException.ThrowIfNull(resultSet)%3B" />
+    <_BootstrapFile17 Include="        List&lt;List&lt;string&gt;&gt; csvRows = ParseRows(csvText)%3B" />
+    <_BootstrapFile17 Include="        if (csvRows.Count == 0)" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            return 0%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        int columnCount = csvRows.Max(row =&gt; row.Count)%3B" />
+    <_BootstrapFile17 Include="        List&lt;string&gt; headers = NormalizeHeaders(csvRows[0], columnCount)%3B" />
+    <_BootstrapFile17 Include="        List&lt;List&lt;string&gt;&gt; dataRows = csvRows" />
+    <_BootstrapFile17 Include="            .Skip(1)" />
+    <_BootstrapFile17 Include="            .Where(row =&gt; row.Any(value =&gt; value.Length &gt; 0))" />
+    <_BootstrapFile17 Include="            .ToList()%3B" />
+    <_BootstrapFile17 Include="        if (ShouldReplaceCurrentTable(resultSet))" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            resultSet.Columns.Clear()%3B" />
+    <_BootstrapFile17 Include="            resultSet.Rows.Clear()%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        List&lt;ResultColumn&gt; columns = ResolveColumns(resultSet, headers)%3B" />
+    <_BootstrapFile17 Include="        foreach (List&lt;string&gt; rowValues in dataRows)" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            ResultRow row = resultSet.AddRow()%3B" />
+    <_BootstrapFile17 Include="            for (int index = 0%3B index &lt; columns.Count%3B index++)" />
+    <_BootstrapFile17 Include="            {" />
+    <_BootstrapFile17 Include="                string text = index &lt; rowValues.Count %3F rowValues[index] : &quot;&quot;%3B" />
+    <_BootstrapFile17 Include="                row.SetCell(columns[index].Id, CreateImportedCellValue(text))%3B" />
+    <_BootstrapFile17 Include="            }" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        return dataRows.Count%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    public static CellValue CreateImportedCellValue(string text)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        string trimmed = text.Trim()%3B" />
+    <_BootstrapFile17 Include="        if (trimmed.Equals(&quot;null&quot;, StringComparison.OrdinalIgnoreCase))" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            return new CellValue(CellValueKind.Null, &quot;null&quot;)%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        if (CellValueKindRules.GetAllowedKinds(trimmed).Contains(CellValueKind.Int32))" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            return new CellValue(CellValueKind.Int32, trimmed)%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        return new CellValue(CellValueKind.String, text)%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    private static List&lt;ResultColumn&gt; ResolveColumns(ResultSet resultSet, List&lt;string&gt; headers)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        List&lt;ResultColumn&gt; columns = []%3B" />
+    <_BootstrapFile17 Include="        foreach (string header in headers)" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            ResultColumn%3F existingColumn = resultSet.Columns.FirstOrDefault(column =&gt;" />
+    <_BootstrapFile17 Include="                string.Equals(column.Name, header, StringComparison.OrdinalIgnoreCase))%3B" />
+    <_BootstrapFile17 Include="            columns.Add(existingColumn %3F%3F resultSet.AddColumn(header))%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        return columns%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    private static bool ShouldReplaceCurrentTable(ResultSet resultSet)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        if (resultSet.Rows.Count == 0)" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            return true%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        return resultSet.Rows.All(row =&gt;" />
+    <_BootstrapFile17 Include="            resultSet.Columns.All(column =&gt;" />
+    <_BootstrapFile17 Include="                string.IsNullOrWhiteSpace(row.GetCell(column.Id, column.DefaultKind).Text)))%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    private static List&lt;string&gt; NormalizeHeaders(IReadOnlyList&lt;string&gt; headerRow, int columnCount)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        HashSet&lt;string&gt; usedNames = new(StringComparer.OrdinalIgnoreCase)%3B" />
+    <_BootstrapFile17 Include="        List&lt;string&gt; headers = []%3B" />
+    <_BootstrapFile17 Include="        for (int index = 0%3B index &lt; columnCount%3B index++)" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            string baseName = index &lt; headerRow.Count &amp;&amp; !string.IsNullOrWhiteSpace(headerRow[index])" />
+    <_BootstrapFile17 Include="                %3F headerRow[index].Trim()" />
+    <_BootstrapFile17 Include="                : $&quot;COLUMN{index + 1}&quot;%3B" />
+    <_BootstrapFile17 Include="            string name = baseName%3B" />
+    <_BootstrapFile17 Include="            int suffix = 2%3B" />
+    <_BootstrapFile17 Include="            while (!usedNames.Add(name))" />
+    <_BootstrapFile17 Include="            {" />
+    <_BootstrapFile17 Include="                name = $&quot;{baseName}_{suffix}&quot;%3B" />
+    <_BootstrapFile17 Include="                suffix++%3B" />
+    <_BootstrapFile17 Include="            }" />
+    <_BootstrapFile17 Include="            headers.Add(name)%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        return headers%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    private static List&lt;List&lt;string&gt;&gt; ParseRows(string csvText)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        List&lt;List&lt;string&gt;&gt; rows = []%3B" />
+    <_BootstrapFile17 Include="        List&lt;string&gt; row = []%3B" />
+    <_BootstrapFile17 Include="        StringBuilder field = new()%3B" />
+    <_BootstrapFile17 Include="        bool inQuotes = false%3B" />
+    <_BootstrapFile17 Include="        for (int index = 0%3B index &lt; csvText.Length%3B index++)" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            char value = csvText[index]%3B" />
+    <_BootstrapFile17 Include="            if (inQuotes)" />
+    <_BootstrapFile17 Include="            {" />
+    <_BootstrapFile17 Include="                if (value == '&quot;')" />
+    <_BootstrapFile17 Include="                {" />
+    <_BootstrapFile17 Include="                    if (index + 1 &lt; csvText.Length &amp;&amp; csvText[index + 1] == '&quot;')" />
+    <_BootstrapFile17 Include="                    {" />
+    <_BootstrapFile17 Include="                        field.Append('&quot;')%3B" />
+    <_BootstrapFile17 Include="                        index++%3B" />
+    <_BootstrapFile17 Include="                    }" />
+    <_BootstrapFile17 Include="                    else" />
+    <_BootstrapFile17 Include="                    {" />
+    <_BootstrapFile17 Include="                        inQuotes = false%3B" />
+    <_BootstrapFile17 Include="                    }" />
+    <_BootstrapFile17 Include="                }" />
+    <_BootstrapFile17 Include="                else" />
+    <_BootstrapFile17 Include="                {" />
+    <_BootstrapFile17 Include="                    field.Append(value)%3B" />
+    <_BootstrapFile17 Include="                }" />
+    <_BootstrapFile17 Include="                continue%3B" />
+    <_BootstrapFile17 Include="            }" />
+    <_BootstrapFile17 Include="            switch (value)" />
+    <_BootstrapFile17 Include="            {" />
+    <_BootstrapFile17 Include="                case '&quot;':" />
+    <_BootstrapFile17 Include="                    if (field.Length == 0)" />
+    <_BootstrapFile17 Include="                    {" />
+    <_BootstrapFile17 Include="                        inQuotes = true%3B" />
+    <_BootstrapFile17 Include="                    }" />
+    <_BootstrapFile17 Include="                    else" />
+    <_BootstrapFile17 Include="                    {" />
+    <_BootstrapFile17 Include="                        field.Append(value)%3B" />
+    <_BootstrapFile17 Include="                    }" />
+    <_BootstrapFile17 Include="                    break%3B" />
+    <_BootstrapFile17 Include="                case ',':" />
+    <_BootstrapFile17 Include="                    AddField(row, field)%3B" />
+    <_BootstrapFile17 Include="                    break%3B" />
+    <_BootstrapFile17 Include="                case '%5Cr':" />
+    <_BootstrapFile17 Include="                    if (index + 1 &lt; csvText.Length &amp;&amp; csvText[index + 1] == '%5Cn')" />
+    <_BootstrapFile17 Include="                    {" />
+    <_BootstrapFile17 Include="                        index++%3B" />
+    <_BootstrapFile17 Include="                    }" />
+    <_BootstrapFile17 Include="                    AddRow(rows, row, field)%3B" />
+    <_BootstrapFile17 Include="                    break%3B" />
+    <_BootstrapFile17 Include="                case '%5Cn':" />
+    <_BootstrapFile17 Include="                    AddRow(rows, row, field)%3B" />
+    <_BootstrapFile17 Include="                    break%3B" />
+    <_BootstrapFile17 Include="                default:" />
+    <_BootstrapFile17 Include="                    field.Append(value)%3B" />
+    <_BootstrapFile17 Include="                    break%3B" />
+    <_BootstrapFile17 Include="            }" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        if (field.Length &gt; 0 || row.Count &gt; 0 || csvText.EndsWith(&quot;,&quot;, StringComparison.Ordinal))" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            AddRow(rows, row, field)%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        return rows%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    private static void AddField(List&lt;string&gt; row, StringBuilder field)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        row.Add(field.ToString())%3B" />
+    <_BootstrapFile17 Include="        field.Clear()%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="    private static void AddRow(List&lt;List&lt;string&gt;&gt; rows, List&lt;string&gt; row, StringBuilder field)" />
+    <_BootstrapFile17 Include="    {" />
+    <_BootstrapFile17 Include="        AddField(row, field)%3B" />
+    <_BootstrapFile17 Include="        if (row.Count &gt; 1 || row.Any(value =&gt; value.Length &gt; 0))" />
+    <_BootstrapFile17 Include="        {" />
+    <_BootstrapFile17 Include="            rows.Add([.. row])%3B" />
+    <_BootstrapFile17 Include="        }" />
+    <_BootstrapFile17 Include="        row.Clear()%3B" />
+    <_BootstrapFile17 Include="    }" />
+    <_BootstrapFile17 Include="}" />
+  </ItemGroup>
   <Target Name="ExpandTestDataCreater" AfterTargets="Build">
     <MakeDir Directories="$(BootstrapOutputRoot)" />
     <MakeDir Directories="$(BootstrapOutputRoot)src/TestDataCreater.Core" />
@@ -1872,6 +2198,7 @@
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValue.cs" Lines="@(_BootstrapFile4)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValue.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKind.cs" Lines="@(_BootstrapFile5)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKind.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKindRules.cs" Lines="@(_BootstrapFile6)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CellValueKindRules.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/CsvResultSetImporter.cs" Lines="@(_BootstrapFile17)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/CsvResultSetImporter.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/HashMapCSharpExporter.cs" Lines="@(_BootstrapFile7)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/HashMapCSharpExporter.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultColumn.cs" Lines="@(_BootstrapFile8)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultColumn.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultRow.cs" Lines="@(_BootstrapFile9)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater.Core/ResultRow.cs')" />
