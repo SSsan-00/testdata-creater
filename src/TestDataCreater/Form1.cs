@@ -77,7 +77,7 @@ public partial class Form1 : Form
         TableLayoutPanel header = new()
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 8,
+            ColumnCount = 9,
             Padding = new Padding(10, 8, 10, 8)
         };
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
@@ -87,6 +87,7 @@ public partial class Form1 : Form
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 124));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
 
         Label appNameLabel = new()
@@ -106,6 +107,7 @@ public partial class Form1 : Form
         header.Controls.Add(_cellKindBox, 5, 0);
         header.Controls.Add(CreateHeaderButton("CSVインポート", ImportCsvFromFile), 6, 0);
         header.Controls.Add(CreateHeaderButton("コピー", ExportToClipboard), 7, 0);
+        header.Controls.Add(CreateHeaderButton("クリア", ClearWorkspace), 8, 0);
 
         return header;
     }
@@ -364,28 +366,40 @@ public partial class Form1 : Form
             _document = WorkspaceDocument.CreateDefault();
         }
 
-        ReloadWorkspaceList();
-
         ResultSet? active = _document.ResultSets.FirstOrDefault(resultSet => resultSet.Id == _document.ActiveResultSetId)
             ?? _document.ResultSets.FirstOrDefault();
 
         if (active is not null)
         {
-            _workspaceList.SelectedItem = active;
+            _currentResultSet = active;
+            ReloadWorkspaceList(active);
+            LoadGrid();
         }
     }
 
-    private void ReloadWorkspaceList()
+    private void ReloadWorkspaceList(ResultSet? selectedResultSet = null)
     {
         _loading = true;
-        _workspaceList.Items.Clear();
-
-        foreach (ResultSet resultSet in _document.ResultSets)
+        _workspaceList.BeginUpdate();
+        try
         {
-            _workspaceList.Items.Add(resultSet);
-        }
+            _workspaceList.Items.Clear();
 
-        _loading = false;
+            foreach (ResultSet resultSet in _document.ResultSets)
+            {
+                _workspaceList.Items.Add(resultSet);
+            }
+
+            if (selectedResultSet is not null && _document.ResultSets.Contains(selectedResultSet))
+            {
+                _workspaceList.SelectedItem = selectedResultSet;
+            }
+        }
+        finally
+        {
+            _workspaceList.EndUpdate();
+            _loading = false;
+        }
     }
 
     private void SelectWorkspaceFromList()
@@ -831,8 +845,9 @@ public partial class Form1 : Form
         resultSet.AddRow();
         _document.ResultSets.Add(resultSet);
         _document.ActiveResultSetId = resultSet.Id;
-        ReloadWorkspaceList();
-        _workspaceList.SelectedItem = resultSet;
+        _currentResultSet = resultSet;
+        ReloadWorkspaceList(resultSet);
+        LoadGrid();
         SaveWorkspaceDocument();
     }
 
@@ -850,7 +865,7 @@ public partial class Form1 : Form
         }
 
         resultSet.Name = string.IsNullOrWhiteSpace(newName) ? "Result Set" : newName.Trim();
-        _workspaceList.Refresh();
+        ReloadWorkspaceList(resultSet);
         SaveWorkspaceDocument();
     }
 
@@ -927,6 +942,13 @@ public partial class Form1 : Form
             return;
         }
 
+        if (!ConfirmDestructiveAction(
+            "ワークスペースの削除",
+            $"ワークスペース「{_currentResultSet.Name}」を削除します。よろしいですか？"))
+        {
+            return;
+        }
+
         _document.ResultSets.Remove(_currentResultSet);
 
         if (_document.ResultSets.Count == 0)
@@ -934,9 +956,39 @@ public partial class Form1 : Form
             _document = WorkspaceDocument.CreateDefault();
         }
 
-        ReloadWorkspaceList();
-        _workspaceList.SelectedItem = _document.ResultSets[0];
+        _currentResultSet = _document.ResultSets[0];
+        _document.ActiveResultSetId = _currentResultSet.Id;
+        ReloadWorkspaceList(_currentResultSet);
+        LoadGrid();
         SaveWorkspaceDocument();
+    }
+
+    private void ClearWorkspace()
+    {
+        if (!ConfirmDestructiveAction(
+            "入力内容のクリア",
+            "入力内容をすべてクリアして初期状態に戻します。よろしいですか？"))
+        {
+            return;
+        }
+
+        _document.ResetToDefault();
+        _currentResultSet = _document.ResultSets[0];
+        ReloadWorkspaceList(_currentResultSet);
+        LoadGrid();
+        SaveWorkspaceDocument();
+        _statusLabel.Text = "入力内容をクリアしました。";
+    }
+
+    private bool ConfirmDestructiveAction(string title, string message)
+    {
+        return MessageBox.Show(
+            this,
+            message,
+            title,
+            MessageBoxButtons.OKCancel,
+            MessageBoxIcon.Warning,
+            MessageBoxDefaultButton.Button2) == DialogResult.OK;
     }
 
     private void AddRow()

@@ -31,6 +31,30 @@ public sealed class WorkspaceStoreTests
         Assert.AreEqual("UserStatus.Active", loaded.ResultSets[0].Rows[0].Cells["status"].Text);
     }
 
+    [TestMethod]
+    public void ResetToDefaultClearsExistingInputAndRestoresInitialWorkspace()
+    {
+        WorkspaceDocument document = new()
+        {
+            ActiveResultSetId = "users",
+            ResultSets =
+            [
+                CreateUsers(),
+                new ResultSet("Orders") { Id = "orders" }
+            ]
+        };
+
+        document.ResetToDefault();
+
+        Assert.AreEqual(1, document.ResultSets.Count);
+        Assert.AreEqual(document.ResultSets[0].Id, document.ActiveResultSetId);
+        Assert.AreEqual("Default", document.ResultSets[0].Name);
+        Assert.AreEqual(1, document.ResultSets[0].Columns.Count);
+        Assert.AreEqual("COLUMN1", document.ResultSets[0].Columns[0].Name);
+        Assert.AreEqual(1, document.ResultSets[0].Rows.Count);
+        Assert.AreEqual("", document.ResultSets[0].Rows[0].GetCell(document.ResultSets[0].Columns[0].Id).Text);
+    }
+
     private static ResultSet CreateUsers()
     {
         ResultSet resultSet = new("Users") { Id = "users" };

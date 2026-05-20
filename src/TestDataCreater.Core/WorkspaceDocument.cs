@@ -18,4 +18,11 @@ public sealed class WorkspaceDocument
             ResultSets = [resultSet]
         };
     }
+
+    public void ResetToDefault()
+    {
+        WorkspaceDocument defaultDocument = CreateDefault();
+        ActiveResultSetId = defaultDocument.ActiveResultSetId;
+        ResultSets = defaultDocument.ResultSets;
+    }
 }

@@ -82,6 +82,7 @@
     <_BootstrapFile1 Include="13. `CSVインポート` でCSVファイルを選択すると、1行目を列名、2行目以降をデータとして表へ取り込みます。" />
     <_BootstrapFile1 Include="14. 下部の `プレビュー` で C# 出力内容を確認します。グリッドとプレビューの境界を上下にドラッグすると表示領域を変更できます。" />
     <_BootstrapFile1 Include="15. `コピー` でプレビュー内容をクリップボードへコピーします。" />
+    <_BootstrapFile1 Include="16. `クリア` で入力内容を初期状態へ戻します。削除やクリアの前には確認ダイアログが表示されます。" />
     <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。" />
     <_BootstrapFile1 Include="プレビューとコピーは常に現在の全レコードを出力します。セル入力中もプレビューは入力内容に追従します。" />
     <_BootstrapFile1 Include="`型` の候補は入力値に応じて絞り込まれます。たとえば `01` のような文字列は数値型として選択できません。" />
@@ -631,6 +632,12 @@
     <_BootstrapFile11 Include="            ResultSets = [resultSet]" />
     <_BootstrapFile11 Include="        }%3B" />
     <_BootstrapFile11 Include="    }" />
+    <_BootstrapFile11 Include="    public void ResetToDefault()" />
+    <_BootstrapFile11 Include="    {" />
+    <_BootstrapFile11 Include="        WorkspaceDocument defaultDocument = CreateDefault()%3B" />
+    <_BootstrapFile11 Include="        ActiveResultSetId = defaultDocument.ActiveResultSetId%3B" />
+    <_BootstrapFile11 Include="        ResultSets = defaultDocument.ResultSets%3B" />
+    <_BootstrapFile11 Include="    }" />
     <_BootstrapFile11 Include="}" />
   </ItemGroup>
   <ItemGroup>
@@ -765,7 +772,7 @@
     <_BootstrapFile15 Include="        TableLayoutPanel header = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 8," />
+    <_BootstrapFile15 Include="            ColumnCount = 9," />
     <_BootstrapFile15 Include="            Padding = new Padding(10, 8, 10, 8)" />
     <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180))%3B" />
@@ -775,6 +782,7 @@
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 32))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 124))%3B" />
+    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92))%3B" />
     <_BootstrapFile15 Include="        Label appNameLabel = new()" />
     <_BootstrapFile15 Include="        {" />
@@ -791,6 +799,7 @@
     <_BootstrapFile15 Include="        header.Controls.Add(_cellKindBox, 5, 0)%3B" />
     <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;CSVインポート&quot;, ImportCsvFromFile), 6, 0)%3B" />
     <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;コピー&quot;, ExportToClipboard), 7, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;クリア&quot;, ClearWorkspace), 8, 0)%3B" />
     <_BootstrapFile15 Include="        return header%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreateBodyPanel()" />
@@ -1018,23 +1027,36 @@
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            _document = WorkspaceDocument.CreateDefault()%3B" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
     <_BootstrapFile15 Include="        ResultSet%3F active = _document.ResultSets.FirstOrDefault(resultSet =&gt; resultSet.Id == _document.ActiveResultSetId)" />
     <_BootstrapFile15 Include="            %3F%3F _document.ResultSets.FirstOrDefault()%3B" />
     <_BootstrapFile15 Include="        if (active is not null)" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            _workspaceList.SelectedItem = active%3B" />
+    <_BootstrapFile15 Include="            _currentResultSet = active%3B" />
+    <_BootstrapFile15 Include="            ReloadWorkspaceList(active)%3B" />
+    <_BootstrapFile15 Include="            LoadGrid()%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="    }" />
-    <_BootstrapFile15 Include="    private void ReloadWorkspaceList()" />
+    <_BootstrapFile15 Include="    private void ReloadWorkspaceList(ResultSet%3F selectedResultSet = null)" />
     <_BootstrapFile15 Include="    {" />
     <_BootstrapFile15 Include="        _loading = true%3B" />
-    <_BootstrapFile15 Include="        _workspaceList.Items.Clear()%3B" />
-    <_BootstrapFile15 Include="        foreach (ResultSet resultSet in _document.ResultSets)" />
+    <_BootstrapFile15 Include="        _workspaceList.BeginUpdate()%3B" />
+    <_BootstrapFile15 Include="        try" />
     <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            _workspaceList.Items.Add(resultSet)%3B" />
+    <_BootstrapFile15 Include="            _workspaceList.Items.Clear()%3B" />
+    <_BootstrapFile15 Include="            foreach (ResultSet resultSet in _document.ResultSets)" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                _workspaceList.Items.Add(resultSet)%3B" />
+    <_BootstrapFile15 Include="            }" />
+    <_BootstrapFile15 Include="            if (selectedResultSet is not null &amp;&amp; _document.ResultSets.Contains(selectedResultSet))" />
+    <_BootstrapFile15 Include="            {" />
+    <_BootstrapFile15 Include="                _workspaceList.SelectedItem = selectedResultSet%3B" />
+    <_BootstrapFile15 Include="            }" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        _loading = false%3B" />
+    <_BootstrapFile15 Include="        finally" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            _workspaceList.EndUpdate()%3B" />
+    <_BootstrapFile15 Include="            _loading = false%3B" />
+    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void SelectWorkspaceFromList()" />
     <_BootstrapFile15 Include="    {" />
@@ -1415,8 +1437,9 @@
     <_BootstrapFile15 Include="        resultSet.AddRow()%3B" />
     <_BootstrapFile15 Include="        _document.ResultSets.Add(resultSet)%3B" />
     <_BootstrapFile15 Include="        _document.ActiveResultSetId = resultSet.Id%3B" />
-    <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
-    <_BootstrapFile15 Include="        _workspaceList.SelectedItem = resultSet%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet = resultSet%3B" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList(resultSet)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void RenameSelectedWorkspace()" />
@@ -1431,7 +1454,7 @@
     <_BootstrapFile15 Include="            return%3B" />
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        resultSet.Name = string.IsNullOrWhiteSpace(newName) %3F &quot;Result Set&quot; : newName.Trim()%3B" />
-    <_BootstrapFile15 Include="        _workspaceList.Refresh()%3B" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList(resultSet)%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private string%3F PromptWorkspaceName(string currentName)" />
@@ -1498,14 +1521,47 @@
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            return%3B" />
     <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        if (!ConfirmDestructiveAction(" />
+    <_BootstrapFile15 Include="            &quot;ワークスペースの削除&quot;," />
+    <_BootstrapFile15 Include="            $&quot;ワークスペース「{_currentResultSet.Name}」を削除します。よろしいですか？&quot;))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        _document.ResultSets.Remove(_currentResultSet)%3B" />
     <_BootstrapFile15 Include="        if (_document.ResultSets.Count == 0)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            _document = WorkspaceDocument.CreateDefault()%3B" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        ReloadWorkspaceList()%3B" />
-    <_BootstrapFile15 Include="        _workspaceList.SelectedItem = _document.ResultSets[0]%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet = _document.ResultSets[0]%3B" />
+    <_BootstrapFile15 Include="        _document.ActiveResultSetId = _currentResultSet.Id%3B" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList(_currentResultSet)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private void ClearWorkspace()" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        if (!ConfirmDestructiveAction(" />
+    <_BootstrapFile15 Include="            &quot;入力内容のクリア&quot;," />
+    <_BootstrapFile15 Include="            &quot;入力内容をすべてクリアして初期状態に戻します。よろしいですか？&quot;))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        _document.ResetToDefault()%3B" />
+    <_BootstrapFile15 Include="        _currentResultSet = _document.ResultSets[0]%3B" />
+    <_BootstrapFile15 Include="        ReloadWorkspaceList(_currentResultSet)%3B" />
+    <_BootstrapFile15 Include="        LoadGrid()%3B" />
+    <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
+    <_BootstrapFile15 Include="        _statusLabel.Text = &quot;入力内容をクリアしました。&quot;%3B" />
+    <_BootstrapFile15 Include="    }" />
+    <_BootstrapFile15 Include="    private bool ConfirmDestructiveAction(string title, string message)" />
+    <_BootstrapFile15 Include="    {" />
+    <_BootstrapFile15 Include="        return MessageBox.Show(" />
+    <_BootstrapFile15 Include="            this," />
+    <_BootstrapFile15 Include="            message," />
+    <_BootstrapFile15 Include="            title," />
+    <_BootstrapFile15 Include="            MessageBoxButtons.OKCancel," />
+    <_BootstrapFile15 Include="            MessageBoxIcon.Warning," />
+    <_BootstrapFile15 Include="            MessageBoxDefaultButton.Button2) == DialogResult.OK%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void AddRow()" />
     <_BootstrapFile15 Include="    {" />
