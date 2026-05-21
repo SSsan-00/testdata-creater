@@ -965,19 +965,28 @@ public partial class Form1 : Form
 
     private void ClearWorkspace()
     {
-        if (!ConfirmDestructiveAction(
-            "入力内容のクリア",
-            "入力内容をすべてクリアして初期状態に戻します。よろしいですか？"))
+        if (_currentResultSet is null)
         {
             return;
         }
 
-        _document.ResetToDefault();
-        _currentResultSet = _document.ResultSets[0];
+        if (!ConfirmDestructiveAction(
+            "入力内容のクリア",
+            $"ワークスペース「{_currentResultSet.Name}」のグリッド入力内容をクリアして初期状態に戻します。よろしいですか？"))
+        {
+            return;
+        }
+
+        SyncGridToModel();
+        if (!_document.ResetResultSetGrid(_currentResultSet.Id))
+        {
+            return;
+        }
+
         ReloadWorkspaceList(_currentResultSet);
         LoadGrid();
         SaveWorkspaceDocument();
-        _statusLabel.Text = "入力内容をクリアしました。";
+        _statusLabel.Text = $"ワークスペース「{_currentResultSet.Name}」の入力内容をクリアしました。";
     }
 
     private bool ConfirmDestructiveAction(string title, string message)

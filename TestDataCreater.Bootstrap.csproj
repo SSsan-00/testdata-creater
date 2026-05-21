@@ -82,7 +82,7 @@
     <_BootstrapFile1 Include="13. `CSVインポート` でCSVファイルを選択すると、1行目を列名、2行目以降をデータとして表へ取り込みます。" />
     <_BootstrapFile1 Include="14. 下部の `プレビュー` で C# 出力内容を確認します。グリッドとプレビューの境界を上下にドラッグすると表示領域を変更できます。" />
     <_BootstrapFile1 Include="15. `コピー` でプレビュー内容をクリップボードへコピーします。" />
-    <_BootstrapFile1 Include="16. `クリア` で入力内容を初期状態へ戻します。削除やクリアの前には確認ダイアログが表示されます。" />
+    <_BootstrapFile1 Include="16. `クリア` で選択中ワークスペースのグリッド入力内容を初期状態へ戻します。ワークスペース名と他のワークスペースは維持されます。削除やクリアの前には確認ダイアログが表示されます。" />
     <_BootstrapFile1 Include="行をドラッグすると表示順を変更できます。列はヘッダーをドラッグして並び替えできます。" />
     <_BootstrapFile1 Include="プレビューとコピーは常に現在の全レコードを出力します。セル入力中もプレビューは入力内容に追従します。" />
     <_BootstrapFile1 Include="`型` の候補は入力値に応じて絞り込まれます。たとえば `01` のような文字列は数値型として選択できません。" />
@@ -591,6 +591,13 @@
     <_BootstrapFile10 Include="    {" />
     <_BootstrapFile10 Include="        Move(Rows, fromIndex, toIndex)%3B" />
     <_BootstrapFile10 Include="    }" />
+    <_BootstrapFile10 Include="    public void ResetGrid()" />
+    <_BootstrapFile10 Include="    {" />
+    <_BootstrapFile10 Include="        Columns.Clear()%3B" />
+    <_BootstrapFile10 Include="        Rows.Clear()%3B" />
+    <_BootstrapFile10 Include="        AddColumn(&quot;COLUMN1&quot;)%3B" />
+    <_BootstrapFile10 Include="        AddRow()%3B" />
+    <_BootstrapFile10 Include="    }" />
     <_BootstrapFile10 Include="    public override string ToString()" />
     <_BootstrapFile10 Include="    {" />
     <_BootstrapFile10 Include="        return Name%3B" />
@@ -632,11 +639,15 @@
     <_BootstrapFile11 Include="            ResultSets = [resultSet]" />
     <_BootstrapFile11 Include="        }%3B" />
     <_BootstrapFile11 Include="    }" />
-    <_BootstrapFile11 Include="    public void ResetToDefault()" />
+    <_BootstrapFile11 Include="    public bool ResetResultSetGrid(string%3F resultSetId)" />
     <_BootstrapFile11 Include="    {" />
-    <_BootstrapFile11 Include="        WorkspaceDocument defaultDocument = CreateDefault()%3B" />
-    <_BootstrapFile11 Include="        ActiveResultSetId = defaultDocument.ActiveResultSetId%3B" />
-    <_BootstrapFile11 Include="        ResultSets = defaultDocument.ResultSets%3B" />
+    <_BootstrapFile11 Include="        ResultSet%3F resultSet = ResultSets.FirstOrDefault(item =&gt; item.Id == resultSetId)%3B" />
+    <_BootstrapFile11 Include="        if (resultSet is null)" />
+    <_BootstrapFile11 Include="        {" />
+    <_BootstrapFile11 Include="            return false%3B" />
+    <_BootstrapFile11 Include="        }" />
+    <_BootstrapFile11 Include="        resultSet.ResetGrid()%3B" />
+    <_BootstrapFile11 Include="        return true%3B" />
     <_BootstrapFile11 Include="    }" />
     <_BootstrapFile11 Include="}" />
   </ItemGroup>
@@ -1540,18 +1551,25 @@
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private void ClearWorkspace()" />
     <_BootstrapFile15 Include="    {" />
-    <_BootstrapFile15 Include="        if (!ConfirmDestructiveAction(" />
-    <_BootstrapFile15 Include="            &quot;入力内容のクリア&quot;," />
-    <_BootstrapFile15 Include="            &quot;入力内容をすべてクリアして初期状態に戻します。よろしいですか？&quot;))" />
+    <_BootstrapFile15 Include="        if (_currentResultSet is null)" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            return%3B" />
     <_BootstrapFile15 Include="        }" />
-    <_BootstrapFile15 Include="        _document.ResetToDefault()%3B" />
-    <_BootstrapFile15 Include="        _currentResultSet = _document.ResultSets[0]%3B" />
+    <_BootstrapFile15 Include="        if (!ConfirmDestructiveAction(" />
+    <_BootstrapFile15 Include="            &quot;入力内容のクリア&quot;," />
+    <_BootstrapFile15 Include="            $&quot;ワークスペース「{_currentResultSet.Name}」のグリッド入力内容をクリアして初期状態に戻します。よろしいですか？&quot;))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
+    <_BootstrapFile15 Include="        SyncGridToModel()%3B" />
+    <_BootstrapFile15 Include="        if (!_document.ResetResultSetGrid(_currentResultSet.Id))" />
+    <_BootstrapFile15 Include="        {" />
+    <_BootstrapFile15 Include="            return%3B" />
+    <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        ReloadWorkspaceList(_currentResultSet)%3B" />
     <_BootstrapFile15 Include="        LoadGrid()%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
-    <_BootstrapFile15 Include="        _statusLabel.Text = &quot;入力内容をクリアしました。&quot;%3B" />
+    <_BootstrapFile15 Include="        _statusLabel.Text = $&quot;ワークスペース「{_currentResultSet.Name}」の入力内容をクリアしました。&quot;%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private bool ConfirmDestructiveAction(string title, string message)" />
     <_BootstrapFile15 Include="    {" />

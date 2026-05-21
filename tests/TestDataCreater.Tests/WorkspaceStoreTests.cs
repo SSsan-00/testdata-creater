@@ -32,27 +32,33 @@ public sealed class WorkspaceStoreTests
     }
 
     [TestMethod]
-    public void ResetToDefaultClearsExistingInputAndRestoresInitialWorkspace()
+    public void ResetResultSetGridClearsOnlySelectedWorkspaceGrid()
     {
+        ResultSet users = CreateUsers();
+        ResultSet orders = new("Orders") { Id = "orders" };
+        orders.AddColumn("ORDER_ID", CellValueKind.Int32, "order-id");
+        ResultRow orderRow = orders.AddRow("order-1");
+        orderRow.SetCell("order-id", new CellValue(CellValueKind.Int32, "100"));
         WorkspaceDocument document = new()
         {
             ActiveResultSetId = "users",
-            ResultSets =
-            [
-                CreateUsers(),
-                new ResultSet("Orders") { Id = "orders" }
-            ]
+            ResultSets = [users, orders]
         };
 
-        document.ResetToDefault();
+        bool cleared = document.ResetResultSetGrid("users");
 
-        Assert.AreEqual(1, document.ResultSets.Count);
-        Assert.AreEqual(document.ResultSets[0].Id, document.ActiveResultSetId);
-        Assert.AreEqual("Default", document.ResultSets[0].Name);
-        Assert.AreEqual(1, document.ResultSets[0].Columns.Count);
-        Assert.AreEqual("COLUMN1", document.ResultSets[0].Columns[0].Name);
-        Assert.AreEqual(1, document.ResultSets[0].Rows.Count);
-        Assert.AreEqual("", document.ResultSets[0].Rows[0].GetCell(document.ResultSets[0].Columns[0].Id).Text);
+        Assert.IsTrue(cleared);
+        Assert.AreEqual("users", document.ActiveResultSetId);
+        Assert.AreEqual(2, document.ResultSets.Count);
+        Assert.AreEqual("Users", users.Name);
+        Assert.AreEqual(1, users.Columns.Count);
+        Assert.AreEqual("COLUMN1", users.Columns[0].Name);
+        Assert.AreEqual(1, users.Rows.Count);
+        Assert.AreEqual("", users.Rows[0].GetCell(users.Columns[0].Id).Text);
+        Assert.AreEqual("Orders", orders.Name);
+        Assert.AreEqual(1, orders.Columns.Count);
+        Assert.AreEqual("ORDER_ID", orders.Columns[0].Name);
+        Assert.AreEqual("100", orders.Rows[0].GetCell("order-id").Text);
     }
 
     private static ResultSet CreateUsers()

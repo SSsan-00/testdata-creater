@@ -24,4 +24,27 @@ public sealed class ResultSetEditingTests
         CollectionAssert.AreEqual(new[] { "second" }, resultSet.Rows.Select(row => row.Id).ToArray());
         Assert.IsFalse(second.Cells.ContainsKey("b"));
     }
+
+    [TestMethod]
+    public void ResetGridClearsColumnsRowsAndCellsWithoutChangingWorkspaceIdentity()
+    {
+        ResultSet resultSet = new("Users") { Id = "users" };
+        resultSet.AddColumn("STATUS", CellValueKind.CustomExpression, "status");
+        resultSet.AddColumn("AGE", CellValueKind.Int32, "age");
+        ResultRow row = resultSet.AddRow("row-1");
+        row.SetCell("status", new CellValue(CellValueKind.CustomExpression, "UserStatus.Active"));
+        row.SetCell("age", new CellValue(CellValueKind.Int32, "42"));
+
+        resultSet.ResetGrid();
+
+        Assert.AreEqual("users", resultSet.Id);
+        Assert.AreEqual("Users", resultSet.Name);
+        Assert.AreEqual(1, resultSet.Columns.Count);
+        Assert.AreEqual("COLUMN1", resultSet.Columns[0].Name);
+        Assert.AreEqual(CellValueKind.String, resultSet.Columns[0].DefaultKind);
+        Assert.AreEqual(1, resultSet.Rows.Count);
+        Assert.AreEqual("", resultSet.Rows[0].GetCell(resultSet.Columns[0].Id).Text);
+        Assert.IsFalse(resultSet.Columns.Any(column => column.Id == "status"));
+        Assert.IsFalse(resultSet.Columns.Any(column => column.Id == "age"));
+    }
 }

@@ -19,10 +19,15 @@ public sealed class WorkspaceDocument
         };
     }
 
-    public void ResetToDefault()
+    public bool ResetResultSetGrid(string? resultSetId)
     {
-        WorkspaceDocument defaultDocument = CreateDefault();
-        ActiveResultSetId = defaultDocument.ActiveResultSetId;
-        ResultSets = defaultDocument.ResultSets;
+        ResultSet? resultSet = ResultSets.FirstOrDefault(item => item.Id == resultSetId);
+        if (resultSet is null)
+        {
+            return false;
+        }
+
+        resultSet.ResetGrid();
+        return true;
     }
 }

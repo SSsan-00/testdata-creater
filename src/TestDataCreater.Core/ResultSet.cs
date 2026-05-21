@@ -79,6 +79,14 @@ public sealed class ResultSet
         Move(Rows, fromIndex, toIndex);
     }
 
+    public void ResetGrid()
+    {
+        Columns.Clear();
+        Rows.Clear();
+        AddColumn("COLUMN1");
+        AddRow();
+    }
+
     public override string ToString()
     {
         return Name;
