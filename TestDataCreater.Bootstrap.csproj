@@ -783,10 +783,9 @@
     <_BootstrapFile15 Include="        TableLayoutPanel header = new()" />
     <_BootstrapFile15 Include="        {" />
     <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            ColumnCount = 9," />
+    <_BootstrapFile15 Include="            ColumnCount = 8," />
     <_BootstrapFile15 Include="            Padding = new Padding(10, 8, 10, 8)" />
     <_BootstrapFile15 Include="        }%3B" />
-    <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220))%3B" />
@@ -795,22 +794,14 @@
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 124))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92))%3B" />
     <_BootstrapFile15 Include="        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92))%3B" />
-    <_BootstrapFile15 Include="        Label appNameLabel = new()" />
-    <_BootstrapFile15 Include="        {" />
-    <_BootstrapFile15 Include="            Text = &quot;HashMap Maker&quot;," />
-    <_BootstrapFile15 Include="            Dock = DockStyle.Fill," />
-    <_BootstrapFile15 Include="            TextAlign = ContentAlignment.MiddleLeft," />
-    <_BootstrapFile15 Include="            Font = new Font(Font, FontStyle.Bold)" />
-    <_BootstrapFile15 Include="        }%3B" />
     <_BootstrapFile15 Include="        ConfigureInspectorControls()%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(appNameLabel, 0, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;列名&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(_columnNameBox, 3, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 4, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(_cellKindBox, 5, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;CSVインポート&quot;, ImportCsvFromFile), 6, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;コピー&quot;, ExportToClipboard), 7, 0)%3B" />
-    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;クリア&quot;, ClearWorkspace), 8, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;列名&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 1, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(_columnNameBox, 2, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(new Label { Text = &quot;型&quot;, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 3, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(_cellKindBox, 4, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;CSVインポート&quot;, ImportCsvFromFile), 5, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;コピー&quot;, ExportToClipboard), 6, 0)%3B" />
+    <_BootstrapFile15 Include="        header.Controls.Add(CreateHeaderButton(&quot;クリア&quot;, ClearWorkspace), 7, 0)%3B" />
     <_BootstrapFile15 Include="        return header%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private Control CreateBodyPanel()" />

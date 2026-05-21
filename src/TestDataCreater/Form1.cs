@@ -77,10 +77,9 @@ public partial class Form1 : Form
         TableLayoutPanel header = new()
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 9,
+            ColumnCount = 8,
             Padding = new Padding(10, 8, 10, 8)
         };
-        header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220));
@@ -90,24 +89,15 @@ public partial class Form1 : Form
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
 
-        Label appNameLabel = new()
-        {
-            Text = "HashMap Maker",
-            Dock = DockStyle.Fill,
-            TextAlign = ContentAlignment.MiddleLeft,
-            Font = new Font(Font, FontStyle.Bold)
-        };
-
         ConfigureInspectorControls();
 
-        header.Controls.Add(appNameLabel, 0, 0);
-        header.Controls.Add(new Label { Text = "列名", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 2, 0);
-        header.Controls.Add(_columnNameBox, 3, 0);
-        header.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 4, 0);
-        header.Controls.Add(_cellKindBox, 5, 0);
-        header.Controls.Add(CreateHeaderButton("CSVインポート", ImportCsvFromFile), 6, 0);
-        header.Controls.Add(CreateHeaderButton("コピー", ExportToClipboard), 7, 0);
-        header.Controls.Add(CreateHeaderButton("クリア", ClearWorkspace), 8, 0);
+        header.Controls.Add(new Label { Text = "列名", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 1, 0);
+        header.Controls.Add(_columnNameBox, 2, 0);
+        header.Controls.Add(new Label { Text = "型", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 3, 0);
+        header.Controls.Add(_cellKindBox, 4, 0);
+        header.Controls.Add(CreateHeaderButton("CSVインポート", ImportCsvFromFile), 5, 0);
+        header.Controls.Add(CreateHeaderButton("コピー", ExportToClipboard), 6, 0);
+        header.Controls.Add(CreateHeaderButton("クリア", ClearWorkspace), 7, 0);
 
         return header;
     }
