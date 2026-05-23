@@ -51,6 +51,16 @@ dotnet run --project src/TestDataCreater/TestDataCreater.csproj
 
 Visual Studio を使う場合は `TestDataCreater.sln` を開き、`TestDataCreater` プロジェクトを起動プロジェクトに設定して実行してください。
 
+## リリース用 exe の作成
+
+Windows x64 向けの自己完結単一ファイル exe を作成する場合は、次のコマンドを実行します。
+
+```bash
+dotnet publish src/TestDataCreater/TestDataCreater.csproj -p:PublishProfile=win-x64-single-file
+```
+
+出力先は `src/TestDataCreater/bin/Release/net9.0-windows/win-x64/publish/` です。配布時はこのフォルダ内の `TestDataCreater.exe` を利用してください。自己完結形式のため、配布先 PC に .NET ランタイムを別途インストールする必要はありません。
+
 ## 使い方
 
 1. 左側の `ワークスペース` で結果セットを選択します。

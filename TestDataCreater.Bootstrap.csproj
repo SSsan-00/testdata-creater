@@ -66,6 +66,12 @@
     <_BootstrapFile1 Include="dotnet run --project src/TestDataCreater/TestDataCreater.csproj" />
     <_BootstrapFile1 Include="```" />
     <_BootstrapFile1 Include="Visual Studio を使う場合は `TestDataCreater.sln` を開き、`TestDataCreater` プロジェクトを起動プロジェクトに設定して実行してください。" />
+    <_BootstrapFile1 Include="## リリース用 exe の作成" />
+    <_BootstrapFile1 Include="Windows x64 向けの自己完結単一ファイル exe を作成する場合は、次のコマンドを実行します。" />
+    <_BootstrapFile1 Include="```bash" />
+    <_BootstrapFile1 Include="dotnet publish src/TestDataCreater/TestDataCreater.csproj -p:PublishProfile=win-x64-single-file" />
+    <_BootstrapFile1 Include="```" />
+    <_BootstrapFile1 Include="出力先は `src/TestDataCreater/bin/Release/net9.0-windows/win-x64/publish/` です。配布時はこのフォルダ内の `TestDataCreater.exe` を利用してください。自己完結形式のため、配布先 PC に .NET ランタイムを別途インストールする必要はありません。" />
     <_BootstrapFile1 Include="## 使い方" />
     <_BootstrapFile1 Include="1. 左側の `ワークスペース` で結果セットを選択します。" />
     <_BootstrapFile1 Include="2. `追加` で結果セットを追加します。" />
@@ -184,6 +190,10 @@
     <_BootstrapFile3 Include="    &lt;TargetFramework&gt;net9.0&lt;/TargetFramework&gt;" />
     <_BootstrapFile3 Include="    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;" />
     <_BootstrapFile3 Include="    &lt;Nullable&gt;enable&lt;/Nullable&gt;" />
+    <_BootstrapFile3 Include="  &lt;/PropertyGroup&gt;" />
+    <_BootstrapFile3 Include="  &lt;PropertyGroup Condition=&quot;'%24(Configuration)' == 'Release'&quot;&gt;" />
+    <_BootstrapFile3 Include="    &lt;DebugType&gt;none&lt;/DebugType&gt;" />
+    <_BootstrapFile3 Include="    &lt;DebugSymbols&gt;false&lt;/DebugSymbols&gt;" />
     <_BootstrapFile3 Include="  &lt;/PropertyGroup&gt;" />
     <_BootstrapFile3 Include="&lt;/Project&gt;" />
   </ItemGroup>
@@ -2082,6 +2092,21 @@
     <_BootstrapFile16 Include="}" />
   </ItemGroup>
   <ItemGroup>
+    <_BootstrapFile18 Include="&lt;Project&gt;" />
+    <_BootstrapFile18 Include="  &lt;PropertyGroup&gt;" />
+    <_BootstrapFile18 Include="    &lt;Configuration&gt;Release&lt;/Configuration&gt;" />
+    <_BootstrapFile18 Include="    &lt;TargetFramework&gt;net9.0-windows&lt;/TargetFramework&gt;" />
+    <_BootstrapFile18 Include="    &lt;RuntimeIdentifier&gt;win-x64&lt;/RuntimeIdentifier&gt;" />
+    <_BootstrapFile18 Include="    &lt;SelfContained&gt;true&lt;/SelfContained&gt;" />
+    <_BootstrapFile18 Include="    &lt;PublishSingleFile&gt;true&lt;/PublishSingleFile&gt;" />
+    <_BootstrapFile18 Include="    &lt;IncludeNativeLibrariesForSelfExtract&gt;true&lt;/IncludeNativeLibrariesForSelfExtract&gt;" />
+    <_BootstrapFile18 Include="    &lt;EnableCompressionInSingleFile&gt;true&lt;/EnableCompressionInSingleFile&gt;" />
+    <_BootstrapFile18 Include="    &lt;DebugType&gt;none&lt;/DebugType&gt;" />
+    <_BootstrapFile18 Include="    &lt;DebugSymbols&gt;false&lt;/DebugSymbols&gt;" />
+    <_BootstrapFile18 Include="  &lt;/PropertyGroup&gt;" />
+    <_BootstrapFile18 Include="&lt;/Project&gt;" />
+  </ItemGroup>
+  <ItemGroup>
     <_BootstrapFile17 Include="using System.Text%3B" />
     <_BootstrapFile17 Include="namespace TestDataCreater.Core%3B" />
     <_BootstrapFile17 Include="public static class CsvResultSetImporter" />
@@ -2243,6 +2268,7 @@
     <MakeDir Directories="$(BootstrapOutputRoot)" />
     <MakeDir Directories="$(BootstrapOutputRoot)src/TestDataCreater.Core" />
     <MakeDir Directories="$(BootstrapOutputRoot)src/TestDataCreater" />
+    <MakeDir Directories="$(BootstrapOutputRoot)src/TestDataCreater/Properties/PublishProfiles" />
     <WriteLinesToFile File="$(BootstrapOutputRoot).gitignore" Lines="@(_BootstrapFile0)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot).gitignore')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)README.md" Lines="@(_BootstrapFile1)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)README.md')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)TestDataCreater.sln" Lines="@(_BootstrapFile2)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)TestDataCreater.sln')" />
@@ -2261,6 +2287,7 @@
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Program.cs" Lines="@(_BootstrapFile14)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Program.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Form1.cs" Lines="@(_BootstrapFile15)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Form1.cs')" />
     <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Form1.Designer.cs" Lines="@(_BootstrapFile16)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Form1.Designer.cs')" />
+    <WriteLinesToFile File="$(BootstrapOutputRoot)src/TestDataCreater/Properties/PublishProfiles/win-x64-single-file.pubxml" Lines="@(_BootstrapFile18)" Overwrite="true" Condition="'$(BootstrapOverwrite)' == 'true' or !Exists('$(BootstrapOutputRoot)src/TestDataCreater/Properties/PublishProfiles/win-x64-single-file.pubxml')" />
     <Message Importance="High" Text="Expanded TestDataCreater files under $(BootstrapOutputRoot)" />
     <Message Importance="High" Text="Existing files were left unchanged. Rebuild with /p:BootstrapOverwrite=true to refresh them." Condition="'$(BootstrapOverwrite)' != 'true'" />
   </Target>
