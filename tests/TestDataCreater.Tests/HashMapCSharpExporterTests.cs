@@ -15,7 +15,7 @@ public sealed class HashMapCSharpExporterTests
 
         string code = new HashMapCSharpExporter().Export(resultSet);
 
-        StringAssert.Contains(code, "var data = new HashMap");
+        StringAssert.Contains(code, "var users = new HashMap");
         Assert.IsFalse(code.Contains("HashMap<HashMap>", StringComparison.Ordinal));
         StringAssert.Contains(code, "{ \"USER_ID\", 1 },");
         StringAssert.Contains(code, "{ \"USER_NAME\", \"Alice\" },");
@@ -36,7 +36,7 @@ public sealed class HashMapCSharpExporterTests
 
         string code = new HashMapCSharpExporter().Export(resultSet);
 
-        StringAssert.Contains(code, "var data = new HashMap<HashMap>");
+        StringAssert.Contains(code, "var users = new HashMap<HashMap>");
         StringAssert.Contains(code, "{ 0, new HashMap");
         StringAssert.Contains(code, "{ 1, new HashMap");
         Assert.IsTrue(code.IndexOf("\"Second\"", StringComparison.Ordinal) < code.IndexOf("\"First\"", StringComparison.Ordinal));
@@ -62,6 +62,53 @@ public sealed class HashMapCSharpExporterTests
         StringAssert.Contains(code, "{ 1, new HashMap");
         Assert.IsTrue(code.IndexOf("\"Third\"", StringComparison.Ordinal) < code.IndexOf("\"First\"", StringComparison.Ordinal));
         Assert.IsFalse(code.Contains("\"Second\"", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ExportUsesWorkspaceNameAsDefaultVariableName()
+    {
+        ResultSet resultSet = new("Customer Orders");
+        resultSet.AddColumn("ORDER_ID", CellValueKind.Int32, "order_id");
+        resultSet.AddRow();
+
+        string code = new HashMapCSharpExporter().Export(resultSet);
+
+        StringAssert.Contains(code, "var customerOrders = new HashMap");
+    }
+
+    [TestMethod]
+    public void ExportSanitizesWorkspaceNameForCSharpVariableName()
+    {
+        ResultSet resultSet = new("123 order-data!");
+        resultSet.AddColumn("ORDER_ID", CellValueKind.Int32, "order_id");
+        resultSet.AddRow();
+
+        string code = new HashMapCSharpExporter().Export(resultSet);
+
+        StringAssert.Contains(code, "var _123OrderData = new HashMap");
+    }
+
+    [TestMethod]
+    public void ExportUsesExplicitVariableNameWhenProvided()
+    {
+        ResultSet resultSet = CreateUserResultSet();
+        resultSet.AddRow();
+
+        string code = new HashMapCSharpExporter().Export(resultSet, variableName: "data");
+
+        StringAssert.Contains(code, "var data = new HashMap");
+    }
+
+    [TestMethod]
+    public void ExportFallsBackToDataWhenWorkspaceNameIsNull()
+    {
+        ResultSet resultSet = CreateUserResultSet();
+        resultSet.Name = null!;
+        resultSet.AddRow();
+
+        string code = new HashMapCSharpExporter().Export(resultSet);
+
+        StringAssert.Contains(code, "var data = new HashMap");
     }
 
     [TestMethod]

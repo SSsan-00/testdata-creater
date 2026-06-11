@@ -35,6 +35,7 @@
     <_BootstrapFile1 Include="# HashMap Maker" />
     <_BootstrapFile1 Include="`HashMap Maker` は、クエリ結果セットのテストデータを GUI で編集し、C# の `HashMap` 初期化コードとして出力する WinForms アプリです。" />
     <_BootstrapFile1 Include="1 行の結果セットは `new HashMap`、複数行の結果セットは `new HashMap&lt;HashMap&gt;` として出力します。複数行の場合、外側の key は現在の表示順に従って `0, 1, 2...` に振り直されます。" />
+    <_BootstrapFile1 Include="出力変数名はワークスペース名から C# の変数名として使える lower camel case に変換されます。" />
     <_BootstrapFile1 Include="## 動作環境" />
     <_BootstrapFile1 Include="- .NET 9 SDK" />
     <_BootstrapFile1 Include="- Windows 環境" />
@@ -96,7 +97,7 @@
     <_BootstrapFile1 Include="## 出力形式" />
     <_BootstrapFile1 Include="1 行のみの場合:" />
     <_BootstrapFile1 Include="```csharp" />
-    <_BootstrapFile1 Include="var data = new HashMap" />
+    <_BootstrapFile1 Include="var users = new HashMap" />
     <_BootstrapFile1 Include="{" />
     <_BootstrapFile1 Include="    { &quot;USER_ID&quot;, 1 }," />
     <_BootstrapFile1 Include="    { &quot;USER_NAME&quot;, &quot;Alice&quot; }," />
@@ -104,7 +105,7 @@
     <_BootstrapFile1 Include="```" />
     <_BootstrapFile1 Include="複数行の場合:" />
     <_BootstrapFile1 Include="```csharp" />
-    <_BootstrapFile1 Include="var data = new HashMap&lt;HashMap&gt;" />
+    <_BootstrapFile1 Include="var users = new HashMap&lt;HashMap&gt;" />
     <_BootstrapFile1 Include="{" />
     <_BootstrapFile1 Include="    { 0, new HashMap" />
     <_BootstrapFile1 Include="        {" />
@@ -366,15 +367,30 @@
     <_BootstrapFile7 Include="namespace TestDataCreater.Core%3B" />
     <_BootstrapFile7 Include="public sealed class HashMapCSharpExporter" />
     <_BootstrapFile7 Include="{" />
-    <_BootstrapFile7 Include="    public string Export(ResultSet resultSet, IReadOnlyList&lt;ResultRow&gt;%3F rows = null, string variableName = &quot;data&quot;)" />
+    <_BootstrapFile7 Include="    private static readonly HashSet&lt;string&gt; CSharpKeywords = new(StringComparer.Ordinal)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        &quot;abstract&quot;, &quot;as&quot;, &quot;base&quot;, &quot;bool&quot;, &quot;break&quot;, &quot;byte&quot;, &quot;case&quot;, &quot;catch&quot;, &quot;char&quot;, &quot;checked&quot;," />
+    <_BootstrapFile7 Include="        &quot;class&quot;, &quot;const&quot;, &quot;continue&quot;, &quot;decimal&quot;, &quot;default&quot;, &quot;delegate&quot;, &quot;do&quot;, &quot;double&quot;, &quot;else&quot;," />
+    <_BootstrapFile7 Include="        &quot;enum&quot;, &quot;event&quot;, &quot;explicit&quot;, &quot;extern&quot;, &quot;false&quot;, &quot;finally&quot;, &quot;fixed&quot;, &quot;float&quot;, &quot;for&quot;," />
+    <_BootstrapFile7 Include="        &quot;foreach&quot;, &quot;goto&quot;, &quot;if&quot;, &quot;implicit&quot;, &quot;in&quot;, &quot;int&quot;, &quot;interface&quot;, &quot;internal&quot;, &quot;is&quot;, &quot;lock&quot;," />
+    <_BootstrapFile7 Include="        &quot;long&quot;, &quot;namespace&quot;, &quot;new&quot;, &quot;null&quot;, &quot;object&quot;, &quot;operator&quot;, &quot;out&quot;, &quot;override&quot;, &quot;params&quot;," />
+    <_BootstrapFile7 Include="        &quot;private&quot;, &quot;protected&quot;, &quot;public&quot;, &quot;readonly&quot;, &quot;ref&quot;, &quot;return&quot;, &quot;sbyte&quot;, &quot;sealed&quot;," />
+    <_BootstrapFile7 Include="        &quot;short&quot;, &quot;sizeof&quot;, &quot;stackalloc&quot;, &quot;static&quot;, &quot;string&quot;, &quot;struct&quot;, &quot;switch&quot;, &quot;this&quot;, &quot;throw&quot;," />
+    <_BootstrapFile7 Include="        &quot;true&quot;, &quot;try&quot;, &quot;typeof&quot;, &quot;uint&quot;, &quot;ulong&quot;, &quot;unchecked&quot;, &quot;unsafe&quot;, &quot;ushort&quot;, &quot;using&quot;," />
+    <_BootstrapFile7 Include="        &quot;virtual&quot;, &quot;void&quot;, &quot;volatile&quot;, &quot;while&quot;" />
+    <_BootstrapFile7 Include="    }%3B" />
+    <_BootstrapFile7 Include="    public string Export(ResultSet resultSet, IReadOnlyList&lt;ResultRow&gt;%3F rows = null, string%3F variableName = null)" />
     <_BootstrapFile7 Include="    {" />
     <_BootstrapFile7 Include="        ArgumentNullException.ThrowIfNull(resultSet)%3B" />
     <_BootstrapFile7 Include="        IReadOnlyList&lt;ResultRow&gt; exportRows = rows %3F%3F resultSet.Rows%3B" />
+    <_BootstrapFile7 Include="        string resolvedVariableName = string.IsNullOrWhiteSpace(variableName)" />
+    <_BootstrapFile7 Include="            %3F ToVariableName(resultSet.Name)" />
+    <_BootstrapFile7 Include="            : variableName%3B" />
     <_BootstrapFile7 Include="        return exportRows.Count switch" />
     <_BootstrapFile7 Include="        {" />
-    <_BootstrapFile7 Include="            0 =&gt; $&quot;var {variableName} = new HashMap&lt;HashMap&gt;()%3B&quot;," />
-    <_BootstrapFile7 Include="            1 =&gt; ExportSingleRow(resultSet, exportRows[0], variableName)," />
-    <_BootstrapFile7 Include="            _ =&gt; ExportMultipleRows(resultSet, exportRows, variableName)" />
+    <_BootstrapFile7 Include="            0 =&gt; $&quot;var {resolvedVariableName} = new HashMap&lt;HashMap&gt;()%3B&quot;," />
+    <_BootstrapFile7 Include="            1 =&gt; ExportSingleRow(resultSet, exportRows[0], resolvedVariableName)," />
+    <_BootstrapFile7 Include="            _ =&gt; ExportMultipleRows(resultSet, exportRows, resolvedVariableName)" />
     <_BootstrapFile7 Include="        }%3B" />
     <_BootstrapFile7 Include="    }" />
     <_BootstrapFile7 Include="    private static string ExportSingleRow(ResultSet resultSet, ResultRow row, string variableName)" />
@@ -401,6 +417,91 @@
     <_BootstrapFile7 Include="        }" />
     <_BootstrapFile7 Include="        builder.AppendLine(&quot;}%3B&quot;)%3B" />
     <_BootstrapFile7 Include="        return builder.ToString()%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static string ToVariableName(string%3F workspaceName)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        if (string.IsNullOrWhiteSpace(workspaceName))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;data&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        List&lt;string&gt; words = []%3B" />
+    <_BootstrapFile7 Include="        StringBuilder currentWord = new()%3B" />
+    <_BootstrapFile7 Include="        foreach (char c in workspaceName.Trim())" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            if (IsVariableNameWordCharacter(c))" />
+    <_BootstrapFile7 Include="            {" />
+    <_BootstrapFile7 Include="                currentWord.Append(c)%3B" />
+    <_BootstrapFile7 Include="                continue%3B" />
+    <_BootstrapFile7 Include="            }" />
+    <_BootstrapFile7 Include="            AddCurrentWord()%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        AddCurrentWord()%3B" />
+    <_BootstrapFile7 Include="        if (words.Count == 0)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;data&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        StringBuilder variableName = new()%3B" />
+    <_BootstrapFile7 Include="        for (int index = 0%3B index &lt; words.Count%3B index++)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            AppendCamelCaseWord(variableName, words[index], index == 0)%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        if (variableName.Length == 0)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            return &quot;data&quot;%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        if (!IsCSharpIdentifierStartCharacter(variableName[0]))" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            variableName.Insert(0, '_')%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="        string name = variableName.ToString()%3B" />
+    <_BootstrapFile7 Include="        return CSharpKeywords.Contains(name) %3F $&quot;_{name}&quot; : name%3B" />
+    <_BootstrapFile7 Include="        void AddCurrentWord()" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            if (currentWord.Length == 0)" />
+    <_BootstrapFile7 Include="            {" />
+    <_BootstrapFile7 Include="                return%3B" />
+    <_BootstrapFile7 Include="            }" />
+    <_BootstrapFile7 Include="            words.Add(currentWord.ToString())%3B" />
+    <_BootstrapFile7 Include="            currentWord.Clear()%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static void AppendCamelCaseWord(StringBuilder builder, string word, bool isFirstWord)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        bool useLowercaseWord = word.Any(char.IsLetter) &amp;&amp; word.Where(char.IsLetter).All(char.IsUpper)%3B" />
+    <_BootstrapFile7 Include="        for (int index = 0%3B index &lt; word.Length%3B index++)" />
+    <_BootstrapFile7 Include="        {" />
+    <_BootstrapFile7 Include="            char c = useLowercaseWord %3F char.ToLowerInvariant(word[index]) : word[index]%3B" />
+    <_BootstrapFile7 Include="            if (index == 0 &amp;&amp; char.IsLetter(c))" />
+    <_BootstrapFile7 Include="            {" />
+    <_BootstrapFile7 Include="                c = isFirstWord %3F char.ToLowerInvariant(c) : char.ToUpperInvariant(c)%3B" />
+    <_BootstrapFile7 Include="            }" />
+    <_BootstrapFile7 Include="            builder.Append(c)%3B" />
+    <_BootstrapFile7 Include="        }" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static bool IsVariableNameWordCharacter(char c)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        return c != '_' &amp;&amp; IsCSharpIdentifierPartCharacter(c)%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static bool IsCSharpIdentifierStartCharacter(char c)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(c)%3B" />
+    <_BootstrapFile7 Include="        return c == '_' ||" />
+    <_BootstrapFile7 Include="            category is UnicodeCategory.UppercaseLetter" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.LowercaseLetter" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.TitlecaseLetter" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.ModifierLetter" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.OtherLetter" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.LetterNumber%3B" />
+    <_BootstrapFile7 Include="    }" />
+    <_BootstrapFile7 Include="    private static bool IsCSharpIdentifierPartCharacter(char c)" />
+    <_BootstrapFile7 Include="    {" />
+    <_BootstrapFile7 Include="        UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(c)%3B" />
+    <_BootstrapFile7 Include="        return IsCSharpIdentifierStartCharacter(c) ||" />
+    <_BootstrapFile7 Include="            category is UnicodeCategory.DecimalDigitNumber" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.ConnectorPunctuation" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.NonSpacingMark" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.SpacingCombiningMark" />
+    <_BootstrapFile7 Include="                or UnicodeCategory.Format%3B" />
     <_BootstrapFile7 Include="    }" />
     <_BootstrapFile7 Include="    private static void AppendRowEntries(StringBuilder builder, ResultSet resultSet, ResultRow row, string indent)" />
     <_BootstrapFile7 Include="    {" />
@@ -1467,6 +1568,7 @@
     <_BootstrapFile15 Include="        }" />
     <_BootstrapFile15 Include="        resultSet.Name = string.IsNullOrWhiteSpace(newName) %3F &quot;Result Set&quot; : newName.Trim()%3B" />
     <_BootstrapFile15 Include="        ReloadWorkspaceList(resultSet)%3B" />
+    <_BootstrapFile15 Include="        PreviewExport()%3B" />
     <_BootstrapFile15 Include="        SaveWorkspaceDocument()%3B" />
     <_BootstrapFile15 Include="    }" />
     <_BootstrapFile15 Include="    private string%3F PromptWorkspaceName(string currentName)" />

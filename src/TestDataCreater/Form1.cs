@@ -856,6 +856,7 @@ public partial class Form1 : Form
 
         resultSet.Name = string.IsNullOrWhiteSpace(newName) ? "Result Set" : newName.Trim();
         ReloadWorkspaceList(resultSet);
+        PreviewExport();
         SaveWorkspaceDocument();
     }
 

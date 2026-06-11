@@ -3,6 +3,7 @@
 `HashMap Maker` は、クエリ結果セットのテストデータを GUI で編集し、C# の `HashMap` 初期化コードとして出力する WinForms アプリです。
 
 1 行の結果セットは `new HashMap`、複数行の結果セットは `new HashMap<HashMap>` として出力します。複数行の場合、外側の key は現在の表示順に従って `0, 1, 2...` に振り直されます。
+出力変数名はワークスペース名から C# の変数名として使える lower camel case に変換されます。
 
 ## 動作環境
 
@@ -93,7 +94,7 @@ CSVインポート時は、既存入力の有無に関係なく現在の表をCS
 1 行のみの場合:
 
 ```csharp
-var data = new HashMap
+var users = new HashMap
 {
     { "USER_ID", 1 },
     { "USER_NAME", "Alice" },
@@ -103,7 +104,7 @@ var data = new HashMap
 複数行の場合:
 
 ```csharp
-var data = new HashMap<HashMap>
+var users = new HashMap<HashMap>
 {
     { 0, new HashMap
         {

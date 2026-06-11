@@ -5,17 +5,33 @@ namespace TestDataCreater.Core;
 
 public sealed class HashMapCSharpExporter
 {
-    public string Export(ResultSet resultSet, IReadOnlyList<ResultRow>? rows = null, string variableName = "data")
+    private static readonly HashSet<string> CSharpKeywords = new(StringComparer.Ordinal)
+    {
+        "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked",
+        "class", "const", "continue", "decimal", "default", "delegate", "do", "double", "else",
+        "enum", "event", "explicit", "extern", "false", "finally", "fixed", "float", "for",
+        "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock",
+        "long", "namespace", "new", "null", "object", "operator", "out", "override", "params",
+        "private", "protected", "public", "readonly", "ref", "return", "sbyte", "sealed",
+        "short", "sizeof", "stackalloc", "static", "string", "struct", "switch", "this", "throw",
+        "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using",
+        "virtual", "void", "volatile", "while"
+    };
+
+    public string Export(ResultSet resultSet, IReadOnlyList<ResultRow>? rows = null, string? variableName = null)
     {
         ArgumentNullException.ThrowIfNull(resultSet);
 
         IReadOnlyList<ResultRow> exportRows = rows ?? resultSet.Rows;
+        string resolvedVariableName = string.IsNullOrWhiteSpace(variableName)
+            ? ToVariableName(resultSet.Name)
+            : variableName;
 
         return exportRows.Count switch
         {
-            0 => $"var {variableName} = new HashMap<HashMap>();",
-            1 => ExportSingleRow(resultSet, exportRows[0], variableName),
-            _ => ExportMultipleRows(resultSet, exportRows, variableName)
+            0 => $"var {resolvedVariableName} = new HashMap<HashMap>();",
+            1 => ExportSingleRow(resultSet, exportRows[0], resolvedVariableName),
+            _ => ExportMultipleRows(resultSet, exportRows, resolvedVariableName)
         };
     }
 
@@ -46,6 +62,110 @@ public sealed class HashMapCSharpExporter
 
         builder.AppendLine("};");
         return builder.ToString();
+    }
+
+    private static string ToVariableName(string? workspaceName)
+    {
+        if (string.IsNullOrWhiteSpace(workspaceName))
+        {
+            return "data";
+        }
+
+        List<string> words = [];
+        StringBuilder currentWord = new();
+
+        foreach (char c in workspaceName.Trim())
+        {
+            if (IsVariableNameWordCharacter(c))
+            {
+                currentWord.Append(c);
+                continue;
+            }
+
+            AddCurrentWord();
+        }
+
+        AddCurrentWord();
+
+        if (words.Count == 0)
+        {
+            return "data";
+        }
+
+        StringBuilder variableName = new();
+        for (int index = 0; index < words.Count; index++)
+        {
+            AppendCamelCaseWord(variableName, words[index], index == 0);
+        }
+
+        if (variableName.Length == 0)
+        {
+            return "data";
+        }
+
+        if (!IsCSharpIdentifierStartCharacter(variableName[0]))
+        {
+            variableName.Insert(0, '_');
+        }
+
+        string name = variableName.ToString();
+        return CSharpKeywords.Contains(name) ? $"_{name}" : name;
+
+        void AddCurrentWord()
+        {
+            if (currentWord.Length == 0)
+            {
+                return;
+            }
+
+            words.Add(currentWord.ToString());
+            currentWord.Clear();
+        }
+    }
+
+    private static void AppendCamelCaseWord(StringBuilder builder, string word, bool isFirstWord)
+    {
+        bool useLowercaseWord = word.Any(char.IsLetter) && word.Where(char.IsLetter).All(char.IsUpper);
+
+        for (int index = 0; index < word.Length; index++)
+        {
+            char c = useLowercaseWord ? char.ToLowerInvariant(word[index]) : word[index];
+
+            if (index == 0 && char.IsLetter(c))
+            {
+                c = isFirstWord ? char.ToLowerInvariant(c) : char.ToUpperInvariant(c);
+            }
+
+            builder.Append(c);
+        }
+    }
+
+    private static bool IsVariableNameWordCharacter(char c)
+    {
+        return c != '_' && IsCSharpIdentifierPartCharacter(c);
+    }
+
+    private static bool IsCSharpIdentifierStartCharacter(char c)
+    {
+        UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(c);
+        return c == '_' ||
+            category is UnicodeCategory.UppercaseLetter
+                or UnicodeCategory.LowercaseLetter
+                or UnicodeCategory.TitlecaseLetter
+                or UnicodeCategory.ModifierLetter
+                or UnicodeCategory.OtherLetter
+                or UnicodeCategory.LetterNumber;
+    }
+
+    private static bool IsCSharpIdentifierPartCharacter(char c)
+    {
+        UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(c);
+        return IsCSharpIdentifierStartCharacter(c) ||
+            category is UnicodeCategory.DecimalDigitNumber
+                or UnicodeCategory.ConnectorPunctuation
+                or UnicodeCategory.NonSpacingMark
+                or UnicodeCategory.SpacingCombiningMark
+                or UnicodeCategory.Format;
     }
 
     private static void AppendRowEntries(StringBuilder builder, ResultSet resultSet, ResultRow row, string indent)
